@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "Hệ thống Quản lý CR",
+    "description": "Hệ thống Quản lý Yêu cầu Thay đổi cho SOLASHI"
+  },
+  "auth": {
+    "login_success": "Đăng nhập thành công",
+    "login_failed": "Email hoặc mật khẩu không hợp lệ",
+    "logout_success": "Đăng xuất thành công",
+    "token_expired": "Token đã hết hạn",
+    "token_invalid": "Token không hợp lệ",
+    "unauthorized": "Truy cập không được phép"
+  },
+  "cr": {
+    "created": "Tạo yêu cầu thay đổi thành công",
+    "updated": "Cập nhật yêu cầu thay đổi thành công",
+    "deleted": "Xóa yêu cầu thay đổi thành công",
+    "not_found": "Không tìm thấy yêu cầu thay đổi",
+    "status_changed": "Trạng thái đã chuyển sang {{status}}"
+  },
+  "errors": {
+    "internal_server": "Lỗi máy chủ nội bộ",
+    "bad_request": "Yêu cầu không hợp lệ",
+    "not_found": "Không tìm thấy tài nguyên",
+    "forbidden": "Truy cập bị cấm",
+    "validation_failed": "Xác thực thất bại"
+  },
+  "validation": {
+    "required": "{{field}} là bắt buộc",
+    "invalid_email": "Định dạng email không hợp lệ",
+    "min_length": "{{field}} phải có ít nhất {{min}} ký tự",
+    "max_length": "{{field}} không được vượt quá {{max}} ký tự"
+  }
+}

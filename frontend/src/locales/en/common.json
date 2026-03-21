@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "CR Management System",
+    "title": "Change Request Management"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "change_requests": "Change Requests",
+    "users": "Users",
+    "sprints": "Sprints",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password?",
+    "login_success": "Login successful",
+    "login_failed": "Invalid email or password"
+  },
+  "cr": {
+    "title": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "assignee": "Assignee",
+    "customer": "Customer",
+    "created_at": "Created At",
+    "updated_at": "Updated At",
+    "create_new": "Create New CR",
+    "edit": "Edit CR",
+    "delete": "Delete CR",
+    "view_details": "View Details"
+  },
+  "status": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "under_analysis": "Under Analysis",
+    "pending_info": "Pending Info",
+    "pending_approval": "Pending Approval",
+    "approved": "Approved",
+    "ongoing": "Ongoing",
+    "blocked": "Blocked",
+    "rejected": "Rejected",
+    "closed": "Closed"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical"
+  },
+  "actions": {
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "approve": "Approve",
+    "reject": "Reject",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "no_data": "No data available",
+    "confirm_delete": "Are you sure you want to delete this item?",
+    "success": "Operation successful",
+    "error": "An error occurred"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "Hệ thống Quản lý CR",
+    "title": "Quản lý Yêu cầu Thay đổi"
+  },
+  "nav": {
+    "dashboard": "Tổng quan",
+    "change_requests": "Yêu cầu Thay đổi",
+    "users": "Người dùng",
+    "sprints": "Sprint",
+    "settings": "Cài đặt"
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "remember_me": "Ghi nhớ đăng nhập",
+    "forgot_password": "Quên mật khẩu?",
+    "login_success": "Đăng nhập thành công",
+    "login_failed": "Email hoặc mật khẩu không hợp lệ"
+  },
+  "cr": {
+    "title": "Tiêu đề",
+    "description": "Mô tả",
+    "status": "Trạng thái",
+    "priority": "Độ ưu tiên",
+    "assignee": "Người phụ trách",
+    "customer": "Khách hàng",
+    "created_at": "Ngày tạo",
+    "updated_at": "Ngày cập nhật",
+    "create_new": "Tạo CR mới",
+    "edit": "Sửa CR",
+    "delete": "Xóa CR",
+    "view_details": "Xem chi tiết"
+  },
+  "status": {
+    "draft": "Nháp",
+    "submitted": "Đã gửi",
+    "under_analysis": "Đang phân tích",
+    "pending_info": "Chờ thông tin",
+    "pending_approval": "Chờ phê duyệt",
+    "approved": "Đã phê duyệt",
+    "ongoing": "Đang thực hiện",
+    "blocked": "Bị chặn",
+    "rejected": "Từ chối",
+    "closed": "Đã đóng"
+  },
+  "priority": {
+    "low": "Thấp",
+    "medium": "Trung bình",
+    "high": "Cao",
+    "critical": "Khẩn cấp"
+  },
+  "actions": {
+    "create": "Tạo",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "submit": "Gửi",
+    "approve": "Phê duyệt",
+    "reject": "Từ chối",
+    "close": "Đóng",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "export": "Xuất"
+  },
+  "messages": {
+    "loading": "Đang tải...",
+    "no_data": "Không có dữ liệu",
+    "confirm_delete": "Bạn có chắc chắn muốn xóa mục này?",
+    "success": "Thao tác thành công",
+    "error": "Đã xảy ra lỗi"
+  }
+}

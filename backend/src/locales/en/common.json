@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "CR Management System",
+    "description": "Change Request Management System for SOLASHI"
+  },
+  "auth": {
+    "login_success": "Login successful",
+    "login_failed": "Invalid email or password",
+    "logout_success": "Logout successful",
+    "token_expired": "Token has expired",
+    "token_invalid": "Invalid token",
+    "unauthorized": "Unauthorized access"
+  },
+  "cr": {
+    "created": "Change request created successfully",
+    "updated": "Change request updated successfully",
+    "deleted": "Change request deleted successfully",
+    "not_found": "Change request not found",
+    "status_changed": "Status changed to {{status}}"
+  },
+  "errors": {
+    "internal_server": "Internal server error",
+    "bad_request": "Bad request",
+    "not_found": "Resource not found",
+    "forbidden": "Access forbidden",
+    "validation_failed": "Validation failed"
+  },
+  "validation": {
+    "required": "{{field}} is required",
+    "invalid_email": "Invalid email format",
+    "min_length": "{{field}} must be at least {{min}} characters",
+    "max_length": "{{field}} must not exceed {{max}} characters"
+  }
+}

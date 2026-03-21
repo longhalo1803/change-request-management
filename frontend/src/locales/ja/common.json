@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "CR管理システム",
+    "title": "変更依頼管理"
+  },
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "change_requests": "変更依頼",
+    "users": "ユーザー",
+    "sprints": "スプリント",
+    "settings": "設定"
+  },
+  "auth": {
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "remember_me": "ログイン状態を保持",
+    "forgot_password": "パスワードをお忘れですか？",
+    "login_success": "ログインに成功しました",
+    "login_failed": "メールアドレスまたはパスワードが無効です"
+  },
+  "cr": {
+    "title": "タイトル",
+    "description": "説明",
+    "status": "ステータス",
+    "priority": "優先度",
+    "assignee": "担当者",
+    "customer": "顧客",
+    "created_at": "作成日時",
+    "updated_at": "更新日時",
+    "create_new": "新規CR作成",
+    "edit": "CR編集",
+    "delete": "CR削除",
+    "view_details": "詳細を見る"
+  },
+  "status": {
+    "draft": "下書き",
+    "submitted": "提出済み",
+    "under_analysis": "分析中",
+    "pending_info": "情報待ち",
+    "pending_approval": "承認待ち",
+    "approved": "承認済み",
+    "ongoing": "進行中",
+    "blocked": "ブロック",
+    "rejected": "却下",
+    "closed": "完了"
+  },
+  "priority": {
+    "low": "低",
+    "medium": "中",
+    "high": "高",
+    "critical": "緊急"
+  },
+  "actions": {
+    "create": "作成",
+    "edit": "編集",
+    "delete": "削除",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "submit": "提出",
+    "approve": "承認",
+    "reject": "却下",
+    "close": "閉じる",
+    "search": "検索",
+    "filter": "フィルター",
+    "export": "エクスポート"
+  },
+  "messages": {
+    "loading": "読み込み中...",
+    "no_data": "データがありません",
+    "confirm_delete": "このアイテムを削除してもよろしいですか？",
+    "success": "操作が成功しました",
+    "error": "エラーが発生しました"
+  }
+}

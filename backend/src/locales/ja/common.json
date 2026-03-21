@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "CR管理システム",
+    "description": "SOLASHI向け変更依頼管理システム"
+  },
+  "auth": {
+    "login_success": "ログインに成功しました",
+    "login_failed": "メールアドレスまたはパスワードが無効です",
+    "logout_success": "ログアウトしました",
+    "token_expired": "トークンの有効期限が切れています",
+    "token_invalid": "無効なトークンです",
+    "unauthorized": "認証されていません"
+  },
+  "cr": {
+    "created": "変更依頼が正常に作成されました",
+    "updated": "変更依頼が正常に更新されました",
+    "deleted": "変更依頼が正常に削除されました",
+    "not_found": "変更依頼が見つかりません",
+    "status_changed": "ステータスが{{status}}に変更されました"
+  },
+  "errors": {
+    "internal_server": "内部サーバーエラー",
+    "bad_request": "不正なリクエスト",
+    "not_found": "リソースが見つかりません",
+    "forbidden": "アクセスが禁止されています",
+    "validation_failed": "検証に失敗しました"
+  },
+  "validation": {
+    "required": "{{field}}は必須です",
+    "invalid_email": "無効なメール形式です",
+    "min_length": "{{field}}は{{min}}文字以上である必要があります",
+    "max_length": "{{field}}は{{max}}文字を超えてはいけません"
+  }
+}
