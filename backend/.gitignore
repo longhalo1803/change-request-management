@@ -37,3 +37,7 @@ coverage/
 # Temporary files
 *.tmp
 *.temp
+
+# Docker
+.env.docker.local
+docker-compose.override.yml

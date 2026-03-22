@@ -36,6 +36,31 @@ src/
 
 ## Setup
 
+### Option 1: Docker (Recommended for Production)
+
+```bash
+# Quick start
+cd backend
+./docker-start.bat  # Windows
+# or
+./docker-start.sh   # Linux/Mac
+
+# Manual setup
+cp .env.docker .env
+# Edit .env and change passwords/secrets
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+See [DOCKER.md](./DOCKER.md) for detailed Docker documentation.
+
+### Option 2: Local Development
+
 1. Install dependencies:
 ```bash
 npm install
