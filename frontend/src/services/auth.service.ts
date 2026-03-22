@@ -1,7 +1,7 @@
-import axiosInstance from '@/lib/axios';
-import type { ApiResponse } from '@/lib/types/api.types';
+// import axiosInstance from '@/lib/axios';
+// import type { ApiResponse } from '@/lib/types/api.types';
+import { UserRole } from '@/lib/types/cr.types';
 import type { User } from '@/lib/types/cr.types';
-
 /**
  * Auth Service
  * 
@@ -31,39 +31,59 @@ export interface RefreshTokenResponse {
 
 export const authService = {
   /**
-   * Login with email and password
+   * Login with email and password (MOCKED FOR TESTING)
    */
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const response = await axiosInstance.post<ApiResponse<LoginResponse>>(
-      '/auth/login',
-      credentials
-    );
-    return response.data.data;
+    // Mock network delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Mock response to bypass database for now
+    return {
+      user: {
+        id: 'mock-admin-id',
+        email: credentials.email || 'admin@solashi.com',
+        fullName: 'Admin Terminal',
+        role: UserRole.ADMIN,
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      tokens: {
+        accessToken: 'mock-access-token-12345',
+        refreshToken: 'mock-refresh-token-67890'
+      }
+    };
   },
 
   /**
-   * Refresh access token
+   * Refresh access token (MOCKED)
    */
-  async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
-    const response = await axiosInstance.post<ApiResponse<RefreshTokenResponse>>(
-      '/auth/refresh',
-      { refreshToken }
-    );
-    return response.data.data;
+  async refreshToken(_refreshToken: string): Promise<RefreshTokenResponse> {
+    return {
+      accessToken: 'mock-new-access-token'
+    };
   },
 
   /**
-   * Logout (revoke refresh token)
+   * Logout (MOCKED)
    */
-  async logout(refreshToken: string): Promise<void> {
-    await axiosInstance.post('/auth/logout', { refreshToken });
+  async logout(_refreshToken: string): Promise<void> {
+    // Just a mock response
+    await new Promise(resolve => setTimeout(resolve, 500));
   },
 
   /**
-   * Get current user info
+   * Get current user info (MOCKED)
    */
   async getCurrentUser(): Promise<User> {
-    const response = await axiosInstance.get<ApiResponse<User>>('/auth/me');
-    return response.data.data;
+    return {
+      id: 'mock-admin-id',
+      email: 'admin@solashi.com',
+      fullName: 'Admin Terminal',
+      role: UserRole.ADMIN,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
   }
 };

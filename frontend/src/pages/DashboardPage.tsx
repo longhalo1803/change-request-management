@@ -1,5 +1,7 @@
-const DashboardPage = () => {
-  return <div>Dashboard Page - TODO</div>;
-};
 
+const DashboardPage = () => {
+  return (
+    <div>Dash board To Do</div>
+  );
+};
 export default DashboardPage;
