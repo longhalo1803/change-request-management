@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "message": "User retrieved",
+  "data": {
+    "id": "4f6d0e1a-4f99-4a89-b6bb-2a8d24e7db11",
+    "email": "customer@example.com",
+    "fullName": "Test Customer",
+    "role": "customer",
+    "isActive": true,
+    "createdAt": "2026-03-20T08:00:00.000Z",
+    "updatedAt": "2026-03-23T08:00:00.000Z"
+  }
+}

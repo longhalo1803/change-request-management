@@ -1,0 +1,47 @@
+{
+  "page_title": "Dự án SOLASHI Connect",
+  "page_subtitle": "Chào mừng quay trở lại. Đây là tổng quan yêu cầu thay đổi mới nhất.",
+  "create_cr": "Tạo CR Mới",
+  "stats": {
+    "completed": "CR hoàn thành",
+    "completed_subtitle": "Tất cả đã xong",
+    "updated": "đã cập nhật",
+    "updated_subtitle": "Trong 7 ngày qua",
+    "created": "đã tạo",
+    "created_subtitle": "Trong 7 ngày qua",
+    "due_soon": "sắp đến hạn",
+    "due_soon_subtitle": "Hạn chót 7 ngày tới"
+  },
+  "status_overview": {
+    "title": "Tổng quan trạng thái",
+    "active_sprint": "Sprint đang hoạt động: {{sprint}}",
+    "total_crs": "TỔNG SỐ CR",
+    "view_full_breakdown": "Xem chi tiết đầy đủ",
+    "status_colors": "MÀU TRẠNG THÁI:"
+  },
+  "recent_activity": {
+    "title": "Hoạt động gần đây",
+    "mark_all_read": "Đánh dấu đã đọc tất cả",
+    "today": "HÔM NAY",
+    "yesterday": "HÔM QUA",
+    "load_more": "Tải thêm hoạt động",
+    "created": "đã tạo",
+    "commented_on": "đã bình luận về",
+    "updated_status": "đã cập nhật trạng thái",
+    "time_ago": {
+      "just_now": "vừa xong",
+      "minutes_ago": "{{count}} phút trước",
+      "hours_ago": "{{count}} giờ trước",
+      "days_ago": "{{count}} ngày trước"
+    }
+  },
+  "sidebar": {
+    "app_name": "Solashi Connect",
+    "app_subtitle": "CỔNG DOANH NGHIỆP",
+    "dashboard": "Tổng quan",
+    "cr_management": "Quản lý CR",
+    "quotation": "Báo giá",
+    "settings": "Cài đặt",
+    "help": "Trợ giúp"
+  }
+}

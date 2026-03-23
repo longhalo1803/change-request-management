@@ -1,0 +1,101 @@
+{
+  "stats": {
+    "completed": 8,
+    "updated": 2,
+    "created": 1,
+    "dueSoon": 2
+  },
+  "statusData": [
+    {
+      "status": "draft",
+      "count": 2,
+      "color": "#d9d9d9",
+      "label": "DRAFT"
+    },
+    {
+      "status": "in_discussion",
+      "count": 3,
+      "color": "#1890ff",
+      "label": "IN DISCUSSION"
+    },
+    {
+      "status": "approved",
+      "count": 4,
+      "color": "#52c41a",
+      "label": "APPROVED"
+    },
+    {
+      "status": "rejected",
+      "count": 1,
+      "color": "#ff4d4f",
+      "label": "REJECTED / BLOCKED"
+    },
+    {
+      "status": "ongoing",
+      "count": 2,
+      "color": "#13c2c2",
+      "label": "ONGOING"
+    },
+    {
+      "status": "closed",
+      "count": 1,
+      "color": "#722ed1",
+      "label": "CLOSED"
+    }
+  ],
+  "summary": {
+    "activeSprint": "SPRINT-26",
+    "totalCrs": 13
+  },
+  "recentActivities": [
+    {
+      "date": "today",
+      "label": "Today",
+      "activities": [
+        {
+          "id": "a1",
+          "type": "created",
+          "user": {
+            "name": "Test Customer",
+            "avatar": ""
+          },
+          "crId": "CR-101",
+          "crTitle": "Checkout UX improvement",
+          "timestamp": "2026-03-23T07:45:00.000Z",
+          "timeAgo": "1h ago"
+        }
+      ]
+    },
+    {
+      "date": "yesterday",
+      "label": "Yesterday",
+      "activities": [
+        {
+          "id": "a2",
+          "type": "commented",
+          "user": {
+            "name": "Test Customer",
+            "avatar": ""
+          },
+          "crId": "CR-098",
+          "crTitle": "Order export customization",
+          "timestamp": "2026-03-22T13:30:00.000Z",
+          "timeAgo": "1d ago"
+        },
+        {
+          "id": "a3",
+          "type": "status_change",
+          "user": {
+            "name": "BrSE Manager",
+            "avatar": ""
+          },
+          "crId": "CR-098",
+          "crTitle": "Order export customization",
+          "status": "Approved",
+          "timestamp": "2026-03-22T11:10:00.000Z",
+          "timeAgo": "1d ago"
+        }
+      ]
+    }
+  ]
+}

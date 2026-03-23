@@ -1,0 +1,47 @@
+{
+  "page_title": "SOLASHIコネクトプロジェクト",
+  "page_subtitle": "お帰りなさい。最新の変更依頼の概要です。",
+  "create_cr": "新規CR作成",
+  "stats": {
+    "completed": "CR完了",
+    "completed_subtitle": "すべて完了",
+    "updated": "更新済み",
+    "updated_subtitle": "過去7日間",
+    "created": "作成済み",
+    "created_subtitle": "過去7日間",
+    "due_soon": "期限間近",
+    "due_soon_subtitle": "今後7日間の期限"
+  },
+  "status_overview": {
+    "title": "ステータス概要",
+    "active_sprint": "アクティブスプリント: {{sprint}}",
+    "total_crs": "合計CR数",
+    "view_full_breakdown": "詳細を表示",
+    "status_colors": "ステータスカラー:"
+  },
+  "recent_activity": {
+    "title": "最近のアクティビティ",
+    "mark_all_read": "すべて既読にする",
+    "today": "今日",
+    "yesterday": "昨日",
+    "load_more": "もっと読み込む",
+    "created": "作成しました",
+    "commented_on": "コメントしました",
+    "updated_status": "ステータスを更新しました",
+    "time_ago": {
+      "just_now": "たった今",
+      "minutes_ago": "{{count}}分前",
+      "hours_ago": "{{count}}時間前",
+      "days_ago": "{{count}}日前"
+    }
+  },
+  "sidebar": {
+    "app_name": "Solashiコネクト",
+    "app_subtitle": "エンタープライズポータル",
+    "dashboard": "ダッシュボード",
+    "cr_management": "CR管理",
+    "quotation": "見積もり",
+    "settings": "設定",
+    "help": "ヘルプ"
+  }
+}

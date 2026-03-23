@@ -2,14 +2,16 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { ProtectedRoute } from './ProtectedRoute';
+import { MainLayout } from '@/layouts/MainLayout';
 import { UserRole } from '@/lib/types/cr.types';
 
 // Lazy load pages
-const LoginPage = lazy(() => import('@/pages/LoginPage'));
-const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
-const CrListPage = lazy(() => import('@/pages/CrListPage'));
-const CrDetailPage = lazy(() => import('@/pages/CrDetailPage'));
-const CrCreatePage = lazy(() => import('@/pages/CrCreatePage'));
+const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
+const DashboardPage = lazy(() => import('@/pages/customer/CustomerDashboardPage'));
+const CrListPage = lazy(() => import('@/pages/customer/CrListPage'));
+const CrDetailPage = lazy(() => import('@/pages/customer/CrDetailPage'));
+const CrCreatePage = lazy(() => import('@/pages/customer/CrCreatePage'));
+const CrQuotationPage = lazy(() => import('@/pages/customer/CrQuotationPage'));
 
 // Loading component
 const PageLoader = () => (
@@ -30,13 +32,16 @@ const AppRouter = () => {
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Protected routes */}
+        {/* Protected routes with MainLayout */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/change-requests" element={<CrListPage />} />
-          <Route path="/change-requests/new" element={<CrCreatePage />} />
-          <Route path="/change-requests/:id" element={<CrDetailPage />} />
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/change-requests" element={<CrListPage />} />
+            <Route path="/quote" element={<CrQuotationPage />} />
+            <Route path="/change-requests/create" element={<CrCreatePage />} />
+            <Route path="/change-requests/:id" element={<CrDetailPage />} />
+          </Route>
         </Route>
 
         {/* Admin only routes */}
