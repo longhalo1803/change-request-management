@@ -4,17 +4,6 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from '@/hooks/useTranslation';
 
-/**
- * Login Layout Component
- * 
- * Split-screen layout for login page
- * Left: Branding and description
- * Right: Login form
- * 
- * SOLID Principles:
- * - Single Responsibility: Only handles login page layout
- * - Open/Closed: Easy to customize branding without changing structure
- */
 
 const { Title, Text, Paragraph } = Typography;
 

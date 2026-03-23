@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "message": "Token refreshed",
+  "data": {
+    "accessToken": "fake-access-token-customer-refreshed"
+  }
+}

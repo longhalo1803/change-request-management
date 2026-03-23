@@ -4,16 +4,6 @@ import { useLogin } from '@/hooks/useLogin';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { LoginCredentials } from '@/services/auth.service';
 
-/**
- * Login Form Component
- * 
- * Handles user login with email and password
- * 
- * SOLID Principles:
- * - Single Responsibility: Only handles login form UI and submission
- * - Dependency Inversion: Depends on useLogin hook abstraction
- */
-
 export const LoginForm = () => {
   const { t } = useTranslation('auth');
   const [form] = Form.useForm();
