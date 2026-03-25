@@ -17,7 +17,15 @@
     "active_sprint": "アクティブスプリント: {{sprint}}",
     "total_crs": "合計CR数",
     "view_full_breakdown": "詳細を表示",
-    "status_colors": "ステータスカラー:"
+    "status_colors": "ステータスカラー:",
+    "statuses": {
+      "draft": "下書き",
+      "in_discussion": "議論中",
+      "approved": "承認済み",
+      "rejected": "却下 / ブロック",
+      "ongoing": "進行中",
+      "closed": "完了"
+    }
   },
   "recent_activity": {
     "title": "最近のアクティビティ",

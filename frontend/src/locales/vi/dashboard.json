@@ -17,7 +17,15 @@
     "active_sprint": "Sprint đang hoạt động: {{sprint}}",
     "total_crs": "TỔNG SỐ CR",
     "view_full_breakdown": "Xem chi tiết đầy đủ",
-    "status_colors": "MÀU TRẠNG THÁI:"
+    "status_colors": "MÀU TRẠNG THÁI:",
+    "statuses": {
+      "draft": "BẢN NHÁP",
+      "in_discussion": "ĐANG THẢO LUẬN",
+      "approved": "ĐÃ PHÊ DUYỆT",
+      "rejected": "BỊ TỪ CHỐI / CHẶN",
+      "ongoing": "ĐANG THỰC HIỆN",
+      "closed": "ĐÃ ĐÓNG"
+    }
   },
   "recent_activity": {
     "title": "Hoạt động gần đây",

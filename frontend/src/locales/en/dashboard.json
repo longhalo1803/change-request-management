@@ -17,7 +17,15 @@
     "active_sprint": "Active Sprint: {{sprint}}",
     "total_crs": "TOTAL CRS",
     "view_full_breakdown": "View Full Breakdown",
-    "status_colors": "STATUS COLORS:"
+    "status_colors": "STATUS COLORS:",
+    "statuses": {
+      "draft": "DRAFT",
+      "in_discussion": "IN DISCUSSION",
+      "approved": "APPROVED",
+      "rejected": "REJECTED / BLOCKED",
+      "ongoing": "ONGOING",
+      "closed": "CLOSED"
+    }
   },
   "recent_activity": {
     "title": "Recent activity",

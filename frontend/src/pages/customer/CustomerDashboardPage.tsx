@@ -35,12 +35,12 @@ export const CustomerDashboardPage: React.FC = () => {
   };
 
   const statusData = [
-    { status: 'draft', count: 2, color: '#d9d9d9', label: 'DRAFT' },
-    { status: 'in_discussion', count: 5, color: '#1890ff', label: 'IN DISCUSSION' },
-    { status: 'approved', count: 4, color: '#52c41a', label: 'APPROVED' },
-    { status: 'rejected', count: 2, color: '#ff4d4f', label: 'REJECTED / BLOCKED' },
-    { status: 'ongoing', count: 5, color: '#13c2c2', label: 'ONGOING' },
-    { status: 'closed', count: 2, color: '#722ed1', label: 'CLOSED' }
+    { status: 'draft', count: 2, color: '#d9d9d9', label: t('status_overview.statuses.draft') },
+    { status: 'in_discussion', count: 5, color: '#1890ff', label: t('status_overview.statuses.in_discussion') },
+    { status: 'approved', count: 4, color: '#52c41a', label: t('status_overview.statuses.approved') },
+    { status: 'rejected', count: 2, color: '#ff4d4f', label: t('status_overview.statuses.rejected') },
+    { status: 'ongoing', count: 5, color: '#13c2c2', label: t('status_overview.statuses.ongoing') },
+    { status: 'closed', count: 2, color: '#722ed1', label: t('status_overview.statuses.closed') }
   ];
 
   const recentActivities = [
