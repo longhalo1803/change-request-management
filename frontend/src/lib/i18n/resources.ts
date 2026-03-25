@@ -14,19 +14,25 @@ import viCommon from '@/locales/vi/common.json';
 import enAuth from '@/locales/en/auth.json';
 import jaAuth from '@/locales/ja/auth.json';
 import viAuth from '@/locales/vi/auth.json';
+import enDashboard from '@/locales/en/dashboard.json';
+import jaDashboard from '@/locales/ja/dashboard.json';
+import viDashboard from '@/locales/vi/dashboard.json';
 
 export const resources = {
   en: {
     common: enCommon,
-    auth: enAuth
+    auth: enAuth,
+    dashboard: enDashboard
   },
   ja: {
     common: jaCommon,
-    auth: jaAuth
+    auth: jaAuth,
+    dashboard: jaDashboard
   },
   vi: {
     common: viCommon,
-    auth: viAuth
+    auth: viAuth,
+    dashboard: viDashboard
   }
 } as const;
 

@@ -1,0 +1,55 @@
+{
+  "page_title": "SOLASHI Connect Project",
+  "page_subtitle": "Welcome back. Here's your latest change request overview.",
+  "create_cr": "Create New CR",
+  "stats": {
+    "completed": "CR completed",
+    "completed_subtitle": "All done",
+    "updated": "updated",
+    "updated_subtitle": "In the last 7 days",
+    "created": "created",
+    "created_subtitle": "In the last 7 days",
+    "due_soon": "due soon",
+    "due_soon_subtitle": "Next 7 days deadline"
+  },
+  "status_overview": {
+    "title": "Status overview",
+    "active_sprint": "Active Sprint: {{sprint}}",
+    "total_crs": "TOTAL CRS",
+    "view_full_breakdown": "View Full Breakdown",
+    "status_colors": "STATUS COLORS:",
+    "statuses": {
+      "draft": "DRAFT",
+      "in_discussion": "IN DISCUSSION",
+      "approved": "APPROVED",
+      "rejected": "REJECTED / BLOCKED",
+      "ongoing": "ONGOING",
+      "closed": "CLOSED"
+    }
+  },
+  "recent_activity": {
+    "title": "Recent activity",
+    "mark_all_read": "Mark all read",
+    "today": "TODAY",
+    "yesterday": "YESTERDAY",
+    "load_more": "Load more activity",
+    "created": "created",
+    "commented_on": "commented on",
+    "updated_status": "updated status",
+    "time_ago": {
+      "just_now": "just now",
+      "minutes_ago": "{{count}}m ago",
+      "hours_ago": "{{count}}h ago",
+      "days_ago": "{{count}}d ago"
+    }
+  },
+  "sidebar": {
+    "app_name": "Solashi Connect",
+    "app_subtitle": "ENTERPRISE PORTAL",
+    "dashboard": "Dashboard",
+    "cr_management": "CR Management",
+    "quotation": "Quotation",
+    "settings": "Settings",
+    "help": "Help"
+  }
+}
