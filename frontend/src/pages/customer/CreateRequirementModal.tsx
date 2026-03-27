@@ -1,7 +1,7 @@
 import { ChangeEvent, DragEvent, FormEvent, useMemo, useState } from 'react';
-import './CrCreatePage.css';
+import './CreateRequirementModal.css';
 
-interface CreateCrForm {
+export interface CreateCrForm {
   projectSpace: string;
   issueType: string;
   parentTask: string;
@@ -21,6 +21,12 @@ interface FormErrors {
   priority?: string;
 }
 
+interface CreateRequirementModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit?: (formData: CreateCrForm) => void;
+}
+
 const INITIAL_FORM: CreateCrForm = {
   projectSpace: 'Project Alpha - CMS',
   issueType: 'Change Request',
@@ -34,13 +40,19 @@ const INITIAL_FORM: CreateCrForm = {
   attachments: [],
 };
 
-export default function CrCreatePage() {
+export default function CreateRequirementModal({
+                                                 open,
+                                                 onClose,
+                                                 onSubmit,
+                                               }: CreateRequirementModalProps) {
   const [form, setForm] = useState<CreateCrForm>(INITIAL_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isDragging, setIsDragging] = useState(false);
   const [draftStatus, setDraftStatus] = useState('Draft will be saved automatically');
 
   const summaryCount = useMemo(() => form.summary.length, [form.summary]);
+
+  if (!open) return null;
 
   const simulateAutosave = () => {
     setDraftStatus('Saving...');
@@ -110,6 +122,26 @@ export default function CrCreatePage() {
     return Object.keys(nextErrors).length === 0;
   };
 
+  const resetForm = () => {
+    setForm(INITIAL_FORM);
+    setErrors({});
+    setDraftStatus('Draft will be saved automatically');
+    setIsDragging(false);
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    onClose();
+  };
+
+  const handleOverlayClick = () => {
+    onClose();
+  };
+
+  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
@@ -117,53 +149,55 @@ export default function CrCreatePage() {
       return;
     }
 
-    const attachmentNames =
-        form.attachments.length > 0
-            ? form.attachments.map((file) => file.name).join(', ')
-            : 'No attachments';
+    if (onSubmit) {
+      onSubmit(form);
+    } else {
+      const attachmentNames =
+          form.attachments.length > 0
+              ? form.attachments.map((file) => file.name).join(', ')
+              : 'No attachments';
 
-    alert(
-        [
-          'Create Requirement submitted successfully.',
-          `Project / Space: ${form.projectSpace}`,
-          `Issue Type: ${form.issueType}`,
-          `Parent Task: ${form.parentTask}`,
-          `Status: ${form.status}`,
-          `Summary: ${form.summary}`,
-          `Description: ${form.description || 'Empty'}`,
-          `Priority: ${form.priority}`,
-          `Start Date: ${form.startDate || 'Not set'}`,
-          `Due Date: ${form.dueDate || 'Not set'}`,
-          `Attachments: ${attachmentNames}`,
-        ].join('\n')
-    );
-  };
+      alert(
+          [
+            'Create Requirement submitted successfully.',
+            `Project / Space: ${form.projectSpace}`,
+            `Issue Type: ${form.issueType}`,
+            `Parent Task: ${form.parentTask}`,
+            `Status: ${form.status}`,
+            `Summary: ${form.summary}`,
+            `Description: ${form.description || 'Empty'}`,
+            `Priority: ${form.priority}`,
+            `Start Date: ${form.startDate || 'Not set'}`,
+            `Due Date: ${form.dueDate || 'Not set'}`,
+            `Attachments: ${attachmentNames}`,
+          ].join('\n')
+      );
+    }
 
-  const handleCancel = () => {
-    setForm(INITIAL_FORM);
-    setErrors({});
+    resetForm();
+    onClose();
   };
 
   return (
-      <div className="cr-create-page">
-        <div className="cr-create-modal">
-          <div className="cr-create-header">
-            <div className="create-title-wrap">
-              <div className="create-icon-box">✎</div>
+      <div className="create-cr-overlay" onClick={handleOverlayClick}>
+        <div className="create-cr-modal" onClick={handleModalClick}>
+          <div className="create-cr-header">
+            <div className="create-cr-title-wrap">
+              <div className="create-cr-icon-box">✎</div>
               <div>
-                <h1>Create Requirement</h1>
+                <h2>Create Requirement</h2>
                 <p>SOLASHI Connect • Project Alpha</p>
               </div>
             </div>
 
-            <button className="close-btn" type="button" aria-label="Close">
+            <button className="create-cr-close-btn" type="button" onClick={onClose} aria-label="Close">
               ✕
             </button>
           </div>
 
-          <form className="cr-create-form" onSubmit={handleSubmit}>
-            <div className="form-grid form-grid-four">
-              <div className="form-group">
+          <form className="create-cr-form" onSubmit={handleSubmit}>
+            <div className="create-form-grid create-form-grid-four">
+              <div className="create-form-group">
                 <label>
                   Project / Space <span>*</span>
                 </label>
@@ -172,10 +206,10 @@ export default function CrCreatePage() {
                   <option>Project Beta - Mobile</option>
                   <option>Project Gamma - Portal</option>
                 </select>
-                {errors.projectSpace && <small className="error-text">{errors.projectSpace}</small>}
+                {errors.projectSpace && <small className="create-error-text">{errors.projectSpace}</small>}
               </div>
 
-              <div className="form-group">
+              <div className="create-form-group">
                 <label>
                   Issue Type <span>*</span>
                 </label>
@@ -184,10 +218,10 @@ export default function CrCreatePage() {
                   <option>Improvement</option>
                   <option>Task</option>
                 </select>
-                {errors.issueType && <small className="error-text">{errors.issueType}</small>}
+                {errors.issueType && <small className="create-error-text">{errors.issueType}</small>}
               </div>
 
-              <div className="form-group">
+              <div className="create-form-group">
                 <label>Parent Task</label>
                 <input
                     type="text"
@@ -197,19 +231,19 @@ export default function CrCreatePage() {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="create-form-group">
                 <label>Status</label>
                 <input type="text" value={form.status} readOnly />
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group full-width">
-                <div className="label-row">
+            <div className="create-form-row">
+              <div className="create-form-group full-width">
+                <div className="create-label-row">
                   <label>
                     Summary <span>*</span>
                   </label>
-                  <span className="char-count">{summaryCount} / 255</span>
+                  <span className="create-char-count">{summaryCount} / 255</span>
                 </div>
 
                 <input
@@ -219,16 +253,16 @@ export default function CrCreatePage() {
                     placeholder="e.g., Update login flow for enterprise users"
                     maxLength={255}
                 />
-                {errors.summary && <small className="error-text">{errors.summary}</small>}
+                {errors.summary && <small className="create-error-text">{errors.summary}</small>}
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group full-width">
+            <div className="create-form-row">
+              <div className="create-form-group full-width">
                 <label>Description</label>
 
-                <div className="editor-box">
-                  <div className="editor-toolbar">
+                <div className="create-editor-box">
+                  <div className="create-editor-toolbar">
                     <button type="button">B</button>
                     <button type="button">I</button>
                     <button type="button">• List</button>
@@ -247,8 +281,8 @@ export default function CrCreatePage() {
               </div>
             </div>
 
-            <div className="form-grid form-grid-three">
-              <div className="form-group">
+            <div className="create-form-grid create-form-grid-three">
+              <div className="create-form-group">
                 <label>
                   Priority <span>*</span>
                 </label>
@@ -258,43 +292,43 @@ export default function CrCreatePage() {
                   <option>High</option>
                   <option>Critical</option>
                 </select>
-                {errors.priority && <small className="error-text">{errors.priority}</small>}
+                {errors.priority && <small className="create-error-text">{errors.priority}</small>}
               </div>
 
-              <div className="form-group">
+              <div className="create-form-group">
                 <label>Start Date</label>
                 <input type="date" value={form.startDate} onChange={handleInputChange('startDate')} />
-                <small className="hint-text">Defaults to creation date</small>
+                <small className="create-hint-text">Defaults to creation date</small>
               </div>
 
-              <div className="form-group">
+              <div className="create-form-group">
                 <label>Due Date</label>
                 <input type="date" value={form.dueDate} onChange={handleInputChange('dueDate')} />
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group full-width">
+            <div className="create-form-row">
+              <div className="create-form-group full-width">
                 <label>Attachments</label>
 
                 <label
-                    className={`upload-box ${isDragging ? 'dragging' : ''}`}
+                    className={`create-upload-box ${isDragging ? 'dragging' : ''}`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                 >
                   <input type="file" multiple onChange={handleFileChange} />
-                  <div className="upload-icon">☁</div>
-                  <div className="upload-title">
+                  <div className="create-upload-icon">☁</div>
+                  <div className="create-upload-title">
                     Drop files here or <span>browse</span>
                   </div>
-                  <div className="upload-subtitle">PDF, PNG, JPG, DOCX up to 10MB each</div>
+                  <div className="create-upload-subtitle">PDF, PNG, JPG, DOCX up to 10MB each</div>
                 </label>
 
                 {form.attachments.length > 0 && (
-                    <div className="file-list">
+                    <div className="create-file-list">
                       {form.attachments.map((file) => (
-                          <div key={file.name} className="file-chip">
+                          <div key={file.name} className="create-file-chip">
                             {file.name}
                           </div>
                       ))}
@@ -303,17 +337,17 @@ export default function CrCreatePage() {
               </div>
             </div>
 
-            <div className="cr-create-footer">
-              <div className="draft-status">
-                <span className="draft-dot" />
+            <div className="create-cr-footer">
+              <div className="create-draft-status">
+                <span className="create-draft-dot" />
                 <span>{draftStatus}</span>
               </div>
 
-              <div className="footer-actions">
-                <button className="cancel-btn" type="button" onClick={handleCancel}>
+              <div className="create-footer-actions">
+                <button className="create-cancel-btn" type="button" onClick={handleCancel}>
                   Cancel
                 </button>
-                <button className="submit-btn" type="submit">
+                <button className="create-submit-btn" type="submit">
                   Create Requirement →
                 </button>
               </div>

@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './cr-list-page.css';
+import CreateRequirementModal, {
+  CreateCrForm,
+} from '@/pages/customer/CreateRequirementModal';
+import RequirementDetailModal, {
+  RequirementDetailData,
+} from '@/pages/customer/RequirementDetailModal';
 
 type Priority = 'High' | 'Medium' | 'Low';
 type Status = 'Draft' | 'Submitted' | 'In Discussion' | 'Approved';
@@ -58,10 +63,13 @@ const statusOptions: Array<Status | 'All'> = [
 ];
 
 export default function CrListPage() {
-  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<Status | 'All'>('All');
+
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [selectedCr, setSelectedCr] = useState<RequirementDetailData | null>(null);
 
   const filteredData = useMemo(() => {
     return crData.filter((item) => {
@@ -76,12 +84,44 @@ export default function CrListPage() {
     });
   }, [search, selectedStatus]);
 
-  const handleView = (id: string) => {
-    navigate(`/change-requests/${id.replace('#', '').toLowerCase()}`);
+  const handleCreate = () => {
+    setOpenCreateModal(true);
   };
 
-  const handleCreate = () => {
-    navigate('/change-requests/create');
+  const handleCreateSubmit = (formData: CreateCrForm) => {
+    console.log('Create CR form data:', formData);
+    alert('Create Requirement submitted successfully');
+  };
+
+  const handleView = (item: CrItem) => {
+    setSelectedCr({
+      id: item.id.replace('#', ''),
+      title: item.title,
+      status: item.status.toUpperCase(),
+      priority: item.priority.toUpperCase(),
+      sprint: 'Q4_SPRINT_02',
+      startDate: 'Aug 24, 2024',
+      dueDate: 'Sep 15, 2024',
+      parentTask: 'None',
+      reporter: 'Sarah Connor',
+      description: [
+        'This change request proposes integrating Stripe, PayPal, and Apple Pay into the mobile checkout experience so customers can complete purchases using their preferred payment channel with minimal friction.',
+        'The implementation should ensure a unified payment experience across supported devices while maintaining strong transaction security, clean callback handling, and compatibility with the current backend order lifecycle.',
+        'Error states, retry flows, and transaction logging should be aligned with the existing audit and reporting model so the customer support team can investigate payment issues efficiently.',
+      ],
+    });
+
+    setOpenDetailModal(true);
+  };
+
+  const handleApprove = () => {
+    if (!selectedCr) return;
+    alert(`Approved requirement ${selectedCr.id}`);
+  };
+
+  const handleReject = () => {
+    if (!selectedCr) return;
+    alert(`Rejected requirement ${selectedCr.id}`);
   };
 
   return (
@@ -163,7 +203,7 @@ export default function CrListPage() {
                     <button
                         className="link-btn"
                         type="button"
-                        onClick={() => handleView(item.id)}
+                        onClick={() => handleView(item)}
                     >
                       {item.id}
                     </button>
@@ -227,7 +267,7 @@ export default function CrListPage() {
                           <button
                               className="icon-only-btn"
                               type="button"
-                              onClick={() => handleView(item.id)}
+                              onClick={() => handleView(item)}
                           >
                             👁
                           </button>
@@ -252,6 +292,20 @@ export default function CrListPage() {
             </div>
           </div>
         </section>
+
+        <CreateRequirementModal
+            open={openCreateModal}
+            onClose={() => setOpenCreateModal(false)}
+            onSubmit={handleCreateSubmit}
+        />
+
+        <RequirementDetailModal
+            open={openDetailModal}
+            onClose={() => setOpenDetailModal(false)}
+            data={selectedCr}
+            onApprove={handleApprove}
+            onReject={handleReject}
+        />
       </div>
   );
 }
