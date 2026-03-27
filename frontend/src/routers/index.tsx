@@ -9,8 +9,9 @@ import { UserRole } from '@/lib/types/cr.types';
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
 const DashboardPage = lazy(() => import('@/pages/customer/CustomerDashboardPage'));
 const CrListPage = lazy(() => import('@/pages/customer/CrListPage'));
-const CrDetailPage = lazy(() => import('@/pages/customer/CrDetailPage'));
 const CrCreatePage = lazy(() => import('@/pages/customer/CrCreatePage'));
+const CrDetailPage = lazy(() => import('@/pages/customer/CrDetailPage'));
+
 const CrQuotationPage = lazy(() => import('@/pages/customer/CrQuotationPage'));
 
 // Loading component
