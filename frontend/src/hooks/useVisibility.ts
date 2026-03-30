@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { UserRole, CrStatus } from '@/lib/types/cr.types';
+import { UserRole, CrStatus } from '@/lib/types';
 import { CR_STATUS_CONFIG } from '@/lib/constants/cr-status';
 
 export const useVisibility = (userRole?: UserRole) => {
@@ -8,21 +8,21 @@ export const useVisibility = (userRole?: UserRole) => {
       return {
         canSeeQuotation: false,
         canSeeInternalComment: false,
-        canSeeBrseComment: false,
+        canSeePmComment: false,
         canTriggerAction: () => false,
         canManageUsers: false
       };
     }
 
-    const canSeeQuotation = userRole === UserRole.BRSE || userRole === UserRole.ADMIN;
+    const canSeeQuotation = userRole === UserRole.PM || userRole === UserRole.ADMIN;
     
     const canSeeInternalComment = 
-      userRole === UserRole.BRSE || 
+      userRole === UserRole.PM || 
       userRole === UserRole.DEVELOPER || 
       userRole === UserRole.QA || 
       userRole === UserRole.ADMIN;
     
-    const canSeeBrseComment = userRole === UserRole.BRSE || userRole === UserRole.ADMIN;
+    const canSeePmComment = userRole === UserRole.PM || userRole === UserRole.ADMIN;
     
     const canManageUsers = userRole === UserRole.ADMIN;
 
@@ -37,9 +37,10 @@ export const useVisibility = (userRole?: UserRole) => {
     return {
       canSeeQuotation,
       canSeeInternalComment,
-      canSeeBrseComment,
+      canSeePmComment,
       canTriggerAction,
       canManageUsers
     };
   }, [userRole]);
 };
+

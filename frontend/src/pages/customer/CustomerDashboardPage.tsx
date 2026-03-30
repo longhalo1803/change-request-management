@@ -1,13 +1,4 @@
-/**
- * DashboardPage Component
- * 
- * Main dashboard page with stats, status overview, and recent activity
- * 
- * SOLID Principles:
- * - Single Responsibility: Composes dashboard components
- * - Dependency Inversion: Depends on hooks for data
- */
-
+import { useState } from 'react';
 import { Row, Col } from 'antd';
 import { 
   CheckCircleOutlined, 
@@ -20,13 +11,14 @@ import { PageHeader } from '@/components/PageHeader';
 import { StatCard } from '@/components/StatCard';
 import { StatusOverview } from '@/modules/dashboard/StatusOverview';
 import { RecentActivity } from '@/modules/dashboard/RecentActivity';
+import { CreateCrModal } from '@/components/customer';
 import { useTranslation } from '@/hooks/useTranslation';
 
 export const CustomerDashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('dashboard');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  // Mock data - Replace with real API calls
   const stats = {
     completed: 12,
     updated: 3,
@@ -87,7 +79,12 @@ export const CustomerDashboardPage: React.FC = () => {
   ];
 
   const handleCreateCr = () => {
-    navigate('/change-requests/create');
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateSuccess = () => {
+    console.log('CR created successfully from dashboard');
+    // Optionally refresh dashboard data here
   };
 
   const handleViewBreakdown = () => {
@@ -96,7 +93,6 @@ export const CustomerDashboardPage: React.FC = () => {
 
   return (
     <div>
-      {/* Page Header */}
       <PageHeader
         title={t('page_title')}
         subtitle={t('page_subtitle')}
@@ -104,7 +100,6 @@ export const CustomerDashboardPage: React.FC = () => {
         onAction={handleCreateCr}
       />
 
-      {/* Stats Cards */}
       <Row gutter={[16, 16]} className="mb-6">
         <Col xs={24} sm={12} lg={6}>
           <StatCard
@@ -148,7 +143,6 @@ export const CustomerDashboardPage: React.FC = () => {
         </Col>
       </Row>
 
-      {/* Status Overview + Recent Activity */}
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
           <StatusOverview
@@ -166,6 +160,13 @@ export const CustomerDashboardPage: React.FC = () => {
           />
         </Col>
       </Row>
+
+      {/* Create CR Modal */}
+      <CreateCrModal
+        open={isCreateModalOpen}
+        onCancel={() => setIsCreateModalOpen(false)}
+        onSuccess={handleCreateSuccess}
+      />
     </div>
   );
 };

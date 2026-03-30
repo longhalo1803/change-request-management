@@ -1,17 +1,8 @@
 import { Select } from 'antd';
 import { GlobalOutlined } from '@ant-design/icons';
 import { useLanguageStore, selectCurrentLanguage } from '@/store/language.store';
-import { SUPPORTED_LANGUAGES, SupportedLanguage } from '@/lib/i18n/config';
-
-/**
- * Language Switcher Component
- * 
- * Allows users to change the application language
- * 
- * SOLID Principles:
- * - Single Responsibility: Only handles language switching UI
- * - Open/Closed: Easy to extend with new languages
- */
+import { SUPPORTED_LANGUAGES } from '@/lib/i18n/config';
+import type { SupportedLanguage } from '@/lib/i18n/resources';
 
 const languageLabels: Record<SupportedLanguage, string> = {
   en: 'English',

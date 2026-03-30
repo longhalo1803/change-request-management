@@ -1,13 +1,3 @@
-/**
- * RecentActivity Component
- * 
- * Displays recent CR activities in timeline format
- * 
- * SOLID Principles:
- * - Single Responsibility: Only renders activity timeline
- * - Open/Closed: Can extend with filters, pagination
- */
-
 import { Card, Button, Avatar, Tag } from 'antd';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -124,16 +114,13 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
       <div className="space-y-6">
         {activities.map((group) => (
           <div key={group.date}>
-            {/* Date Label */}
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
               {group.label}
             </div>
 
-            {/* Activities */}
             <div className="space-y-4">
               {group.activities.map((activity) => (
                 <div key={activity.id} className="flex gap-3">
-                  {/* Avatar */}
                   <Avatar 
                     size={40} 
                     src={activity.user.avatar}
@@ -142,7 +129,6 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                     {activity.user.name.charAt(0)}
                   </Avatar>
 
-                  {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="text-sm text-gray-700 mb-1">
                       {getActivityText(activity)}
@@ -163,7 +149,6 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         ))}
       </div>
 
-      {/* Load More */}
       <Button 
         type="text" 
         onClick={onLoadMore}

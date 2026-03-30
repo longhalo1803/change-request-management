@@ -17,22 +17,40 @@ import viAuth from '@/locales/vi/auth.json';
 import enDashboard from '@/locales/en/dashboard.json';
 import jaDashboard from '@/locales/ja/dashboard.json';
 import viDashboard from '@/locales/vi/dashboard.json';
+import enCrList from '@/locales/en/cr-list.json';
+import jaCrList from '@/locales/ja/cr-list.json';
+import viCrList from '@/locales/vi/cr-list.json';
+import enProfile from '@/locales/en/profile.json';
+import jaProfile from '@/locales/ja/profile.json';
+import viProfile from '@/locales/vi/profile.json';
+import enQuotation from '@/locales/en/quotation.json';
+import jaQuotation from '@/locales/ja/quotation.json';
+import viQuotation from '@/locales/vi/quotation.json';
 
 export const resources = {
   en: {
     common: enCommon,
     auth: enAuth,
-    dashboard: enDashboard
+    dashboard: enDashboard,
+    'cr-list': enCrList,
+    profile: enProfile,
+    quotation: enQuotation
   },
   ja: {
     common: jaCommon,
     auth: jaAuth,
-    dashboard: jaDashboard
+    dashboard: jaDashboard,
+    'cr-list': jaCrList,
+    profile: jaProfile,
+    quotation: jaQuotation
   },
   vi: {
     common: viCommon,
     auth: viAuth,
-    dashboard: viDashboard
+    dashboard: viDashboard,
+    'cr-list': viCrList,
+    profile: viProfile,
+    quotation: viQuotation
   }
 } as const;
 

@@ -2,62 +2,70 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useLogin } from '@/hooks/useLogin';
 import { useTranslation } from '@/hooks/useTranslation';
-import type { LoginCredentials } from '@/services/auth.service';
+import { loginSchema } from '@/lib/validators';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, Controller } from 'react-hook-form';
+import type { LoginFormData } from '@/lib/validators';
 
 export const LoginForm = () => {
   const { t } = useTranslation('auth');
-  const [form] = Form.useForm();
   const loginMutation = useLogin();
+  
+  const { control, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onBlur'
+  });
 
-  const handleSubmit = (values: LoginCredentials & { remember?: boolean }) => {
-    const { email, password } = values;
-    loginMutation.mutate({ email, password });
+  const onSubmit = (data: LoginFormData) => {
+    loginMutation.mutate({ email: data.email, password: data.password });
   };
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={handleSubmit}
-      autoComplete="off"
-      size="large"
-    >
+    <Form layout="vertical" size="large" onFinish={handleSubmit(onSubmit)}>
       <Form.Item
         label={t('email')}
-        name="email"
-        rules={[
-          { required: true, message: 'Email is required' },
-          { type: 'email', message: 'Invalid email format' }
-        ]}
+        validateStatus={errors.email ? 'error' : ''}
+        help={errors.email?.message}
       >
-        <Input
-          prefix={<MailOutlined style={{ color: '#bfbfbf' }} />}
-          placeholder={t('email_placeholder')}
-          autoComplete="email"
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              prefix={<MailOutlined style={{ color: '#bfbfbf' }} />}
+              placeholder={t('email_placeholder')}
+              autoComplete="email"
+            />
+          )}
         />
       </Form.Item>
 
       <Form.Item
         label={t('password')}
-        name="password"
-        rules={[
-          { required: true, message: 'Password is required' },
-          { min: 8, message: 'Password must be at least 8 characters' }
-        ]}
+        validateStatus={errors.password ? 'error' : ''}
+        help={errors.password?.message}
         extra={
           <a href="/forgot-password" style={{ float: 'right', marginTop: 4 }}>
             {t('forgot_password')}
           </a>
         }
       >
-        <Input.Password
-          prefix={<LockOutlined style={{ color: '#bfbfbf' }} />}
-          placeholder={t('password_placeholder')}
-          autoComplete="current-password"
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <Input.Password
+              {...field}
+              prefix={<LockOutlined style={{ color: '#bfbfbf' }} />}
+              placeholder={t('password_placeholder')}
+              autoComplete="current-password"
+            />
+          )}
         />
       </Form.Item>
 
-      <Form.Item name="remember" valuePropName="checked" style={{ marginBottom: 24 }}>
+      <Form.Item style={{ marginBottom: 24 }}>
         <Checkbox>{t('remember_me')}</Checkbox>
       </Form.Item>
 

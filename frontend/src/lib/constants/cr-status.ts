@@ -1,4 +1,4 @@
-import { CrStatus, UserRole } from '@/lib/types/cr.types';
+import { CrStatus, UserRole } from '@/lib/types';
 
 export interface CrStatusConfig {
   label: string;
@@ -23,7 +23,7 @@ export const CR_STATUS_CONFIG: Record<CrStatus, CrStatusConfig> = {
     color: '#1890ff',
     icon: 'SendOutlined',
     allowedActions: {
-      [UserRole.BRSE]: ['accept', 'reject']
+      [UserRole.PM]: ['accept', 'reject']
     }
   },
   [CrStatus.UNDER_ANALYSIS]: {
@@ -31,7 +31,7 @@ export const CR_STATUS_CONFIG: Record<CrStatus, CrStatusConfig> = {
     color: '#722ed1',
     icon: 'SearchOutlined',
     allowedActions: {
-      [UserRole.BRSE]: ['request-info', 'submit-quotation']
+      [UserRole.PM]: ['request-info', 'submit-quotation']
     }
   },
   [CrStatus.PENDING_INFO]: {
@@ -55,7 +55,7 @@ export const CR_STATUS_CONFIG: Record<CrStatus, CrStatusConfig> = {
     color: '#52c41a',
     icon: 'CheckCircleOutlined',
     allowedActions: {
-      [UserRole.BRSE]: ['start']
+      [UserRole.PM]: ['start']
     }
   },
   [CrStatus.ONGOING]: {
@@ -63,7 +63,7 @@ export const CR_STATUS_CONFIG: Record<CrStatus, CrStatusConfig> = {
     color: '#13c2c2',
     icon: 'SyncOutlined',
     allowedActions: {
-      [UserRole.BRSE]: ['block', 'close'],
+      [UserRole.PM]: ['block', 'close'],
       [UserRole.DEVELOPER]: ['block']
     }
   },
@@ -72,7 +72,7 @@ export const CR_STATUS_CONFIG: Record<CrStatus, CrStatusConfig> = {
     color: '#f5222d',
     icon: 'StopOutlined',
     allowedActions: {
-      [UserRole.BRSE]: ['unblock']
+      [UserRole.PM]: ['unblock']
     }
   },
   [CrStatus.REJECTED]: {

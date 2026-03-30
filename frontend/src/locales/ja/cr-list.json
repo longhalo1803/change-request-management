@@ -1,0 +1,36 @@
+{
+  "page_title": "変更リクエスト",
+  "search_placeholder": "タイトルまたはIDで検索...",
+  "filter_button": "フィルター",
+  "create_button": "新しいCRを作成",
+  "table": {
+    "id": "ID",
+    "title": "タイトル",
+    "description": "説明",
+    "status": "ステータス",
+    "priority": "優先度",
+    "created_at": "作成日",
+    "updated_at": "更新日",
+    "actions": "アクション"
+  },
+  "filters": {
+    "title": "フィルター",
+    "status": "ステータス",
+    "priority": "優先度",
+    "date_range": "日付範囲",
+    "apply": "フィルターを適用",
+    "reset": "フィルターをリセット"
+  },
+  "messages": {
+    "no_data": "変更リクエストが見つかりません",
+    "loading": "変更リクエストを読み込んでいます..."
+  },
+  "modal": {
+    "create_title": "新しい変更リクエストを作成",
+    "edit_title": "変更リクエストを編集",
+    "details_title": "変更リクエストの詳細",
+    "close": "閉じる",
+    "save": "保存",
+    "cancel": "キャンセル"
+  }
+}

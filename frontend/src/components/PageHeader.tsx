@@ -1,13 +1,3 @@
-/**
- * PageHeader Component
- * 
- * Page title with subtitle and action button
- * 
- * SOLID Principles:
- * - Single Responsibility: Only renders page header
- * - Open/Closed: Can extend with breadcrumbs, tabs
- */
-
 import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 

@@ -1,0 +1,36 @@
+{
+  "page_title": "Change Requests",
+  "search_placeholder": "Search by title or ID...",
+  "filter_button": "Filter",
+  "create_button": "Create New CR",
+  "table": {
+    "id": "ID",
+    "title": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "created_at": "Created",
+    "updated_at": "Updated",
+    "actions": "Actions"
+  },
+  "filters": {
+    "title": "Filters",
+    "status": "Status",
+    "priority": "Priority",
+    "date_range": "Date Range",
+    "apply": "Apply Filters",
+    "reset": "Reset Filters"
+  },
+  "messages": {
+    "no_data": "No change requests found",
+    "loading": "Loading change requests..."
+  },
+  "modal": {
+    "create_title": "Create New Change Request",
+    "edit_title": "Edit Change Request",
+    "details_title": "Change Request Details",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}

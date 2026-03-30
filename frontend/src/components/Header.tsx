@@ -1,20 +1,10 @@
-/**
- * Header Component
- * 
- * Top header with filter, search, notifications, language switcher, and user profile
- * 
- * SOLID Principles:
- * - Single Responsibility: Only renders header UI
- * - Open/Closed: Easy to add new header actions
- */
-
 import { Button, Badge, Dropdown, Avatar } from 'antd';
 import {  
   BellOutlined, 
   UserOutlined 
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { GlobalSearch } from './GlobalSearch';
+import { useNavigate } from 'react-router-dom';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -24,40 +14,45 @@ interface HeaderProps {
   onSearch?: (value: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+export const Header: React.FC<HeaderProps> = ({}) => {
   const { user, logout } = useAuth();
   const { t } = useTranslation('common');
+  const navigate = useNavigate();
 
-  // User dropdown menu
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+    if (key === 'profile') {
+      navigate('/profile');
+    } else if (key === 'logout') {
+      logout();
+    }
+  };
+
   const userMenuItems: MenuProps['items'] = [
     {
       key: 'profile',
       label: 'Profile'
     },
-    {
-      key: 'settings',
-      label: t('nav.settings')
-    },
+    // {
+    //   key: 'settings',
+    //   label: t('nav.settings')
+    // },
     {
       type: 'divider'
     },
     {
       key: 'logout',
-      label: t('auth.logout'),
-      onClick: logout
+      label: t('auth.logout')
     }
   ];
 
   return (
     <div className="h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-between">
-      {/* Left side: Filter + Search */}
+      {/* Empty left side or logo can go here */}
       <div className="flex items-center gap-4">
-        <GlobalSearch onSearch={onSearch} />
+        {/* Removed GlobalSearch */}
       </div>
 
-      {/* Right side: Notifications + Language + User */}
       <div className="flex items-center gap-4">
-        {/* Notifications */}
         <Badge count={5} size="small">
           <Button 
             type="text" 
@@ -66,11 +61,9 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           />
         </Badge>
 
-        {/* Language Switcher */}
         <LanguageSwitcher />
 
-        {/* User Profile */}
-        <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+        <Dropdown menu={{ items: userMenuItems, onClick: handleMenuClick }} placement="bottomRight">
           <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors">
             <div className="text-right">
               <div className="text-sm font-medium text-gray-900">
@@ -83,7 +76,6 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
             <Avatar 
               size={40} 
               icon={<UserOutlined />}
-            //   src={user?.avatar}
               style={{ backgroundColor: '#1890ff' }}
             />
           </div>

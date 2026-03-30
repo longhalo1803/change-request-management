@@ -1,0 +1,30 @@
+{
+  "page_title": "Báo giá",
+  "page_subtitle": "Xem và quản lý báo giá cho yêu cầu thay đổi của bạn",
+  "empty_state": "Không có báo giá nào",
+  "table": {
+    "cr_id": "CR ID",
+    "cr_title": "Tiêu đề CR",
+    "vendor": "Nhà cung cấp",
+    "amount": "Số tiền",
+    "validity": "Hợp lệ cho đến",
+    "status": "Trạng thái",
+    "actions": "Hành động"
+  },
+  "status": {
+    "pending": "Đang chờ",
+    "accepted": "Đã chấp nhận",
+    "rejected": "Bị từ chối",
+    "expired": "Hết hạn"
+  },
+  "buttons": {
+    "download": "Tải xuống",
+    "view": "Xem",
+    "accept": "Chấp nhận",
+    "reject": "Từ chối"
+  },
+  "messages": {
+    "loading": "Đang tải báo giá...",
+    "no_data": "Không tìm thấy báo giá"
+  }
+}

@@ -1,24 +1,12 @@
-/**
- * Sidebar Component
- * 
- * Main navigation sidebar with menu items
- * 
- * SOLID Principles:
- * - Single Responsibility: Only renders sidebar navigation
- * - Open/Closed: Easy to add new menu items
- * - Dependency Inversion: Depends on navigation config abstraction
- */
-
 import { Layout, Menu } from 'antd';
 import { 
   DashboardOutlined, 
   FileTextOutlined, 
   DollarOutlined,
-  SettingOutlined,
   QuestionCircleOutlined 
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Logo } from './Logo';
+import { Logo } from '../Logo';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const { Sider } = Layout;
@@ -30,12 +18,11 @@ interface MenuItem {
   path: string;
 }
 
-export const Sidebar: React.FC = () => {
+export const CustomerSidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation('dashboard');
 
-  // Menu configuration
   const mainMenuItems: MenuItem[] = [
     {
       key: 'dashboard',
@@ -58,12 +45,12 @@ export const Sidebar: React.FC = () => {
   ];
 
   const bottomMenuItems: MenuItem[] = [
-    {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: t('sidebar.settings'),
-      path: '/settings'
-    },
+    // {
+    //   key: 'settings',
+    //   icon: <SettingOutlined />,
+    //   label: t('sidebar.settings'),
+    //   path: '/settings'
+    // },
     {
       key: 'help',
       icon: <QuestionCircleOutlined />,
@@ -72,7 +59,6 @@ export const Sidebar: React.FC = () => {
     }
   ];
 
-  // Get current selected key from path
   const selectedKey = mainMenuItems.find(item => 
     location.pathname.startsWith(item.path)
   )?.key || bottomMenuItems.find(item => 
@@ -97,12 +83,10 @@ export const Sidebar: React.FC = () => {
         overflow: 'auto'
       }}
     >
-      {/* Logo */}
       <div className="p-6 border-b border-gray-100">
         <Logo size="medium" showSubtitle />
       </div>
 
-      {/* Main Menu */}
       <div className="flex flex-col justify-between" style={{ height: 'calc(100vh - 100px)' }}>
         <Menu
           mode="inline"
@@ -116,7 +100,6 @@ export const Sidebar: React.FC = () => {
           }))}
         />
 
-        {/* Bottom Menu */}
         <Menu
           mode="inline"
           selectedKeys={[selectedKey]}

@@ -1,0 +1,43 @@
+{
+  "page_title": "My Profile",
+  "page_subtitle": "Manage your account settings and personal information",
+  "personal_info": {
+    "title": "Personal Information",
+    "full_name": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "role": "Role",
+    "department": "Department",
+    "joined_date": "Joined Date",
+    "edit_button": "Edit Profile"
+  },
+  "account_settings": {
+    "title": "Account Settings",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm Password",
+    "change_password_button": "Change Password"
+  },
+  "profile_photo": {
+    "title": "Profile Photo",
+    "upload_button": "Upload Photo",
+    "edit_button": "Edit Photo",
+    "delete_button": "Delete Photo"
+  },
+  "danger_zone": {
+    "title": "Danger Zone",
+    "delete_profile_button": "Delete Profile",
+    "delete_confirmation": "Are you sure you want to delete your profile? This action cannot be undone."
+  },
+  "buttons": {
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "edit": "Edit"
+  },
+  "messages": {
+    "success": "Profile updated successfully!",
+    "error": "An error occurred while updating your profile",
+    "password_changed": "Password changed successfully!",
+    "photo_uploaded": "Photo uploaded successfully!"
+  }
+}

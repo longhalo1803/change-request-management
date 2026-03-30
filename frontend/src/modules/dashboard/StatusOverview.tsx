@@ -24,10 +24,8 @@ export const StatusOverview: React.FC<StatusOverviewProps> = ({
   const { t } = useTranslation('dashboard');
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  // Calculate percentages
   const total = data.reduce((sum, item) => sum + item.count, 0);
 
-  // Create donut chart segments
   const segments = data.map((item, index) => {
     const percentage = (item.count / total) * 100;
     const previousPercentage = data
@@ -43,7 +41,6 @@ export const StatusOverview: React.FC<StatusOverviewProps> = ({
 
   return (
     <Card className="h-full">
-      {/* Header */}
       <div className="mb-2">
         <h2 className="text-2xl font-bold text-gray-900 mb-1">
           {t('status_overview.title')}
@@ -64,7 +61,6 @@ export const StatusOverview: React.FC<StatusOverviewProps> = ({
       </div>
 
       <div className="flex items-center gap-12 mt-8">
-        {/* Donut Chart */}
         <div className="relative w-64 h-64 flex-shrink-0">
           <svg viewBox="0 0 200 200" className="transform -rotate-90">
             {segments.map((segment, index) => {
@@ -98,16 +94,14 @@ export const StatusOverview: React.FC<StatusOverviewProps> = ({
             })}
           </svg>
           
-          {/* Center text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <div className="text-5xl font-bold text-gray-900">{totalCrs}</div>
             <div className="text-sm text-gray-500 mt-1">
-              Total work item...
+              Total work item
             </div>
           </div>
         </div>
 
-        {/* Legend with hover effect */}
         <div className="flex-1 space-y-3">
           {data.map((item, index) => {
             const isHovered = hoveredIndex === index;
@@ -125,7 +119,6 @@ export const StatusOverview: React.FC<StatusOverviewProps> = ({
                   backgroundColor: isHovered ? '#f9fafb' : 'transparent'
                 }}
               >
-                {/* Color indicator */}
                 <div 
                   className="w-4 h-4 rounded flex-shrink-0 transition-all duration-300"
                   style={{ 
@@ -134,7 +127,6 @@ export const StatusOverview: React.FC<StatusOverviewProps> = ({
                   }}
                 />
                 
-                {/* Label and count */}
                 <div className="flex items-center gap-2 flex-1">
                   <span className={`text-base transition-all duration-300 ${
                     isHovered ? 'font-semibold text-gray-900' : 'text-gray-600'

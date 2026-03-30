@@ -4,16 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import { useTranslation } from './useTranslation';
 
-/**
- * Auth Hook
- * 
- * Provides authentication state and actions
- * 
- * SOLID Principles:
- * - Single Responsibility: Only provides auth functionality
- * - Interface Segregation: Minimal interface with only necessary methods
- */
-
 export const useAuth = () => {
   const { t } = useTranslation('auth');
   const navigate = useNavigate();
@@ -33,7 +23,6 @@ export const useAuth = () => {
       message.success(t('logout_success'));
       navigate('/login');
     } catch (error) {
-      // Even if API call fails, clear local state
       logout();
       navigate('/login');
     }

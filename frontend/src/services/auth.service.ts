@@ -1,20 +1,8 @@
 import axiosInstance from '@/lib/axios';
-import type { ApiResponse } from '@/lib/types/api.types';
-import type { User } from '@/lib/types/cr.types';
+import type { ApiResponse } from '@/lib/types';
+import type { User } from '@/lib/types';
 import { appConfig } from '@/config/app.config';
 import { authServiceMock } from './auth.service.mock';
-
-/**
- * Auth Service
- * 
- * API calls for authentication
- * Automatically switches between real API and mock based on config
- * 
- * SOLID Principles:
- * - Single Responsibility: Only handles auth API calls
- * - Dependency Inversion: Depends on axios abstraction
- * - Open/Closed: Easy to switch between mock and real service
- */
 
 export interface LoginCredentials {
   email: string;
@@ -33,13 +21,9 @@ export interface RefreshTokenResponse {
   accessToken: string;
 }
 
-// Use mock service if configured
 const useMock = appConfig.useMockServices;
 
 export const authService = {
-  /**
-   * Login with email and password
-   */
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     if (useMock) {
       return authServiceMock.login(credentials);
@@ -52,9 +36,6 @@ export const authService = {
     return response.data.data;
   },
 
-  /**
-   * Refresh access token
-   */
   async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
     if (useMock) {
       return authServiceMock.refreshToken(refreshToken);
@@ -67,9 +48,6 @@ export const authService = {
     return response.data.data;
   },
 
-  /**
-   * Logout (revoke refresh token)
-   */
   async logout(refreshToken: string): Promise<void> {
     if (useMock) {
       return authServiceMock.logout(refreshToken);
@@ -78,9 +56,6 @@ export const authService = {
     await axiosInstance.post('/auth/logout', { refreshToken });
   },
 
-  /**
-   * Get current user info
-   */
   async getCurrentUser(): Promise<User> {
     if (useMock) {
       return authServiceMock.getCurrentUser();

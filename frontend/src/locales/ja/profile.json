@@ -1,0 +1,43 @@
+{
+  "page_title": "プロフィール",
+  "page_subtitle": "アカウント設定と個人情報を管理する",
+  "personal_info": {
+    "title": "個人情報",
+    "full_name": "フルネーム",
+    "email": "メール",
+    "phone": "電話番号",
+    "role": "役割",
+    "department": "部門",
+    "joined_date": "参加日",
+    "edit_button": "プロフィールを編集"
+  },
+  "account_settings": {
+    "title": "アカウント設定",
+    "current_password": "現在のパスワード",
+    "new_password": "新しいパスワード",
+    "confirm_password": "パスワードの確認",
+    "change_password_button": "パスワードを変更"
+  },
+  "profile_photo": {
+    "title": "プロフィール写真",
+    "upload_button": "写真をアップロード",
+    "edit_button": "写真を編集",
+    "delete_button": "写真を削除"
+  },
+  "danger_zone": {
+    "title": "危険ゾーン",
+    "delete_profile_button": "プロフィールを削除",
+    "delete_confirmation": "プロフィールを削除してもよろしいですか？この操作は元に戻せません。"
+  },
+  "buttons": {
+    "save": "変更を保存",
+    "cancel": "キャンセル",
+    "edit": "編集"
+  },
+  "messages": {
+    "success": "プロフィールが正常に更新されました！",
+    "error": "プロフィールの更新中にエラーが発生しました",
+    "password_changed": "パスワードが正常に変更されました！",
+    "photo_uploaded": "写真が正常にアップロードされました！"
+  }
+}

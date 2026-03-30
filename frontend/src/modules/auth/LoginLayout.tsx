@@ -4,7 +4,6 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from '@/hooks/useTranslation';
 
-
 const { Title, Text, Paragraph } = Typography;
 
 interface LoginLayoutProps {
@@ -16,7 +15,6 @@ export const LoginLayout = ({ children }: LoginLayoutProps) => {
 
   return (
     <Row style={{ minHeight: '100vh' }}>
-      {/* Left Panel - Branding */}
       <Col
         xs={0}
         md={12}
@@ -29,7 +27,6 @@ export const LoginLayout = ({ children }: LoginLayoutProps) => {
           color: 'white'
         }}
       >
-        {/* Logo */}
         <div>
           <Space align="center" size="middle">
             <div
@@ -51,7 +48,6 @@ export const LoginLayout = ({ children }: LoginLayoutProps) => {
           </Space>
         </div>
 
-        {/* Main Content */}
         <div style={{ maxWidth: 480 }}>
           <Title level={1} style={{ color: 'white', fontSize: 48, marginBottom: 24 }}>
             {t('tagline')}
@@ -61,7 +57,6 @@ export const LoginLayout = ({ children }: LoginLayoutProps) => {
           </Paragraph>
         </div>
 
-        {/* System Status */}
         <div
           style={{
             background: 'rgba(255,255,255,0.1)',
@@ -85,7 +80,6 @@ export const LoginLayout = ({ children }: LoginLayoutProps) => {
         </div>
       </Col>
 
-      {/* Right Panel - Login Form */}
       <Col
         xs={24}
         md={12}
@@ -98,12 +92,10 @@ export const LoginLayout = ({ children }: LoginLayoutProps) => {
         }}
       >
         <div style={{ maxWidth: 400, margin: '0 auto', width: '100%' }}>
-          {/* Language Switcher */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 32 }}>
             <LanguageSwitcher />
           </div>
 
-          {/* Form Header */}
           <div style={{ marginBottom: 32 }}>
             <Title level={2} style={{ marginBottom: 8 }}>
               {t('welcome_back')}
@@ -111,10 +103,8 @@ export const LoginLayout = ({ children }: LoginLayoutProps) => {
             <Text type="secondary">{t('sign_in_message')}</Text>
           </div>
 
-          {/* Login Form */}
           {children}
 
-          {/* Footer Links */}
           <div
             style={{
               marginTop: 48,

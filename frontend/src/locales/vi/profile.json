@@ -1,0 +1,43 @@
+{
+  "page_title": "Hồ sơ của tôi",
+  "page_subtitle": "Quản lý cài đặt tài khoản và thông tin cá nhân của bạn",
+  "personal_info": {
+    "title": "Thông tin cá nhân",
+    "full_name": "Họ và tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "role": "Vai trò",
+    "department": "Phòng ban",
+    "joined_date": "Ngày tham gia",
+    "edit_button": "Chỉnh sửa hồ sơ"
+  },
+  "account_settings": {
+    "title": "Cài đặt tài khoản",
+    "current_password": "Mật khẩu hiện tại",
+    "new_password": "Mật khẩu mới",
+    "confirm_password": "Xác nhận mật khẩu",
+    "change_password_button": "Đổi mật khẩu"
+  },
+  "profile_photo": {
+    "title": "Ảnh hồ sơ",
+    "upload_button": "Tải lên ảnh",
+    "edit_button": "Chỉnh sửa ảnh",
+    "delete_button": "Xóa ảnh"
+  },
+  "danger_zone": {
+    "title": "Vùng nguy hiểm",
+    "delete_profile_button": "Xóa hồ sơ",
+    "delete_confirmation": "Bạn có chắc chắn muốn xóa hồ sơ của mình không? Hành động này không thể hoàn tác."
+  },
+  "buttons": {
+    "save": "Lưu thay đổi",
+    "cancel": "Hủy",
+    "edit": "Chỉnh sửa"
+  },
+  "messages": {
+    "success": "Hồ sơ đã được cập nhật thành công!",
+    "error": "Đã xảy ra lỗi khi cập nhật hồ sơ",
+    "password_changed": "Mật khẩu đã được thay đổi thành công!",
+    "photo_uploaded": "Ảnh đã được tải lên thành công!"
+  }
+}

@@ -1,13 +1,3 @@
-/**
- * Logo Component
- * 
- * Displays the application logo with name and subtitle
- * 
- * SOLID Principles:
- * - Single Responsibility: Only renders logo
- * - Open/Closed: Can extend with different sizes/variants
- */
-
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface LogoProps {
@@ -37,7 +27,6 @@ export const Logo: React.FC<LogoProps> = ({
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {/* Logo Icon - Diamond symbol */}
       <div 
         className={`${iconSizes[size]} bg-white rounded-xl flex items-center justify-center flex-shrink-0`}
       >
@@ -46,7 +35,6 @@ export const Logo: React.FC<LogoProps> = ({
         </span>
       </div>
 
-      {/* Logo Text */}
       <div className="flex flex-col">
         <span className={`${sizeClasses[size]} font-bold text-gray-900 leading-tight`}>
           {t('sidebar.app_name')}
