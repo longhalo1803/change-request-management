@@ -1,0 +1,57 @@
+{
+  "menu": {
+    "dashboard": "ダッシュボード",
+    "users": "ユーザー管理",
+    "change_requests": "変更リクエスト",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "logout": "ログアウト"
+  },
+  "dashboard": {
+    "title": "管理者ダッシュボード",
+    "subtitle": "システム概要と統計",
+    "statistics": {
+      "total_users": "総ユーザー数",
+      "total_crs": "総変更リクエスト数",
+      "active_projects": "アクティブなプロジェクト",
+      "system_health": "システムの健全性"
+    },
+    "recent_activity": "最近のアクティビティ",
+    "quick_stats": "クイック統計",
+    "no_data": "データがありません"
+  },
+  "users": {
+    "title": "ユーザー管理",
+    "subtitle": "システムユーザーと権限を管理します",
+    "list": "ユーザーリスト",
+    "add_user": "ユーザーを追加",
+    "edit_user": "ユーザーを編集",
+    "delete_user": "ユーザーを削除",
+    "name": "名前",
+    "email": "メール",
+    "role": "ロール",
+    "status": "ステータス",
+    "created_at": "作成日",
+    "actions": "アクション"
+  },
+  "change_requests": {
+    "title": "変更リクエスト",
+    "subtitle": "システム内のすべての変更リクエストを管理します",
+    "list": "CRリスト",
+    "view_details": "詳細を表示",
+    "approve": "承認",
+    "reject": "拒否"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "edit": "プロフィールを編集",
+    "save": "変更を保存",
+    "cancel": "キャンセル"
+  },
+  "settings": {
+    "title": "設定",
+    "system_settings": "システム設定",
+    "notifications": "通知",
+    "security": "セキュリティ"
+  }
+}

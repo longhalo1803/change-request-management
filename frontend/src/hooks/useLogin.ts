@@ -5,12 +5,24 @@ import { authService, LoginCredentials } from '@/services/auth.service';
 import { useAuthStore } from '@/store/auth.store';
 import { useTranslation } from './useTranslation';
 import { AxiosError } from 'axios';
-import type { ApiErrorResponse, User } from '@/lib/types';
+import type { ApiErrorResponse, User, UserRole } from '@/lib/types';
 
 export const useLogin = () => {
   const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const { setTokens, setUser } = useAuthStore();
+
+  const getRedirectPath = (role: UserRole) => {
+    switch (role) {
+      case 'admin':
+        return '/admin/dashboard';
+      case 'pm':
+        return '/pm/dashboard';
+      case 'customer':
+      default:
+        return '/dashboard';
+    }
+  };
 
   return useMutation({
     mutationFn: (credentials: LoginCredentials) => authService.login(credentials),
@@ -19,7 +31,8 @@ export const useLogin = () => {
       setTokens(data.tokens.accessToken, data.tokens.refreshToken);
       setUser(data.user);
       message.success(t('login_success'));
-      navigate('/dashboard', { replace: true });
+      const redirectPath = getRedirectPath(data.user.role);
+      navigate(redirectPath, { replace: true });
     },
     
     onError: (error: AxiosError<ApiErrorResponse>) => {

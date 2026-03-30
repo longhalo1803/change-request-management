@@ -1,0 +1,57 @@
+{
+  "menu": {
+    "dashboard": "Dashboard",
+    "users": "User Management",
+    "change_requests": "Change Requests",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "title": "Admin Dashboard",
+    "subtitle": "System overview and statistics",
+    "statistics": {
+      "total_users": "Total Users",
+      "total_crs": "Total Change Requests",
+      "active_projects": "Active Projects",
+      "system_health": "System Health"
+    },
+    "recent_activity": "Recent Activity",
+    "quick_stats": "Quick Stats",
+    "no_data": "No data available"
+  },
+  "users": {
+    "title": "User Management",
+    "subtitle": "Manage system users and permissions",
+    "list": "User List",
+    "add_user": "Add User",
+    "edit_user": "Edit User",
+    "delete_user": "Delete User",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "created_at": "Created At",
+    "actions": "Actions"
+  },
+  "change_requests": {
+    "title": "Change Requests",
+    "subtitle": "Manage all change requests in the system",
+    "list": "CR List",
+    "view_details": "View Details",
+    "approve": "Approve",
+    "reject": "Reject"
+  },
+  "profile": {
+    "title": "Profile",
+    "edit": "Edit Profile",
+    "save": "Save Changes",
+    "cancel": "Cancel"
+  },
+  "settings": {
+    "title": "Settings",
+    "system_settings": "System Settings",
+    "notifications": "Notifications",
+    "security": "Security"
+  }
+}

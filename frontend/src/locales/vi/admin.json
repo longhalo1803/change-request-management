@@ -1,0 +1,57 @@
+{
+  "menu": {
+    "dashboard": "Bảng điều khiển",
+    "users": "Quản lý Người dùng",
+    "change_requests": "Yêu cầu thay đổi",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "dashboard": {
+    "title": "Bảng điều khiển Admin",
+    "subtitle": "Tổng quan và thống kê hệ thống",
+    "statistics": {
+      "total_users": "Tổng Người dùng",
+      "total_crs": "Tổng Yêu cầu thay đổi",
+      "active_projects": "Dự án Hoạt động",
+      "system_health": "Sức khỏe Hệ thống"
+    },
+    "recent_activity": "Hoạt động Gần đây",
+    "quick_stats": "Thống kê Nhanh",
+    "no_data": "Không có dữ liệu"
+  },
+  "users": {
+    "title": "Quản lý Người dùng",
+    "subtitle": "Quản lý người dùng hệ thống và quyền",
+    "list": "Danh sách Người dùng",
+    "add_user": "Thêm Người dùng",
+    "edit_user": "Chỉnh sửa Người dùng",
+    "delete_user": "Xóa Người dùng",
+    "name": "Tên",
+    "email": "Email",
+    "role": "Vai trò",
+    "status": "Trạng thái",
+    "created_at": "Ngày tạo",
+    "actions": "Hành động"
+  },
+  "change_requests": {
+    "title": "Yêu cầu thay đổi",
+    "subtitle": "Quản lý tất cả yêu cầu thay đổi trong hệ thống",
+    "list": "Danh sách CR",
+    "view_details": "Xem Chi tiết",
+    "approve": "Phê duyệt",
+    "reject": "Từ chối"
+  },
+  "profile": {
+    "title": "Hồ sơ",
+    "edit": "Chỉnh sửa Hồ sơ",
+    "save": "Lưu Thay đổi",
+    "cancel": "Hủy"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "system_settings": "Cài đặt Hệ thống",
+    "notifications": "Thông báo",
+    "security": "Bảo mật"
+  }
+}
