@@ -7,7 +7,7 @@
     "cr_title": "CRタイトル",
     "vendor": "ベンダー",
     "amount": "金額",
-    "validity": "有効期限",
+    "validity_date": "有効期限",
     "status": "ステータス",
     "actions": "アクション"
   },
@@ -25,6 +25,6 @@
   },
   "messages": {
     "loading": "見積書を読み込んでいます...",
-    "no_data": "見積書が見つかりません"
+    "no_quotations": "見積書が見つかりません"
   }
 }

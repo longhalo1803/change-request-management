@@ -2,6 +2,7 @@ import { Table, Button, Tag, Pagination } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { ChangeRequest, CrStatus } from '@/lib/types';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface CrTableProps {
   data: ChangeRequest[];
@@ -64,10 +65,11 @@ export const CrTable: React.FC<CrTableProps> = ({
   onRowClick
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('cr-list');
 
   const columns = [
     {
-      title: 'CR ID',
+      title: t('table.id'),
       dataIndex: 'id',
       key: 'id',
       width: 140,
@@ -76,7 +78,7 @@ export const CrTable: React.FC<CrTableProps> = ({
       )
     },
     {
-      title: 'TITLE',
+      title: t('table.title'),
       key: 'title',
       render: (_: any, record: ChangeRequest) => (
         <div>
@@ -86,7 +88,7 @@ export const CrTable: React.FC<CrTableProps> = ({
       )
     },
     {
-      title: 'PRIORITY',
+      title: t('table.priority'),
       dataIndex: 'priority',
       key: 'priority',
       width: 120,
@@ -101,7 +103,7 @@ export const CrTable: React.FC<CrTableProps> = ({
       }
     },
     {
-      title: 'STATUS',
+      title: t('table.status'),
       dataIndex: 'status',
       key: 'status',
       width: 140,
@@ -115,7 +117,7 @@ export const CrTable: React.FC<CrTableProps> = ({
       }
     },
     {
-      title: 'LAST UPDATE',
+      title: t('table.updated_at'),
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 180,
@@ -124,7 +126,7 @@ export const CrTable: React.FC<CrTableProps> = ({
       )
     },
     {
-      title: 'ACTION',
+      title: t('table.actions'),
       key: 'actions',
       width: 200,
       render: (_: any, record: ChangeRequest) => {

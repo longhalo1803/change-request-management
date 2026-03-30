@@ -2,6 +2,7 @@ import { Modal, Form, Input, Select, DatePicker, Upload, Button, message } from 
 import { CloudUploadOutlined, CloseOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
+import { useTranslation } from 'react-i18next';
 
 interface CreateCrModalProps {
   open: boolean;
@@ -17,6 +18,7 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
   onCancel,
   onSuccess
 }) => {
+  const { t } = useTranslation('cr-list');
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [summaryLength, setSummaryLength] = useState(0);
@@ -25,7 +27,7 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
     try {
       const values = await form.validateFields();
       console.log('Form values:', values);
-      message.success('Change Request created successfully!');
+      message.success(t('create_modal.success_message'));
       form.resetFields();
       setFileList([]);
       setSummaryLength(0);
@@ -59,8 +61,8 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
     <Modal
       title={
         <div>
-          <div className="text-lg font-semibold">Create Requirement</div>
-          <div className="text-sm text-gray-500 font-normal">SOLASHI Connect • Project Alpha</div>
+          <div className="text-lg font-semibold">{t('create_modal.title')}</div>
+          <div className="text-sm text-gray-500 font-normal">{t('create_modal.subtitle')}</div>
         </div>
       }
       open={open}
@@ -69,14 +71,14 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
       footer={[
         <div key="footer" className="flex items-center justify-between">
           <div className="text-sm text-gray-500">
-            <span className="text-orange-500">●</span> Draft will be saved automatically
+            <span className="text-orange-500">●</span> {t('create_modal.draft_info')}
           </div>
           <div className="flex gap-2">
             <Button key="cancel" onClick={handleCancel}>
-              Cancel
+              {t('buttons.cancel')}
             </Button>
             <Button key="submit" type="primary" onClick={handleSubmit}>
-              Create Requirement →
+              {t('create_modal.title')} →
             </Button>
           </div>
         </div>
@@ -93,146 +95,145 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
           priority: 'Medium'
         }}
       >
-        {/* First Row: Project, Issue Type, Parent Task, Status */}
-        <div className="grid grid-cols-4 gap-4 mb-4">
-          <Form.Item
-            label="Project / Space"
-            name="project"
-            rules={[{ required: true, message: 'Please select project' }]}
-          >
-            <Select
-              suffixIcon={<span className="text-gray-400">▼</span>}
-              options={[
-                { label: 'Project Alpha - CMS', value: 'Project Alpha - CMS' },
-                { label: 'Project Beta - Mobile', value: 'Project Beta - Mobile' },
-                { label: 'Project Gamma - Web', value: 'Project Gamma - Web' }
-              ]}
-            />
-          </Form.Item>
+         <div className="grid grid-cols-4 gap-4 mb-4">
+           <Form.Item
+             label={t('create_modal.project_label')}
+             name="project"
+             rules={[{ required: true, message: t('create_modal.project_error') }]}
+           >
+             <Select
+               suffixIcon={<span className="text-gray-400">▼</span>}
+               options={[
+                 { label: 'Project Alpha - CMS', value: 'Project Alpha - CMS' },
+                 { label: 'Project Beta - Mobile', value: 'Project Beta - Mobile' },
+                 { label: 'Project Gamma - Web', value: 'Project Gamma - Web' }
+               ]}
+             />
+           </Form.Item>
 
-          <Form.Item
-            label="Issue Type"
-            name="issueType"
-            rules={[{ required: true, message: 'Please select issue type' }]}
-          >
-            <Select
-              suffixIcon={<span className="text-gray-400">▼</span>}
-              options={[
-                { label: '📋 Change Request', value: 'Change Request' },
-                { label: '🐛 Bug', value: 'Bug' },
-                { label: '✨ Feature', value: 'Feature' }
-              ]}
-            />
-          </Form.Item>
+           <Form.Item
+             label={t('create_modal.issue_type_label')}
+             name="issueType"
+             rules={[{ required: true, message: t('create_modal.issue_type_error') }]}
+           >
+             <Select
+               suffixIcon={<span className="text-gray-400">▼</span>}
+               options={[
+                 { label: '📋 Change Request', value: 'Change Request' },
+                 { label: '🐛 Bug', value: 'Bug' },
+                 { label: '✨ Feature', value: 'Feature' }
+               ]}
+             />
+           </Form.Item>
 
-          <Form.Item label="Parent Task" name="parentTask">
-            <Input 
-              placeholder="None" 
-              suffix={<span className="text-gray-400 cursor-pointer">🔍</span>}
-            />
-          </Form.Item>
+           <Form.Item label={t('create_modal.parent_task_label')} name="parentTask">
+             <Input 
+               placeholder={t('create_modal.parent_task_placeholder')} 
+               suffix={<span className="text-gray-400 cursor-pointer">🔍</span>}
+             />
+           </Form.Item>
 
-          <Form.Item label="Status" name="status">
-            <Select
-              suffixIcon={<span className="text-gray-400">▼</span>}
-              options={[
-                { label: '📄 Draft', value: 'Draft' },
-                { label: '📤 Submitted', value: 'Submitted' },
-                { label: '💬 In Discussion', value: 'In Discussion' },
-                { label: '✅ Approved', value: 'Approved' }
-              ]}
-            />
-          </Form.Item>
-        </div>
+           <Form.Item label={t('create_modal.status_label')} name="status">
+             <Select
+               suffixIcon={<span className="text-gray-400">▼</span>}
+               options={[
+                 { label: '📄 Draft', value: 'Draft' },
+                 { label: '📤 Submitted', value: 'Submitted' },
+                 { label: '💬 In Discussion', value: 'In Discussion' },
+                 { label: '✅ Approved', value: 'Approved' }
+               ]}
+             />
+           </Form.Item>
+         </div>
 
         {/* Summary */}
-        <Form.Item
-          label="Summary"
-          name="summary"
-          rules={[
-            { required: true, message: 'Please enter summary' },
-            { max: 255, message: 'Summary must be less than 255 characters' }
-          ]}
-        >
-          <Input
-            placeholder="e.g., Unified login flow for enterprise users"
-            maxLength={255}
-            onChange={(e) => setSummaryLength(e.target.value.length)}
-            suffix={<span className="text-gray-400 text-xs">{summaryLength}/255</span>}
-          />
-        </Form.Item>
+         <Form.Item
+           label={t('create_modal.summary_label')}
+           name="summary"
+           rules={[
+             { required: true, message: t('create_modal.summary_error') },
+             { max: 255, message: t('create_modal.summary_max_error') }
+           ]}
+         >
+           <Input
+             placeholder={t('create_modal.summary_placeholder')}
+             maxLength={255}
+             onChange={(e) => setSummaryLength(e.target.value.length)}
+             suffix={<span className="text-gray-400 text-xs">{summaryLength}/255</span>}
+           />
+         </Form.Item>
 
         {/* Description */}
-        <Form.Item label="Description" name="description">
-          <div className="border border-gray-300 rounded">
-            {/* Toolbar */}
-            <div className="flex gap-2 p-2 border-b border-gray-300 bg-gray-50">
-              <Button size="small" type="text" className="font-bold">B</Button>
-              <Button size="small" type="text" className="italic">I</Button>
-              <Button size="small" type="text">≡</Button>
-              <Button size="small" type="text">⊙</Button>
-              <Button size="small" type="text">🔗</Button>
-              <Button size="small" type="text">📷</Button>
-              <Button size="small" type="text">&lt;/&gt;</Button>
-            </div>
-            {/* Text Area */}
-            <TextArea
-              placeholder="Describe the requirement in detail..."
-              bordered={false}
-              rows={6}
-              style={{ resize: 'none' }}
-            />
-          </div>
-        </Form.Item>
+         <Form.Item label={t('create_modal.description_label')} name="description">
+           <div className="border border-gray-300 rounded">
+             {/* Toolbar */}
+             <div className="flex gap-2 p-2 border-b border-gray-300 bg-gray-50">
+               <Button size="small" type="text" className="font-bold">B</Button>
+               <Button size="small" type="text" className="italic">I</Button>
+               <Button size="small" type="text">≡</Button>
+               <Button size="small" type="text">⊙</Button>
+               <Button size="small" type="text">🔗</Button>
+               <Button size="small" type="text">📷</Button>
+               <Button size="small" type="text">&lt;/&gt;</Button>
+             </div>
+             {/* Text Area */}
+             <TextArea
+               placeholder={t('create_modal.description_placeholder')}
+               bordered={false}
+               rows={6}
+               style={{ resize: 'none' }}
+             />
+           </div>
+         </Form.Item>
 
         {/* Priority and Dates */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <Form.Item
-            label="Priority"
-            name="priority"
-            rules={[{ required: true, message: 'Please select priority' }]}
-          >
-            <Select
-              suffixIcon={<span className="text-gray-400">▼</span>}
-              options={[
-                { label: '🔵 Low', value: 'Low' },
-                { label: '🟠 Medium', value: 'Medium' },
-                { label: '🔴 High', value: 'High' },
-                { label: '🟣 Critical', value: 'Critical' }
-              ]}
-            />
-          </Form.Item>
+         <div className="grid grid-cols-3 gap-4 mb-4">
+           <Form.Item
+             label={t('create_modal.priority_label')}
+             name="priority"
+             rules={[{ required: true, message: t('create_modal.priority_error') }]}
+           >
+             <Select
+               suffixIcon={<span className="text-gray-400">▼</span>}
+               options={[
+                 { label: '🔵 Low', value: 'Low' },
+                 { label: '🟠 Medium', value: 'Medium' },
+                 { label: '🔴 High', value: 'High' },
+                 { label: '🟣 Critical', value: 'Critical' }
+               ]}
+             />
+           </Form.Item>
 
-          <Form.Item label="Start Date" name="startDate">
-            <DatePicker 
-              className="w-full" 
-              format="MM/DD/YYYY"
-              placeholder="mm/dd/yyyy"
-              suffixIcon={<span className="text-gray-400">📅</span>}
-            />
-          </Form.Item>
+           <Form.Item label={t('create_modal.start_date_label')} name="startDate">
+             <DatePicker 
+               className="w-full" 
+               format="MM/DD/YYYY"
+               placeholder="mm/dd/yyyy"
+               suffixIcon={<span className="text-gray-400">📅</span>}
+             />
+           </Form.Item>
 
-          <Form.Item label="Due Date" name="dueDate">
-            <DatePicker 
-              className="w-full" 
-              format="MM/DD/YYYY"
-              placeholder="mm/dd/yyyy"
-              suffixIcon={<span className="text-gray-400">📅</span>}
-            />
-          </Form.Item>
-        </div>
+           <Form.Item label={t('create_modal.due_date_label')} name="dueDate">
+             <DatePicker 
+               className="w-full" 
+               format="MM/DD/YYYY"
+               placeholder="mm/dd/yyyy"
+               suffixIcon={<span className="text-gray-400">📅</span>}
+             />
+           </Form.Item>
+         </div>
 
         {/* Attachments */}
-        <Form.Item label="Attachments" name="attachments">
-          <Dragger {...uploadProps} className="bg-gray-50">
-            <p className="ant-upload-drag-icon">
-              <CloudUploadOutlined style={{ fontSize: 48, color: '#d9d9d9' }} />
-            </p>
-            <p className="ant-upload-text">
-              Drop files here or <span className="text-blue-600">browse</span>
-            </p>
-          </Dragger>
-        </Form.Item>
+         <Form.Item label={t('create_modal.attachments_label')} name="attachments">
+           <Dragger {...uploadProps} className="bg-gray-50">
+             <p className="ant-upload-drag-icon">
+               <CloudUploadOutlined style={{ fontSize: 48, color: '#d9d9d9' }} />
+             </p>
+             <p className="ant-upload-text">
+               {t('create_modal.attachments_hint')}
+             </p>
+           </Dragger>
+         </Form.Item>
       </Form>
     </Modal>
   );

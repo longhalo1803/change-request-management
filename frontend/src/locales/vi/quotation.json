@@ -7,7 +7,7 @@
     "cr_title": "Tiêu đề CR",
     "vendor": "Nhà cung cấp",
     "amount": "Số tiền",
-    "validity": "Hợp lệ cho đến",
+    "validity_date": "Hợp lệ cho đến",
     "status": "Trạng thái",
     "actions": "Hành động"
   },
@@ -25,6 +25,6 @@
   },
   "messages": {
     "loading": "Đang tải báo giá...",
-    "no_data": "Không tìm thấy báo giá"
+    "no_quotations": "Không tìm thấy báo giá"
   }
 }

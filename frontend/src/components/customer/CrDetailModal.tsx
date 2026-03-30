@@ -1,6 +1,7 @@
 import { Modal, Button, Tag, Avatar, Input, Tabs } from 'antd';
 import { ShareAltOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons';
 import { ChangeRequest, CrStatus } from '@/lib/types';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface CrDetailModalProps {
   open: boolean;
@@ -53,6 +54,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
   onReject,
   onApprove
 }) => {
+  const { t } = useTranslation('cr-list');
   if (!cr) return null;
 
   const statusConfig = getStatusConfig(cr.status);
@@ -143,7 +145,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       title={
         <div>
           <div className="text-sm text-gray-500">Project Alpha • {cr.id}</div>
-          <div className="text-lg font-semibold">Requirement Details</div>
+          <div className="text-lg font-semibold">{t('modal.details_title')}</div>
         </div>
       }
       open={open}
@@ -258,10 +260,10 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
             {cr.status === CrStatus.UNDER_ANALYSIS && (
               <>
                 <Button danger block onClick={onReject}>
-                  Reject
+                  {t('buttons.reject')}
                 </Button>
                 <Button type="primary" block onClick={onApprove}>
-                  Approve
+                  {t('buttons.approve')}
                 </Button>
               </>
             )}

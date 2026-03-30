@@ -3,8 +3,10 @@ import { Input, Button, Avatar, Space, Modal } from 'antd';
 import { SearchOutlined, FilterOutlined, PlusOutlined } from '@ant-design/icons';
 import { CrTable, CreateCrModal, CrDetailModal } from '@/components/customer';
 import { ChangeRequest, CrStatus } from '@/lib/types';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const CrListPage = () => {
+  const { t } = useTranslation('cr-list');
   const [searchText, setSearchText] = useState('');
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -107,17 +109,17 @@ const CrListPage = () => {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900 mb-1">
-              Change Request Management
+              {t('page_title')}
             </h1>
             <p className="text-sm text-gray-500">
-              Review and manage your CR back requests
+              {t('search_placeholder')}
             </p>
           </div>
           
           <div className="flex items-center gap-4">
             {/* Search Bar */}
             <Input
-              placeholder="Search CR ID or Title..."
+              placeholder={t('search_placeholder')}
               prefix={<SearchOutlined className="text-gray-400" />}
               value={searchText}
               onChange={handleSearchChange}
@@ -140,7 +142,7 @@ const CrListPage = () => {
                 size="large"
                 onClick={() => setIsFilterModalOpen(true)}
               >
-                Filters
+                {t('filter_button')}
               </Button>
               <Button 
                 type="primary" 
@@ -148,7 +150,7 @@ const CrListPage = () => {
                 size="large"
                 onClick={handleCreateClick}
               >
-                Create New CR
+                {t('create_button')}
               </Button>
             </Space>
           </div>
@@ -165,12 +167,12 @@ const CrListPage = () => {
 
       {/* Filter Modal */}
       <Modal
-        title="Filters"
+        title={t('filters.title')}
         open={isFilterModalOpen}
         onCancel={() => setIsFilterModalOpen(false)}
         footer={null}
       >
-        <p>Filter options will be implemented here</p>
+        <p>{t('messages.loading')}</p>
       </Modal>
 
       {/* Create CR Modal */}

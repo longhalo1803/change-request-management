@@ -7,7 +7,7 @@
     "cr_title": "CR Title",
     "vendor": "Vendor",
     "amount": "Amount",
-    "validity": "Valid Until",
+    "validity_date": "Valid Until",
     "status": "Status",
     "actions": "Actions"
   },
@@ -25,6 +25,6 @@
   },
   "messages": {
     "loading": "Loading quotations...",
-    "no_data": "No quotations found"
+    "no_quotations": "No quotations available"
   }
 }

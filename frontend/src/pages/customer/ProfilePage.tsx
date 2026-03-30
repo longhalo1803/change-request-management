@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Form, Input, Select, Button, Avatar, message, DatePicker } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuthStore } from '@/store/auth.store';
+import { useTranslation } from '@/hooks/useTranslation';
 import dayjs from 'dayjs';
 
 const ProfilePage = () => {
+  const { t } = useTranslation('profile');
   const [form] = Form.useForm();
   const user = useAuthStore((state) => state.user);
   const [isEditing, setIsEditing] = useState(false);
@@ -13,10 +15,11 @@ const ProfilePage = () => {
     try {
       const values = await form.validateFields();
       console.log('Profile updated:', values);
-      message.success('Profile updated successfully!');
+      message.success(t('messages.success'));
       setIsEditing(false);
     } catch (error) {
       console.error('Validation failed:', error);
+      message.error(t('messages.error'));
     }
   };
 
@@ -26,19 +29,19 @@ const ProfilePage = () => {
   };
 
   const handleEditPhoto = () => {
-    message.info('Photo upload functionality will be implemented');
+    message.info(t('profile_photo.upload_button'));
   };
 
   const handleDeleteProfile = () => {
-    message.warning('Delete profile functionality will be implemented');
+    message.warning(t('danger_zone.delete_confirmation'));
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Page Header */}
       <div className="max-w-6xl mx-auto mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">My Profile</h1>
-        <p className="text-gray-600">Manage your account settings and personal information.</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('page_title')}</h1>
+        <p className="text-gray-600">{t('page_subtitle')}</p>
       </div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -71,14 +74,14 @@ const ProfilePage = () => {
                 className="mb-3"
                 onClick={handleEditPhoto}
               >
-                EDIT PHOTO
+                {t('profile_photo.edit_button')}
               </Button>
               <Button 
                 danger 
                 block
                 onClick={handleDeleteProfile}
               >
-                DELETE PROFILE
+                {t('danger_zone.delete_profile_button')}
               </Button>
             </div>
           </div>
@@ -89,7 +92,7 @@ const ProfilePage = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center gap-2 mb-6">
               <UserOutlined className="text-blue-600 text-lg" />
-              <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('personal_info.title')}</h3>
             </div>
 
             <Form
@@ -107,7 +110,7 @@ const ProfilePage = () => {
               {/* Row 1: Full Name & Email */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Form.Item
-                  label="FULL NAME"
+                  label={t('personal_info.full_name')}
                   name="fullName"
                   rules={[{ required: true, message: 'Please enter your full name' }]}
                 >
@@ -118,7 +121,7 @@ const ProfilePage = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label="EMAIL ADDRESS"
+                  label={t('personal_info.email')}
                   name="email"
                   rules={[
                     { required: true, message: 'Please enter your email' },
@@ -136,7 +139,7 @@ const ProfilePage = () => {
               {/* Row 2: Gender & Date of Birth */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Form.Item
-                  label="GENDER"
+                  label={t('personal_info.phone')}
                   name="gender"
                 >
                   <Select
@@ -150,7 +153,7 @@ const ProfilePage = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label="DATE OF BIRTH"
+                  label={t('personal_info.joined_date')}
                   name="dateOfBirth"
                 >
                   <DatePicker 
@@ -161,9 +164,9 @@ const ProfilePage = () => {
                 </Form.Item>
               </div>
 
-              {/* Row 3: Phone Number */}
+               {/* Row 3: Phone Number */}
               <Form.Item
-                label="PHONE NUMBER"
+                label={t('personal_info.phone')}
                 name="phoneNumber"
               >
                 <Input 
@@ -174,7 +177,7 @@ const ProfilePage = () => {
 
               {/* Row 4: Office Address */}
               <Form.Item
-                label="OFFICE ADDRESS"
+                label={t('personal_info.department')}
                 name="officeAddress"
               >
                 <Input.TextArea 
@@ -195,15 +198,15 @@ const ProfilePage = () => {
                 {isEditing ? (
                   <>
                     <Button onClick={handleCancel}>
-                      Cancel
+                      {t('buttons.cancel')}
                     </Button>
                     <Button type="primary" onClick={handleSave}>
-                      Save Changes
+                      {t('buttons.save')}
                     </Button>
                   </>
                 ) : (
                   <Button type="primary" onClick={() => setIsEditing(true)}>
-                    Edit Profile
+                    {t('personal_info.edit_button')}
                   </Button>
                 )}
               </div>

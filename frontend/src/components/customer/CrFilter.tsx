@@ -1,6 +1,7 @@
 import { Card, Input, Select, Button, Space } from 'antd';
 import { SearchOutlined, ClearOutlined, PlusOutlined } from '@ant-design/icons';
 import { CrStatus } from '@/lib/types';
+import { useTranslation } from 'react-i18next';
 
 interface CrFilterProps {
   onSearchChange?: (value: string) => void;
@@ -17,19 +18,20 @@ export const CrFilter: React.FC<CrFilterProps> = ({
   onCreateClick,
   onClearFilters
 }) => {
+  const { t } = useTranslation('cr-list');
   return (
     <Card className="mb-6">
       <div className="flex gap-4 items-end justify-between">
         <div className="flex gap-4 flex-1">
           <Input
-            placeholder="Search by title or ID"
+            placeholder={t('filters.search_placeholder')}
             prefix={<SearchOutlined />}
             onChange={(e) => onSearchChange?.(e.target.value)}
             style={{ width: 200 }}
           />
 
           <Select
-            placeholder="Select Status"
+            placeholder={t('filters.status_placeholder')}
             onChange={onStatusChange}
             allowClear
             style={{ width: 150 }}
@@ -40,7 +42,7 @@ export const CrFilter: React.FC<CrFilterProps> = ({
           />
 
           <Select
-            placeholder="Select Priority"
+            placeholder={t('filters.priority_placeholder')}
             onChange={onPriorityChange}
             allowClear
             style={{ width: 150 }}
@@ -58,14 +60,14 @@ export const CrFilter: React.FC<CrFilterProps> = ({
             icon={<ClearOutlined />}
             onClick={onClearFilters}
           >
-            Clear
+            {t('filters.clear_button')}
           </Button>
           <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={onCreateClick}
           >
-            Create CR
+            {t('filters.create_cr_button')}
           </Button>
         </Space>
       </div>

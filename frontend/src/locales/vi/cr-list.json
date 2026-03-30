@@ -19,7 +19,12 @@
     "priority": "Ưu tiên",
     "date_range": "Khoảng thời gian",
     "apply": "Áp dụng bộ lọc",
-    "reset": "Đặt lại bộ lọc"
+    "reset": "Đặt lại bộ lọc",
+    "search_placeholder": "Tìm kiếm theo tiêu đề hoặc ID",
+    "status_placeholder": "Chọn Trạng thái",
+    "priority_placeholder": "Chọn Ưu tiên",
+    "clear_button": "Xóa",
+    "create_cr_button": "Tạo CR"
   },
   "messages": {
     "no_data": "Không tìm thấy yêu cầu thay đổi",
@@ -32,5 +37,36 @@
     "close": "Đóng",
     "save": "Lưu",
     "cancel": "Hủy"
+  },
+  "buttons": {
+    "approve": "Chấp nhận",
+    "reject": "Từ chối",
+    "cancel": "Hủy"
+  },
+  "create_modal": {
+    "title": "Tạo yêu cầu",
+    "subtitle": "SOLASHI Connect • Project Alpha",
+    "draft_info": "Bản nháp sẽ được lưu tự động",
+    "project_label": "Dự án / Không gian",
+    "project_error": "Vui lòng chọn dự án",
+    "issue_type_label": "Loại vấn đề",
+    "issue_type_error": "Vui lòng chọn loại vấn đề",
+    "parent_task_label": "Tác vụ cha",
+    "parent_task_placeholder": "Không có",
+    "status_label": "Trạng thái",
+    "summary_label": "Tóm tắt",
+    "summary_placeholder": "Ví dụ: Luồng đăng nhập thống nhất cho người dùng doanh nghiệp",
+    "summary_error": "Vui lòng nhập tóm tắt",
+    "summary_max_error": "Tóm tắt phải có ít hơn 255 ký tự",
+    "summary_counter": "{current}/255",
+    "description_label": "Mô tả",
+    "description_placeholder": "Mô tả yêu cầu chi tiết...",
+    "priority_label": "Ưu tiên",
+    "priority_error": "Vui lòng chọn ưu tiên",
+    "start_date_label": "Ngày bắt đầu",
+    "due_date_label": "Ngày đến hạn",
+    "attachments_label": "Tệp đính kèm",
+    "attachments_hint": "Thả tệp ở đây hoặc duyệt",
+    "success_message": "Yêu cầu thay đổi đã được tạo thành công!"
   }
 }

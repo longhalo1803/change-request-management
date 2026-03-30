@@ -19,7 +19,12 @@
     "priority": "優先度",
     "date_range": "日付範囲",
     "apply": "フィルターを適用",
-    "reset": "フィルターをリセット"
+    "reset": "フィルターをリセット",
+    "search_placeholder": "タイトルまたはIDで検索",
+    "status_placeholder": "ステータスを選択",
+    "priority_placeholder": "優先度を選択",
+    "clear_button": "クリア",
+    "create_cr_button": "CR を作成"
   },
   "messages": {
     "no_data": "変更リクエストが見つかりません",
@@ -32,5 +37,36 @@
     "close": "閉じる",
     "save": "保存",
     "cancel": "キャンセル"
+  },
+  "buttons": {
+    "approve": "承認",
+    "reject": "拒否",
+    "cancel": "キャンセル"
+  },
+  "create_modal": {
+    "title": "要件を作成",
+    "subtitle": "SOLASHI Connect • Project Alpha",
+    "draft_info": "ドラフトは自動的に保存されます",
+    "project_label": "プロジェクト / スペース",
+    "project_error": "プロジェクトを選択してください",
+    "issue_type_label": "問題のタイプ",
+    "issue_type_error": "問題のタイプを選択してください",
+    "parent_task_label": "親タスク",
+    "parent_task_placeholder": "なし",
+    "status_label": "ステータス",
+    "summary_label": "要約",
+    "summary_placeholder": "例：エンタープライズユーザーの統一ログインフロー",
+    "summary_error": "要約を入力してください",
+    "summary_max_error": "要約は255文字未満である必要があります",
+    "summary_counter": "{current}/255",
+    "description_label": "説明",
+    "description_placeholder": "要件の詳細を説明してください...",
+    "priority_label": "優先度",
+    "priority_error": "優先度を選択してください",
+    "start_date_label": "開始日",
+    "due_date_label": "期限",
+    "attachments_label": "添付ファイル",
+    "attachments_hint": "ファイルをここにドラッグするか、参照してください",
+    "success_message": "変更リクエストが正常に作成されました！"
   }
 }
