@@ -5,6 +5,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { RoleBasedRoute } from './RoleBasedRoute';
 import { CustomerLayout } from '@/layouts';
 import { AdminLayout } from '@/layouts/AdminLayout';
+import { PMLayout } from '@/layouts/PMLayout';
 import { UserRole } from '@/lib/types';
 
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
@@ -14,6 +15,9 @@ const CrListPage = lazy(() => import('@/pages/customer/CrListPage'));
 const ProfilePage = lazy(() => import('@/pages/customer/ProfilePage'));
 
 const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'));
+const AdminPermissionsPage = lazy(() => import('@/pages/admin/PermissionsPage'));
+
+const PMDashboardPage = lazy(() => import('@/pages/pm/PMDashboardPage'));
 
 const PageLoader = () => (
   <div style={{ 
@@ -49,6 +53,16 @@ const AppRouter = () => {
           <Route element={<RoleBasedRoute allowedRoles={[UserRole.ADMIN]} />}>
             <Route element={<AdminLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+              <Route path="/admin/permissions" element={<AdminPermissionsPage />} />
+            </Route>
+          </Route>
+        </Route>
+
+        {/* PM Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<RoleBasedRoute allowedRoles={[UserRole.PM]} />}>
+            <Route element={<PMLayout />}>
+              <Route path="/pm/dashboard" element={<PMDashboardPage />} />
             </Route>
           </Route>
         </Route>

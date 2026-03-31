@@ -6,3 +6,5 @@ export * from './attachment.types';
 export * from './quotation.types';
 export * from './sprint.types';
 export * from './task.types';
+export * from './admin.types';
+export * from './permission.types';

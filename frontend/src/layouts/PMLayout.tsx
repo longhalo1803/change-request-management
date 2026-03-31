@@ -1,32 +1,28 @@
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
-import { AdminHeader } from '@/components/AdminHeader';
+import { PMSidebar } from '@/components/pm/PMSidebar';
+import { PMHeader } from '@/components/pm/PMHeader';
 
 const { Content } = Layout;
 
 /**
- * Admin Layout Component
+ * PM Layout Component
  * 
- * Main layout for admin dashboard
- * Similar to CustomerLayout but for admin users
+ * Main layout for PM dashboard
+ * Similar to AdminLayout but for PM users
  * 
  * Features:
  * - Fixed white sidebar (240px width)
- * - Admin header with language switcher + notifications
+ * - PM header with language switcher + notifications
  * - Content area with light gray background
- * 
- * SOLID Principles:
- * - Single Responsibility: Only manages admin layout structure
- * - Open/Closed: Easy to extend with new sections
  */
-export const AdminLayout: React.FC = () => {
+export const PMLayout: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <AdminSidebar />
+      <PMSidebar />
 
       <Layout style={{ marginLeft: 240 }}>
-        <AdminHeader />
+        <PMHeader />
 
         <Content 
           style={{ 
@@ -42,4 +38,4 @@ export const AdminLayout: React.FC = () => {
   );
 };
 
-export default AdminLayout;
+export default PMLayout;

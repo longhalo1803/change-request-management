@@ -2,7 +2,7 @@ import { Layout, Menu, Avatar } from 'antd';
 import { 
   DashboardOutlined, 
   FileTextOutlined,
-  LockOutlined
+  TeamOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
@@ -14,21 +14,16 @@ import { UserOutlined } from '@ant-design/icons';
 const { Sider } = Layout;
 
 /**
- * Admin Sidebar Component
+ * PM Sidebar Component
  * 
- * White sidebar navigation for admin dashboard
+ * White sidebar navigation for PM dashboard
  * Shows:
  * - Logo component
- * - Admin avatar + name/role
- * - Navigation menu (Dashboard, CR List, Permissions)
+ * - PM avatar + name/role
+ * - Navigation menu (Dashboard, Projects, Team)
  * - Logout at bottom
- * 
- * SOLID Principles:
- * - Single Responsibility: Only manages admin navigation
- * - Open/Closed: Easy to add new admin menu items
- * - Dependency Inversion: Uses Logo component
  */
-export const AdminSidebar = () => {
+export const PMSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthStore();
@@ -36,8 +31,8 @@ export const AdminSidebar = () => {
 
   const getSelectedKey = () => {
     if (location.pathname.includes('dashboard')) return 'dashboard';
-    if (location.pathname.includes('change-requests')) return 'cr-list';
-    if (location.pathname.includes('permissions')) return 'permissions';
+    if (location.pathname.includes('projects')) return 'projects';
+    if (location.pathname.includes('team')) return 'team';
     return 'dashboard';
   };
 
@@ -46,19 +41,19 @@ export const AdminSidebar = () => {
       key: 'dashboard',
       icon: <DashboardOutlined />,
       label: 'Dashboard',
-      onClick: () => navigate('/admin/dashboard')
+      onClick: () => navigate('/pm/dashboard')
     },
     {
-      key: 'cr-list',
+      key: 'projects',
       icon: <FileTextOutlined />,
-      label: 'CR List',
-      onClick: () => navigate('/admin/change-requests')
+      label: 'Projects',
+      onClick: () => navigate('/pm/projects')
     },
     {
-      key: 'permissions',
-      icon: <LockOutlined />,
-      label: 'Permissions',
-      onClick: () => navigate('/admin/permissions')
+      key: 'team',
+      icon: <TeamOutlined />,
+      label: 'Team',
+      onClick: () => navigate('/pm/team')
     }
   ];
 
@@ -81,7 +76,7 @@ export const AdminSidebar = () => {
         <Logo size="small" showSubtitle={false} />
       </div>
 
-      {/* Admin Info Section */}
+      {/* PM Info Section */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center gap-3">
           <Avatar 
@@ -91,10 +86,10 @@ export const AdminSidebar = () => {
           />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold text-gray-900 truncate">
-              {user?.fullName || 'Admin User'}
+              {user?.fullName || 'PM User'}
             </div>
             <div className="text-xs text-gray-500 uppercase tracking-wider truncate">
-              {user?.role === 'admin' ? 'Administrator' : user?.role}
+              {user?.role === 'pm' ? 'Project Manager' : user?.role}
             </div>
           </div>
         </div>
@@ -125,4 +120,4 @@ export const AdminSidebar = () => {
   );
 };
 
-export default AdminSidebar;
+export default PMSidebar;

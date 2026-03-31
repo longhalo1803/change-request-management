@@ -1,220 +1,161 @@
-import { Row, Col, Card, Statistic, Table, Space, Tag } from 'antd';
-import { 
-  UserOutlined, 
-  FileTextOutlined, 
-  ProjectOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  ExclamationCircleOutlined
-} from '@ant-design/icons';
+import { useState, useEffect } from 'react';
+import { message, Spin } from 'antd';
 import { PageHeader } from '@/components/PageHeader';
 import { useTranslation } from '@/hooks/useTranslation';
+import { StatusOverview } from '@/modules/dashboard/StatusOverview';
+import {
+  FilterBar,
+  ProcessEfficiencyCard,
+  UserManagementCard,
+  Top5CustomersChart,
+  CRVolumeChart,
+  MetricsFooter
+} from '@/components/admin';
+import { DashboardStats, DateRangeOption } from '@/lib/types/admin.types';
+import { fetchDashboardStats, exportDashboardAsPDF } from '@/services/admin.service.mock';
 
 /**
  * Admin Dashboard Page
  * 
- * Displays system statistics and metrics
- * Shows overview of users, change requests, and projects
+ * Displays comprehensive dashboard with:
+ * - Status overview (donut chart)
+ * - Process efficiency metrics
+ * - User management statistics
+ * - CR volume trends by priority
+ * - Top 5 customers
+ * - Growth metrics and alerts
  * 
  * SOLID Principles:
- * - Single Responsibility: Only displays admin dashboard
- * - Dependency Inversion: Uses translation hook for i18n
+ * - Single Responsibility: Orchestrates dashboard components and data fetching
+ * - Open/Closed: Easy to extend with new metrics
+ * - Dependency Inversion: Uses service abstraction for data fetching
  */
 const AdminDashboardPage = () => {
   const { t } = useTranslation('admin');
+  const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const [dashboardData, setDashboardData] = useState<DashboardStats | null>(null);
+  const [filters, setFilters] = useState({
+    dateRange: 'last_30_days' as DateRangeOption,
+    customer: 'all',
+    pm: 'all'
+  });
 
-  // Mock statistics data
-  const stats = {
-    totalUsers: 42,
-    totalCrs: 157,
-    activeProjects: 8,
-    systemHealth: 98.5
+  // Fetch dashboard data
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchDashboardStats(filters);
+        setDashboardData(data);
+      } catch (error) {
+        message.error('Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [filters]);
+
+  // Handle filter changes
+  const handleDateRangeChange = (range: DateRangeOption) => {
+    setFilters(prev => ({ ...prev, dateRange: range }));
   };
 
-  // Mock recent activity data
-  const recentActivities = [
-    {
-      id: 1,
-      action: 'User Created',
-      description: 'New user john.doe@company.com added',
-      timestamp: '2026-03-31 10:30 AM',
-      user: 'Admin'
-    },
-    {
-      id: 2,
-      action: 'CR Approved',
-      description: 'Change Request CR-001 approved',
-      timestamp: '2026-03-31 09:15 AM',
-      user: 'Admin'
-    },
-    {
-      id: 3,
-      action: 'Project Created',
-      description: 'New project "Mobile App v2.0" created',
-      timestamp: '2026-03-30 03:45 PM',
-      user: 'Admin'
-    },
-    {
-      id: 4,
-      action: 'User Deleted',
-      description: 'User jane.smith@company.com removed',
-      timestamp: '2026-03-30 02:20 PM',
-      user: 'Admin'
-    }
-  ];
+  const handleCustomerChange = (customer: string) => {
+    setFilters(prev => ({ ...prev, customer }));
+  };
 
-  // Mock CR status data
-  const crStatusData = [
-    {
-      id: 1,
-      status: 'Approved',
-      count: 45,
-      percentage: 28.7,
-      icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
-      color: 'success'
-    },
-    {
-      id: 2,
-      status: 'Pending',
-      count: 78,
-      percentage: 49.7,
-      icon: <ClockCircleOutlined style={{ color: '#faad14' }} />,
-      color: 'warning'
-    },
-    {
-      id: 3,
-      status: 'Rejected',
-      count: 34,
-      percentage: 21.7,
-      icon: <ExclamationCircleOutlined style={{ color: '#ff4d4f' }} />,
-      color: 'error'
-    }
-  ];
+  const handlePMChange = (pm: string) => {
+    setFilters(prev => ({ ...prev, pm }));
+  };
 
-  const activityColumns = [
-    {
-      title: t('dashboard.recent_activity'),
-      dataIndex: 'action',
-      key: 'action',
-      width: '20%'
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      ellipsis: true
-    },
-    {
-      title: 'User',
-      dataIndex: 'user',
-      key: 'user',
-      width: 100
-    },
-    {
-      title: 'Time',
-      dataIndex: 'timestamp',
-      key: 'timestamp',
-      width: 180
+  // Handle PDF export
+  const handleExportPDF = async () => {
+    try {
+      setExporting(true);
+      await exportDashboardAsPDF();
+      message.success('Dashboard exported as PDF successfully!');
+    } catch (error) {
+      message.error('Failed to export dashboard');
+    } finally {
+      setExporting(false);
     }
-  ];
+  };
+
+  if (loading || !dashboardData) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <PageHeader 
-        title={t('dashboard.title')}
-        subtitle={t('dashboard.subtitle')}
-      />
+    <div className="bg-gray-50 min-h-screen">
+      <div className="max-w-full">
+        {/* Page Header */}
+        <PageHeader 
+          title={t('dashboard.title') || 'Admin Dashboard'}
+          subtitle={t('dashboard.subtitle') || 'Comprehensive analytics and metrics'}
+        />
 
-      <div style={{ padding: '24px' }}>
-        {/* Statistics Row */}
-        <Row gutter={[24, 24]} style={{ marginBottom: 24 }}>
-          <Col xs={24} sm={12} lg={6}>
-            <Card hoverable>
-              <Statistic
-                title={t('dashboard.statistics.total_users')}
-                value={stats.totalUsers}
-                prefix={<UserOutlined style={{ marginRight: 8 }} />}
-                valueStyle={{ color: '#0052CC' }}
+        {/* Main Content */}
+        <div className="px-6 py-6 space-y-6">
+          {/* Filter Bar */}
+          <FilterBar
+            dateRange={filters.dateRange}
+            onDateRangeChange={handleDateRangeChange}
+            selectedCustomer={filters.customer}
+            onCustomerChange={handleCustomerChange}
+            selectedPM={filters.pm}
+            onPMChange={handlePMChange}
+            onExportPDF={handleExportPDF}
+            isExporting={exporting}
+          />
+
+          {/* Top Row: Three Cards */}
+          <div className="grid grid-cols-3 gap-6">
+            <div className="col-span-2">
+              <StatusOverview
+                data={dashboardData.statusBreakdown
+                  .filter(item => item.status !== 'draft') // Hide DRAFT for admin
+                  .map(item => ({
+                    status: item.status,
+                    count: item.count,
+                    color: item.color,
+                    label: item.status.charAt(0).toUpperCase() + item.status.slice(1).replace(/_/g, ' ')
+                  }))}
+                totalCrs={dashboardData.totalCRs}
+                onViewDetails={() => message.info('View details - Coming soon')}
               />
-            </Card>
-          </Col>
+            </div>
+            <ProcessEfficiencyCard data={dashboardData.processEfficiency} />
+          </div>
 
-          <Col xs={24} sm={12} lg={6}>
-            <Card hoverable>
-              <Statistic
-                title={t('dashboard.statistics.total_crs')}
-                value={stats.totalCrs}
-                prefix={<FileTextOutlined style={{ marginRight: 8 }} />}
-                valueStyle={{ color: '#1890ff' }}
-              />
-            </Card>
-          </Col>
+          {/* Second Row */}
+          <div>
+            <UserManagementCard data={dashboardData.userManagement} />
+          </div>
 
-          <Col xs={24} sm={12} lg={6}>
-            <Card hoverable>
-              <Statistic
-                title={t('dashboard.statistics.active_projects')}
-                value={stats.activeProjects}
-                prefix={<ProjectOutlined style={{ marginRight: 8 }} />}
-                valueStyle={{ color: '#52c41a' }}
-              />
-            </Card>
-          </Col>
+          {/* Top 5 Customers */}
+          <Top5CustomersChart data={dashboardData.top5Customers} />
 
-          <Col xs={24} sm={12} lg={6}>
-            <Card hoverable>
-              <Statistic
-                title={t('dashboard.statistics.system_health')}
-                value={stats.systemHealth}
-                suffix="%"
-                precision={1}
-                valueStyle={{ color: '#faad14' }}
-              />
-            </Card>
-          </Col>
-        </Row>
+          {/* CR Volume Trends */}
+          <CRVolumeChart
+            data={dashboardData.crVolumeTrends}
+            onAnnualProjection={() => message.info('Annual Projection - Coming soon')}
+            growthPercentage={dashboardData.growthMetrics.percentage}
+          />
 
-        {/* CR Status and Recent Activity */}
-        <Row gutter={[24, 24]}>
-          <Col xs={24} lg={12}>
-            <Card 
-              title={t('dashboard.quick_stats')}
-              style={{ minHeight: '400px' }}
-            >
-              <Space direction="vertical" style={{ width: '100%' }} size="large">
-                {crStatusData.map((item) => (
-                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Space>
-                      {item.icon}
-                      <div>
-                        <p style={{ margin: 0, fontWeight: 600 }}>{item.status}</p>
-                        <p style={{ margin: 0, fontSize: 12, color: '#8c8c8c' }}>
-                          {item.count} requests
-                        </p>
-                      </div>
-                    </Space>
-                    <Tag color={item.color}>{item.percentage}%</Tag>
-                  </div>
-                ))}
-              </Space>
-            </Card>
-          </Col>
-
-          <Col xs={24} lg={12}>
-            <Card 
-              title={t('dashboard.recent_activity')}
-              style={{ minHeight: '400px' }}
-            >
-              <Table
-                dataSource={recentActivities}
-                columns={activityColumns}
-                pagination={false}
-                rowKey="id"
-                size="small"
-              />
-            </Card>
-          </Col>
-        </Row>
+          {/* Metrics Footer */}
+          <MetricsFooter
+            growthMetrics={dashboardData.growthMetrics}
+            priorityAlert={dashboardData.priorityAlert}
+            healthIndex={dashboardData.healthIndex}
+          />
+        </div>
       </div>
     </div>
   );
