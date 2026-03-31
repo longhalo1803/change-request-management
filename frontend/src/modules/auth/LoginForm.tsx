@@ -1,19 +1,22 @@
 import { Form, Input, Button, Checkbox } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useLogin } from '@/hooks/useLogin';
-import { useTranslation } from '@/hooks/useTranslation';
-import { loginSchema } from '@/lib/validators';
+import { useValidationSchemas } from '@/hooks/useValidationMessages';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import type { LoginFormData } from '@/lib/validators';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export const LoginForm = () => {
   const { t } = useTranslation('auth');
+  const { getLoginSchema } = useValidationSchemas();
   const loginMutation = useLogin();
-  
+
+  const loginSchema = getLoginSchema();
+
   const { control, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    mode: 'onBlur'
+    mode: 'onBlur',
   });
 
   const onSubmit = (data: LoginFormData) => {

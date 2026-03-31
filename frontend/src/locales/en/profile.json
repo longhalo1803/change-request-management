@@ -8,6 +8,8 @@
     "phone": "Phone Number",
     "role": "Role",
     "department": "Department",
+    "gender": "Gender",
+    "date_of_birth": "Date of Birth",
     "joined_date": "Joined Date",
     "edit_button": "Edit Profile"
   },

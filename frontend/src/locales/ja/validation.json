@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "email_required": "メールアドレスが必要です",
+    "email_invalid": "メールアドレスが無効です",
+    "password_required": "パスワードが必要です"
+  },
+  "comment": {
+    "content_required": "コメント内容は必須です",
+    "content_min_length": "内容は2文字以上である必要があります"
+  },
+  "cr": {
+    "title_required": "タイトルは必須です",
+    "title_min_length": "タイトルは5文字以上である必要があります",
+    "description_required": "説明は必須です",
+    "description_min_length": "説明は10文字以上である必要があります",
+    "status_required": "ステータスは必須です"
+  }
+}

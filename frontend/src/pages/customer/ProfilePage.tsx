@@ -153,10 +153,10 @@ const ProfilePage = () => {
 
                {/* Row 3: Gender & Date of Birth */}
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <Form.Item
-                   label={t('personal_info.gender') || 'Gender'}
-                   name="gender"
-                 >
+                  <Form.Item
+                    label={t('personal_info.gender')}
+                    name="gender"
+                  >
                    <Select
                      disabled={!isEditing}
                      options={[
@@ -167,10 +167,10 @@ const ProfilePage = () => {
                    />
                  </Form.Item>
 
-                 <Form.Item
-                   label={t('personal_info.joined_date')}
-                   name="dateOfBirth"
-                 >
+                  <Form.Item
+                    label={t('personal_info.date_of_birth')}
+                    name="dateOfBirth"
+                  >
                    <DatePicker 
                      className="w-full"
                      format="DD/MM/YYYY"

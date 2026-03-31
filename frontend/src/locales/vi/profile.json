@@ -8,6 +8,8 @@
     "phone": "Số điện thoại",
     "role": "Vai trò",
     "department": "Phòng ban",
+    "gender": "Giới tính",
+    "date_of_birth": "Ngày sinh",
     "joined_date": "Ngày tham gia",
     "edit_button": "Chỉnh sửa hồ sơ"
   },

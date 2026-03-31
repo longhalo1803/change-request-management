@@ -29,6 +29,9 @@ import viQuotation from '@/locales/vi/quotation.json';
 import enAdmin from '@/locales/en/admin.json';
 import jaAdmin from '@/locales/ja/admin.json';
 import viAdmin from '@/locales/vi/admin.json';
+import enValidation from '@/locales/en/validation.json';
+import jaValidation from '@/locales/ja/validation.json';
+import viValidation from '@/locales/vi/validation.json';
 
 export const resources = {
   en: {
@@ -38,7 +41,8 @@ export const resources = {
     'cr-list': enCrList,
     profile: enProfile,
     quotation: enQuotation,
-    admin: enAdmin
+    admin: enAdmin,
+    validation: enValidation
   },
   ja: {
     common: jaCommon,
@@ -47,7 +51,8 @@ export const resources = {
     'cr-list': jaCrList,
     profile: jaProfile,
     quotation: jaQuotation,
-    admin: jaAdmin
+    admin: jaAdmin,
+    validation: jaValidation
   },
   vi: {
     common: viCommon,
@@ -56,7 +61,8 @@ export const resources = {
     'cr-list': viCrList,
     profile: viProfile,
     quotation: viQuotation,
-    admin: viAdmin
+    admin: viAdmin,
+    validation: viValidation
   }
 } as const;
 
