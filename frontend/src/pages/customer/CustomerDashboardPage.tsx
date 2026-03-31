@@ -7,8 +7,8 @@ import {
   ClockCircleOutlined 
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { PageHeader } from '@/components/PageHeader';
-import { StatCard } from '@/components/StatCard';
+import { PageHeader } from '@/components/shared/PageHeader';
+import { StatCard } from '@/components/shared/StatCard';
 import { StatusOverview } from '@/modules/dashboard/StatusOverview';
 import { RecentActivity } from '@/modules/dashboard/RecentActivity';
 import { CreateCrModal } from '@/components/customer';

@@ -5,7 +5,7 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { LanguageSwitcher } from './LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/hooks/useTranslation';
 

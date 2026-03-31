@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { message, Spin } from 'antd';
-import { PageHeader } from '@/components/PageHeader';
+import { PageHeader } from '@/components/shared/PageHeader';
 import { useTranslation } from '@/hooks/useTranslation';
 import { StatusOverview } from '@/modules/dashboard/StatusOverview';
 import {

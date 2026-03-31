@@ -14,7 +14,9 @@ const ProfilePage = () => {
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
-      console.log('Profile updated:', values);
+      // Combine firstName and lastName
+      const fullName = `${values.firstName} ${values.lastName}`.trim();
+      console.log('Profile updated:', { ...values, fullName });
       message.success(t('messages.success'));
       setIsEditing(false);
     } catch (error) {
@@ -95,97 +97,110 @@ const ProfilePage = () => {
               <h3 className="text-lg font-semibold text-gray-900">{t('personal_info.title')}</h3>
             </div>
 
-            <Form
-              form={form}
-              layout="vertical"
-              initialValues={{
-                fullName: user?.fullName || 'Alex Nguyen',
-                email: user?.email || 'alex.n@solashi.com',
-                gender: 'Male',
-                dateOfBirth: dayjs('1997-04-01'),
-                phoneNumber: '+84 901 234 567',
-                officeAddress: '123 Tech Park, Cau Giay District, Hanoi, Vietnam'
-              }}
-            >
-              {/* Row 1: Full Name & Email */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Form.Item
-                  label={t('personal_info.full_name')}
-                  name="fullName"
-                  rules={[{ required: true, message: 'Please enter your full name' }]}
-                >
-                  <Input 
-                    placeholder="Enter your full name"
-                    disabled={!isEditing}
-                  />
-                </Form.Item>
+             <Form
+               form={form}
+               layout="vertical"
+               initialValues={{
+                 firstName: user?.fullName?.split(' ')[0] || 'Alex',
+                 lastName: user?.fullName?.split(' ').slice(1).join(' ') || 'Nguyen',
+                 email: user?.email || 'alex.n@solashi.com',
+                 gender: 'Male',
+                 dateOfBirth: dayjs('1997-04-01'),
+                 phoneNumber: '+84 901 234 567',
+                 officeAddress: '123 Tech Park, Cau Giay District, Hanoi, Vietnam'
+               }}
+             >
+               {/* Row 1: First Name & Last Name */}
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <Form.Item
+                   label="First Name"
+                   name="firstName"
+                   rules={[{ required: true, message: 'Please enter your first name' }]}
+                 >
+                   <Input 
+                     placeholder="Enter your first name"
+                     disabled={!isEditing}
+                   />
+                 </Form.Item>
 
-                <Form.Item
-                  label={t('personal_info.email')}
-                  name="email"
-                  rules={[
-                    { required: true, message: 'Please enter your email' },
-                    { type: 'email', message: 'Please enter a valid email' }
-                  ]}
-                >
-                  <Input 
-                    placeholder="Enter your email"
-                    disabled
-                    suffix={<LockOutlined className="text-gray-400" />}
-                  />
-                </Form.Item>
-              </div>
+                 <Form.Item
+                   label="Last Name"
+                   name="lastName"
+                   rules={[{ required: true, message: 'Please enter your last name' }]}
+                 >
+                   <Input 
+                     placeholder="Enter your last name"
+                     disabled={!isEditing}
+                   />
+                 </Form.Item>
+               </div>
 
-              {/* Row 2: Gender & Date of Birth */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Form.Item
-                  label={t('personal_info.phone')}
-                  name="gender"
-                >
-                  <Select
-                    disabled={!isEditing}
-                    options={[
-                      { label: 'Male', value: 'Male' },
-                      { label: 'Female', value: 'Female' },
-                      { label: 'Other', value: 'Other' }
-                    ]}
-                  />
-                </Form.Item>
+               {/* Row 2: Email */}
+               <Form.Item
+                 label={t('personal_info.email')}
+                 name="email"
+                 rules={[
+                   { required: true, message: 'Please enter your email' },
+                   { type: 'email', message: 'Please enter a valid email' }
+                 ]}
+               >
+                 <Input 
+                   placeholder="Enter your email"
+                   disabled
+                   suffix={<LockOutlined className="text-gray-400" />}
+                 />
+               </Form.Item>
 
-                <Form.Item
-                  label={t('personal_info.joined_date')}
-                  name="dateOfBirth"
-                >
-                  <DatePicker 
-                    className="w-full"
-                    format="DD/MM/YYYY"
-                    disabled={!isEditing}
-                  />
-                </Form.Item>
-              </div>
+               {/* Row 3: Gender & Date of Birth */}
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <Form.Item
+                   label={t('personal_info.gender') || 'Gender'}
+                   name="gender"
+                 >
+                   <Select
+                     disabled={!isEditing}
+                     options={[
+                       { label: 'Male', value: 'Male' },
+                       { label: 'Female', value: 'Female' },
+                       { label: 'Other', value: 'Other' }
+                     ]}
+                   />
+                 </Form.Item>
 
-               {/* Row 3: Phone Number */}
-              <Form.Item
-                label={t('personal_info.phone')}
-                name="phoneNumber"
-              >
-                <Input 
-                  placeholder="Enter your phone number"
-                  disabled={!isEditing}
-                />
-              </Form.Item>
+                 <Form.Item
+                   label={t('personal_info.joined_date')}
+                   name="dateOfBirth"
+                 >
+                   <DatePicker 
+                     className="w-full"
+                     format="DD/MM/YYYY"
+                     disabled={!isEditing}
+                   />
+                 </Form.Item>
+               </div>
 
-              {/* Row 4: Office Address */}
-              <Form.Item
-                label={t('personal_info.department')}
-                name="officeAddress"
-              >
-                <Input.TextArea 
-                  placeholder="Enter your office address"
-                  rows={3}
-                  disabled={!isEditing}
-                />
-              </Form.Item>
+                {/* Row 4: Phone Number */}
+               <Form.Item
+                 label={t('personal_info.phone')}
+                 name="phoneNumber"
+               >
+                 <Input 
+                   placeholder="Enter your phone number"
+                   disabled={!isEditing}
+                 />
+               </Form.Item>
+
+               {/* Row 5: Office Address */}
+               <Form.Item
+                 label={t('personal_info.department')}
+                 name="officeAddress"
+               >
+                 <Input.TextArea 
+                   placeholder="Enter your office address"
+                   rows={3}
+                   disabled={!isEditing}
+                 />
+               </Form.Item>
 
               {/* Footer Note */}
               <div className="text-sm text-gray-500 mb-4">

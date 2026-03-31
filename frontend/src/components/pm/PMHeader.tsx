@@ -1,7 +1,7 @@
 import { Button, Badge, Dropdown, Avatar } from 'antd';
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/hooks/useTranslation';
 

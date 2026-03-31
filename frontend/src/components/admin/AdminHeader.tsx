@@ -1,6 +1,6 @@
 import { Button, Badge } from 'antd';
 import { BellOutlined } from '@ant-design/icons';
-import { LanguageSwitcher } from './LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
 
 /**
  * Admin Header Component

@@ -1,7 +1,7 @@
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
-import { AdminHeader } from '@/components/AdminHeader';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 const { Content } = Layout;
 

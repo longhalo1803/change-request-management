@@ -7,7 +7,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
 import { useAuth } from '@/hooks/useAuth';
-import { Logo } from '@/components/Logo';
+import { Logo } from '@/components/shared/Logo';
 import type { MenuProps } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 

@@ -6,7 +6,7 @@ import {
   QuestionCircleOutlined 
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Logo } from '../Logo';
+import { Logo } from '@/components/shared/Logo';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const { Sider } = Layout;

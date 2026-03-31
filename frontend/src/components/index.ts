@@ -1,6 +1,8 @@
-export { Logo } from './Logo';
-export { Header } from './Header';
-export { PageHeader } from './PageHeader';
-export { StatCard } from './StatCard';
-export { LanguageSwitcher } from './LanguageSwitcher';
+// Shared components
+export * from './shared';
+
+// Role-based components
+export * from './admin';
 export * from './customer';
+export * from './pm';
+export * from './permissions';

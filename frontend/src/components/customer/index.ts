@@ -1,3 +1,4 @@
+export { Header } from './Header';
 export * from './CrTable';
 export * from './CrFilter';
 export * from './CustomerSidebar';

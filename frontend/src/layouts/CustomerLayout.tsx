@@ -1,7 +1,7 @@
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import { CustomerSidebar } from '@/components/customer/CustomerSidebar';
-import { Header } from '@/components/Header';
+import { Header } from '@/components/customer/Header';
 
 const { Content } = Layout;
 

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Row, Col, Typography, Space } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const { Title, Text, Paragraph } = Typography;

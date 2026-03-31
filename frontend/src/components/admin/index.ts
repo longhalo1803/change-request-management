@@ -1,4 +1,5 @@
 export { AdminSidebar } from './AdminSidebar';
+export { AdminHeader } from './AdminHeader';
 export { FilterBar } from './FilterBar';
 export { StatusOverviewCard } from './StatusOverviewCard';
 export { ProcessEfficiencyCard } from './ProcessEfficiencyCard';
