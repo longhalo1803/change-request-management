@@ -1,8 +1,8 @@
 export enum SubTaskStatus {
-  TODO = 'todo',
-  IN_PROGRESS = 'in_progress',
-  DONE = 'done',
-  BLOCKED = 'blocked'
+  TODO = "todo",
+  IN_PROGRESS = "in_progress",
+  DONE = "done",
+  BLOCKED = "blocked",
 }
 
 export interface CrSubTask {

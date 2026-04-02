@@ -3,14 +3,20 @@
  * Provides mock implementations of admin dashboard data
  */
 
-import { DashboardStats, DateRangeOption, DashboardFilters } from '@/lib/types/admin.types';
-import { ADMIN_DASHBOARD_MOCK_DATA } from '@/mock-data/admin-dashboard';
+import {
+  DashboardStats,
+  DateRangeOption,
+  DashboardFilters,
+} from "@/lib/types/admin.types";
+import { ADMIN_DASHBOARD_MOCK_DATA } from "@/mock-data/admin-dashboard";
 
 /**
  * Simulates fetching dashboard statistics
  * In a real app, this would call an API endpoint
  */
-export const fetchDashboardStats = async (_filters?: DashboardFilters): Promise<DashboardStats> => {
+export const fetchDashboardStats = async (
+  _filters?: DashboardFilters,
+): Promise<DashboardStats> => {
   // Simulate network delay
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -25,9 +31,9 @@ export const fetchDashboardStats = async (_filters?: DashboardFilters): Promise<
  * Get dashboard stats with date range filter
  */
 export const getDashboardStatsByDateRange = async (
-  dateRange: DateRangeOption
+  dateRange: DateRangeOption,
 ): Promise<DashboardStats> => {
-  return fetchDashboardStats({ dateRange, customer: 'all', pm: 'all' });
+  return fetchDashboardStats({ dateRange, customer: "all", pm: "all" });
 };
 
 /**
@@ -36,7 +42,7 @@ export const getDashboardStatsByDateRange = async (
 export const getDashboardStatsFiltered = async (
   dateRange: DateRangeOption,
   customer: string,
-  pm: string
+  pm: string,
 ): Promise<DashboardStats> => {
   return fetchDashboardStats({ dateRange, customer, pm });
 };
@@ -48,7 +54,7 @@ export const exportDashboardAsPDF = async (): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       // In production, this would generate a real PDF
-      console.log('Dashboard exported as PDF');
+      console.log("Dashboard exported as PDF");
       resolve();
     }, 1000);
   });

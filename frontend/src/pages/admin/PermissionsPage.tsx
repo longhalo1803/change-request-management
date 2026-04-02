@@ -1,5 +1,5 @@
-import { PageHeader } from '@/components/shared/PageHeader';
-import { PermissionsPage } from '@/components/permissions';
+import { PageHeader } from "@/components/shared/PageHeader";
+import { PermissionsPage } from "@/components/permissions";
 
 /**
  * Admin Permissions Page
@@ -10,7 +10,7 @@ const AdminPermissionsPage = () => {
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-full">
         {/* Page Header */}
-        <PageHeader 
+        <PageHeader
           title="Permissions Management"
           subtitle="Manage user accounts and permission groups"
         />

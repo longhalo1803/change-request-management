@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '@/lib/i18n/config';
-import type { SupportedLanguage } from '@/lib/i18n/resources';
-import i18n from '@/lib/i18n/config';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from "@/lib/i18n/config";
+import type { SupportedLanguage } from "@/lib/i18n/resources";
+import i18n from "@/lib/i18n/config";
 
 interface LanguageState {
   currentLanguage: SupportedLanguage;
@@ -30,14 +30,14 @@ export const useLanguageStore = create<LanguageStore>()(
         await i18n.changeLanguage(DEFAULT_LANGUAGE);
         set({ currentLanguage: DEFAULT_LANGUAGE });
         document.documentElement.lang = DEFAULT_LANGUAGE;
-      }
+      },
     }),
     {
       name: LANGUAGE_STORAGE_KEY,
-      partialize: (state) => ({ currentLanguage: state.currentLanguage })
-    }
-  )
+      partialize: (state) => ({ currentLanguage: state.currentLanguage }),
+    },
+  ),
 );
 
-export const selectCurrentLanguage = (state: LanguageStore) => state.currentLanguage;
-
+export const selectCurrentLanguage = (state: LanguageStore) =>
+  state.currentLanguage;

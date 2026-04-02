@@ -65,7 +65,11 @@ export interface DashboardStats {
   healthIndex: HealthIndexMetrics;
 }
 
-export type DateRangeOption = 'last_7_days' | 'last_30_days' | 'last_90_days' | 'custom';
+export type DateRangeOption =
+  | "last_7_days"
+  | "last_30_days"
+  | "last_90_days"
+  | "custom";
 
 export interface DashboardFilters {
   dateRange: DateRangeOption;

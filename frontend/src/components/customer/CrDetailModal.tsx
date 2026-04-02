@@ -1,7 +1,11 @@
-import { Modal, Button, Tag, Avatar, Input, Tabs } from 'antd';
-import { ShareAltOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons';
-import { ChangeRequest, CrStatus } from '@/lib/types';
-import { useTranslation } from '@/hooks/useTranslation';
+import { Modal, Button, Tag, Avatar, Input, Tabs } from "antd";
+import {
+  ShareAltOutlined,
+  CloseOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { ChangeRequest, CrStatus } from "@/lib/types";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface CrDetailModalProps {
   open: boolean;
@@ -9,39 +13,40 @@ interface CrDetailModalProps {
   onCancel: () => void;
   onReject?: () => void;
   onApprove?: () => void;
+  onDelete?: () => void;
+  onSubmit?: () => void;
 }
 
 const { TextArea } = Input;
 
 const getStatusConfig = (status: CrStatus) => {
   const configMap: Record<CrStatus, { color: string; text: string }> = {
-    [CrStatus.DRAFT]: { color: 'default', text: 'Draft' },
-    [CrStatus.SUBMITTED]: { color: 'blue', text: 'Submitted' },
-    [CrStatus.UNDER_ANALYSIS]: { color: 'blue', text: 'IN DISCUSSION' },
-    [CrStatus.PENDING_INFO]: { color: 'warning', text: 'Pending Info' },
-    [CrStatus.PENDING_APPROVAL]: { color: 'warning', text: 'Pending Approval' },
-    [CrStatus.APPROVED]: { color: 'green', text: 'Approved' },
-    [CrStatus.ONGOING]: { color: 'processing', text: 'Ongoing' },
-    [CrStatus.BLOCKED]: { color: 'error', text: 'Blocked' },
-    [CrStatus.REJECTED]: { color: 'red', text: 'Rejected' },
-    [CrStatus.CLOSED]: { color: 'default', text: 'Closed' }
+    [CrStatus.DRAFT]: { color: "default", text: "Draft" },
+    [CrStatus.SUBMITTED]: { color: "blue", text: "Submitted" },
+    [CrStatus.IN_DISCUSSION]: { color: "orange", text: "In Discussion" },
+    [CrStatus.APPROVED]: { color: "green", text: "Approved" },
+    [CrStatus.ONGOING]: { color: "processing", text: "Ongoing" },
+    [CrStatus.REJECTED]: { color: "red", text: "Rejected" },
+    [CrStatus.CLOSED]: { color: "default", text: "Closed" },
   };
-  return configMap[status] || { color: 'default', text: status };
+  return configMap[status] || { color: "default", text: status };
 };
 
 const getPriorityConfig = (priority: string) => {
   const configMap: Record<string, { color: string; text: string }> = {
-    'low': { color: 'blue', text: 'LOW' },
-    'medium': { color: 'orange', text: 'MEDIUM' },
-    'high': { color: 'red', text: 'HIGH' },
-    'critical': { color: 'red', text: 'CRITICAL' }
+    low: { color: "blue", text: "LOW" },
+    medium: { color: "orange", text: "MEDIUM" },
+    high: { color: "red", text: "HIGH" },
+    critical: { color: "red", text: "CRITICAL" },
   };
-  return configMap[priority] || { color: 'default', text: priority.toUpperCase() };
+  return (
+    configMap[priority] || { color: "default", text: priority.toUpperCase() }
+  );
 };
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  const month = date.toLocaleString('en-US', { month: 'short' });
+  const month = date.toLocaleString("en-US", { month: "short" });
   const day = date.getDate();
   const year = date.getFullYear();
   return `${month} ${day}, ${year}`;
@@ -52,9 +57,11 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
   cr,
   onCancel,
   onReject,
-  onApprove
+  onApprove,
+  onDelete,
+  onSubmit,
 }) => {
-  const { t } = useTranslation('cr-list');
+  const { t } = useTranslation("cr-list");
   if (!cr) return null;
 
   const statusConfig = getStatusConfig(cr.status);
@@ -64,31 +71,33 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
   const activityLog = [
     {
       id: 1,
-      user: 'Dashboard',
-      role: 'Dashboard',
-      avatar: 'MC',
-      comment: 'I\'ve reviewed the API documentation for Stripe. We need to confirm if the customer wants to support local payment methods in Japan like Konbini.',
-      timestamp: 'Aug 24, 2024 • Updated 2 hours ago'
+      user: "Dashboard",
+      role: "Dashboard",
+      avatar: "MC",
+      comment:
+        "I've reviewed the API documentation for Stripe. We need to confirm if the customer wants to support local payment methods in Japan like Konbini.",
+      timestamp: "Aug 24, 2024 • Updated 2 hours ago",
     },
     {
       id: 2,
-      user: 'Dashboard',
-      role: 'Dashboard',
-      avatar: 'MC',
-      comment: 'Yes, Konbini is a requirement for the first phase. Please include it in the estimation.',
-      timestamp: ''
-    }
+      user: "Dashboard",
+      role: "Dashboard",
+      avatar: "MC",
+      comment:
+        "Yes, Konbini is a requirement for the first phase. Please include it in the estimation.",
+      timestamp: "",
+    },
   ];
 
   const tabItems = [
     {
-      key: 'all',
-      label: 'All',
+      key: "all",
+      label: "All",
       children: (
         <div className="space-y-4">
           {activityLog.map((activity) => (
             <div key={activity.id} className="flex gap-3">
-              <Avatar size={32} style={{ backgroundColor: '#1890ff' }}>
+              <Avatar size={32} style={{ backgroundColor: "#1890ff" }}>
                 {activity.avatar}
               </Avatar>
               <div className="flex-1">
@@ -100,12 +109,14 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
                   {activity.comment}
                 </div>
                 {activity.timestamp && (
-                  <div className="text-xs text-gray-400 mt-1">{activity.timestamp}</div>
+                  <div className="text-xs text-gray-400 mt-1">
+                    {activity.timestamp}
+                  </div>
                 )}
               </div>
             </div>
           ))}
-          
+
           {/* Comment Input */}
           <div className="flex gap-3 mt-4">
             <Avatar size={32} icon={<UserOutlined />} />
@@ -121,23 +132,23 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
             </div>
           </div>
         </div>
-      )
+      ),
     },
     {
-      key: 'history',
-      label: 'History',
-      children: <div>History content</div>
+      key: "history",
+      label: "History",
+      children: <div>History content</div>,
     },
     {
-      key: 'comments',
-      label: 'Comments',
-      children: <div>Comments content</div>
+      key: "comments",
+      label: "Comments",
+      children: <div>Comments content</div>,
     },
     {
-      key: 'attachments',
-      label: 'Attachments',
-      children: <div>Attachments content</div>
-    }
+      key: "attachments",
+      label: "Attachments",
+      children: <div>Attachments content</div>,
+    },
   ];
 
   return (
@@ -145,7 +156,9 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       title={
         <div>
           <div className="text-sm text-gray-500">Project Alpha • {cr.id}</div>
-          <div className="text-lg font-semibold">{t('modal.details_title')}</div>
+          <div className="text-lg font-semibold">
+            {t("modal.details_title")}
+          </div>
         </div>
       }
       open={open}
@@ -153,14 +166,14 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       width={900}
       closeIcon={
         <div className="flex items-center gap-3 pr-2">
-          <Button 
-            type="text" 
-            icon={<ShareAltOutlined />} 
+          <Button
+            type="text"
+            icon={<ShareAltOutlined />}
             className="text-gray-500 hover:text-gray-700"
             size="middle"
             onClick={(e) => {
               e.stopPropagation();
-              console.log('Share clicked');
+              console.log("Share clicked");
             }}
           />
           <CloseOutlined className="text-gray-500 hover:text-gray-700" />
@@ -182,33 +195,51 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
 
           {/* Description Section */}
           <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">DESCRIPTION</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+              DESCRIPTION
+            </h3>
             <div className="text-gray-700 space-y-2">
               <p>
-                To enhance the mobile shopping experience, we need to integrate a unified payment gateway that supports multiple 
-                providers including <strong>Stripe</strong>, <strong>PayPal</strong>, and <strong>Apple Pay</strong> directly within the checkout flow.
+                To enhance the mobile shopping experience, we need to integrate
+                a unified payment gateway that supports multiple providers
+                including <strong>Stripe</strong>, <strong>PayPal</strong>, and{" "}
+                <strong>Apple Pay</strong> directly within the checkout flow.
               </p>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li><strong>Universal UI:</strong> A cohesive payment selector matching the SOLASHI brand.</li>
-                <li><strong>Security:</strong> Full PCI-DSS compliance and 3D Secure 2.0 implementation.</li>
-                <li><strong>Callbacks:</strong> Real-time webhook processing for immediate order confirmation.</li>
+                <li>
+                  <strong>Universal UI:</strong> A cohesive payment selector
+                  matching the SOLASHI brand.
+                </li>
+                <li>
+                  <strong>Security:</strong> Full PCI-DSS compliance and 3D
+                  Secure 2.0 implementation.
+                </li>
+                <li>
+                  <strong>Callbacks:</strong> Real-time webhook processing for
+                  immediate order confirmation.
+                </li>
               </ul>
               <p className="text-sm text-gray-600">
-                This CR replaces the previous manual bank transfer method which had a high bounce rate during Q3.
+                This CR replaces the previous manual bank transfer method which
+                had a high bounce rate during Q3.
               </p>
             </div>
           </div>
 
           {/* Activity Log Section */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">ACTIVITY LOG</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">
+              ACTIVITY LOG
+            </h3>
             <Tabs items={tabItems} />
           </div>
         </div>
 
         {/* Right Sidebar - Attributes */}
         <div className="w-64 bg-gray-50 p-6 border-l">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4">ATTRIBUTES</h3>
+          <h3 className="text-sm font-semibold text-gray-700 mb-4">
+            ATTRIBUTES
+          </h3>
 
           <div className="space-y-4">
             {/* Priority */}
@@ -247,7 +278,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
             <div>
               <div className="text-xs text-gray-500 mb-1">Reporter</div>
               <div className="flex items-center gap-2">
-                <Avatar size={24} style={{ backgroundColor: '#87d068' }}>
+                <Avatar size={24} style={{ backgroundColor: "#87d068" }}>
                   SG
                 </Avatar>
                 <span className="text-sm font-medium">Sarah Connor</span>
@@ -257,13 +288,23 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
 
           {/* Action Buttons */}
           <div className="mt-6 space-y-2">
-            {cr.status === CrStatus.UNDER_ANALYSIS && (
+            {cr.status === CrStatus.DRAFT && (
+              <>
+                <Button danger block onClick={onDelete}>
+                  Delete
+                </Button>
+                <Button type="primary" block onClick={onSubmit}>
+                  Submit
+                </Button>
+              </>
+            )}
+            {cr.status === CrStatus.IN_DISCUSSION && (
               <>
                 <Button danger block onClick={onReject}>
-                  {t('buttons.reject')}
+                  {t("buttons.reject")}
                 </Button>
                 <Button type="primary" block onClick={onApprove}>
-                  {t('buttons.approve')}
+                  {t("buttons.approve")}
                 </Button>
               </>
             )}

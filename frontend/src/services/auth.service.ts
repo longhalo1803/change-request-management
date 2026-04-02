@@ -1,8 +1,8 @@
-import axiosInstance from '@/lib/axios';
-import type { ApiResponse } from '@/lib/types';
-import type { User } from '@/lib/types';
-import { appConfig } from '@/config/app.config';
-import { authServiceMock } from './auth.service.mock';
+import axiosInstance from "@/lib/axios";
+import type { ApiResponse } from "@/lib/types";
+import type { User } from "@/lib/types";
+import { appConfig } from "@/config/app.config";
+import { authServiceMock } from "./auth.service.mock";
 
 export interface LoginCredentials {
   email: string;
@@ -30,8 +30,8 @@ export const authService = {
     }
 
     const response = await axiosInstance.post<ApiResponse<LoginResponse>>(
-      '/auth/login',
-      credentials
+      "/auth/login",
+      credentials,
     );
     return response.data.data;
   },
@@ -41,10 +41,9 @@ export const authService = {
       return authServiceMock.refreshToken(refreshToken);
     }
 
-    const response = await axiosInstance.post<ApiResponse<RefreshTokenResponse>>(
-      '/auth/refresh',
-      { refreshToken }
-    );
+    const response = await axiosInstance.post<
+      ApiResponse<RefreshTokenResponse>
+    >("/auth/refresh", { refreshToken });
     return response.data.data;
   },
 
@@ -53,7 +52,7 @@ export const authService = {
       return authServiceMock.logout(refreshToken);
     }
 
-    await axiosInstance.post('/auth/logout', { refreshToken });
+    await axiosInstance.post("/auth/logout", { refreshToken });
   },
 
   async getCurrentUser(): Promise<User> {
@@ -61,7 +60,7 @@ export const authService = {
       return authServiceMock.getCurrentUser();
     }
 
-    const response = await axiosInstance.get<ApiResponse<User>>('/auth/me');
+    const response = await axiosInstance.get<ApiResponse<User>>("/auth/me");
     return response.data.data;
-  }
+  },
 };

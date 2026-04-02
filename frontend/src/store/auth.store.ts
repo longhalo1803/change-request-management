@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { User } from '@/lib/types/user.types';
+import { create } from "zustand";
+import { User } from "@/lib/types/user.types";
 
 interface AuthState {
   user: User | null;
@@ -17,10 +17,10 @@ interface AuthActions {
 
 type AuthStore = AuthState & AuthActions;
 
-const STORAGE_KEY = 'cr_auth_token';
-const USER_STORAGE_KEY = 'cr_auth_user';
+const STORAGE_KEY = "cr_auth_token";
+const USER_STORAGE_KEY = "cr_auth_user";
 
-const loadInitialState = (): Pick<AuthState, 'accessToken' | 'user'> => {
+const loadInitialState = (): Pick<AuthState, "accessToken" | "user"> => {
   try {
     const token = localStorage.getItem(STORAGE_KEY);
     const userJson = localStorage.getItem(USER_STORAGE_KEY);
@@ -44,15 +44,15 @@ export const useAuthStore = create<AuthStore>((set) => {
       localStorage.setItem(STORAGE_KEY, accessToken);
       set({
         accessToken,
-        refreshToken
+        refreshToken,
       });
     },
 
     setUser: (user: User) => {
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
-      set({ 
-        user, 
-        isAuthenticated: true 
+      set({
+        user,
+        isAuthenticated: true,
       });
     },
 
@@ -68,12 +68,13 @@ export const useAuthStore = create<AuthStore>((set) => {
         user: null,
         accessToken: null,
         refreshToken: null,
-        isAuthenticated: false
+        isAuthenticated: false,
       });
-    }
+    },
   };
 });
 
 export const selectUser = (state: AuthStore) => state.user;
-export const selectIsAuthenticated = (state: AuthStore) => state.isAuthenticated;
+export const selectIsAuthenticated = (state: AuthStore) =>
+  state.isAuthenticated;
 export const selectUserRole = (state: AuthStore) => state.user?.role;

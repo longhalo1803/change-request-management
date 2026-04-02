@@ -3,7 +3,11 @@
  * Displays growth metrics, priority alerts, and health index
  */
 
-import { GrowthMetrics, PriorityAlert, HealthIndexMetrics } from '@/lib/types/admin.types';
+import {
+  GrowthMetrics,
+  PriorityAlert,
+  HealthIndexMetrics,
+} from "@/lib/types/admin.types";
 
 interface MetricsFooterProps {
   growthMetrics: GrowthMetrics;
@@ -14,7 +18,7 @@ interface MetricsFooterProps {
 export const MetricsFooter = ({
   growthMetrics,
   priorityAlert,
-  healthIndex
+  healthIndex,
 }: MetricsFooterProps) => {
   return (
     <div className="grid grid-cols-3 gap-6">
@@ -24,10 +28,14 @@ export const MetricsFooter = ({
           <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
             <span className="text-lg">📊</span>
           </div>
-          <h4 className="font-semibold text-gray-800 text-sm uppercase">GROWTH METRICS</h4>
+          <h4 className="font-semibold text-gray-800 text-sm uppercase">
+            GROWTH METRICS
+          </h4>
         </div>
         <p className="text-gray-600 text-sm mb-2">{growthMetrics.comparison}</p>
-        <p className="text-3xl font-bold text-green-600">+{growthMetrics.percentage}%</p>
+        <p className="text-3xl font-bold text-green-600">
+          +{growthMetrics.percentage}%
+        </p>
       </div>
 
       {/* Priority Alert Card */}
@@ -36,9 +44,13 @@ export const MetricsFooter = ({
           <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
             <span className="text-lg">⚠️</span>
           </div>
-          <h4 className="font-semibold text-gray-800 text-sm uppercase">PRIORITY ALERT</h4>
+          <h4 className="font-semibold text-gray-800 text-sm uppercase">
+            PRIORITY ALERT
+          </h4>
         </div>
-        <p className="text-gray-600 text-sm mb-2">{priorityAlert.description}</p>
+        <p className="text-gray-600 text-sm mb-2">
+          {priorityAlert.description}
+        </p>
         <p className="text-3xl font-bold text-red-600">{priorityAlert.value}</p>
       </div>
 
@@ -48,7 +60,9 @@ export const MetricsFooter = ({
           <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
             <span className="text-lg">💚</span>
           </div>
-          <h4 className="font-semibold text-gray-800 text-sm uppercase">HEALTH INDEX</h4>
+          <h4 className="font-semibold text-gray-800 text-sm uppercase">
+            HEALTH INDEX
+          </h4>
         </div>
         <p className="text-gray-600 text-sm mb-2">{healthIndex.description}</p>
         <p className="text-3xl font-bold text-gray-800">{healthIndex.ratio}</p>

@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Card } from "antd";
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -14,37 +14,31 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   label,
   subtitle,
-  iconColor = '#1890ff',
-  iconBgColor = '#e6f7ff'
+  iconColor = "#1890ff",
+  iconBgColor = "#e6f7ff",
 }) => {
   return (
-    <Card 
+    <Card
       className="hover:shadow-md transition-shadow"
-      styles={{ body: { padding: '24px' } }}
+      styles={{ body: { padding: "24px" } }}
     >
       <div className="flex items-start gap-4">
-        <div 
+        <div
           className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-          style={{ 
+          style={{
             backgroundColor: iconBgColor,
-            color: iconColor
+            color: iconColor,
           }}
         >
           <span className="text-2xl">{icon}</span>
         </div>
 
         <div className="flex-1">
-          <div className="text-3xl font-bold text-gray-900 mb-1">
-            {value}
-          </div>
+          <div className="text-3xl font-bold text-gray-900 mb-1">{value}</div>
           <div className="text-base font-medium text-gray-700 mb-1">
             {label}
           </div>
-          {subtitle && (
-            <div className="text-sm text-gray-500">
-              {subtitle}
-            </div>
-          )}
+          {subtitle && <div className="text-sm text-gray-500">{subtitle}</div>}
         </div>
       </div>
     </Card>

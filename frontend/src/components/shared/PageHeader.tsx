@@ -1,5 +1,5 @@
-import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 interface PageHeaderProps {
   title: string;
@@ -14,26 +14,20 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   subtitle,
   actionLabel,
   onAction,
-  extra
+  extra,
 }) => {
   return (
     <div className="flex items-start justify-between mb-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          {title}
-        </h1>
-        {subtitle && (
-          <p className="text-base text-gray-600">
-            {subtitle}
-          </p>
-        )}
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
+        {subtitle && <p className="text-base text-gray-600">{subtitle}</p>}
       </div>
 
       <div className="flex items-center gap-3">
         {extra}
         {actionLabel && onAction && (
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<PlusOutlined />}
             onClick={onAction}
             size="large"

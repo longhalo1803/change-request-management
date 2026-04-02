@@ -3,10 +3,14 @@
  * Provides date range, customer, and PM filtering controls
  */
 
-import { Select, Button } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
-import { DateRangeOption } from '@/lib/types/admin.types';
-import { DATE_RANGE_OPTIONS, CUSTOMER_OPTIONS, PM_OPTIONS } from '@/mock-data/admin-dashboard';
+import { Select, Button } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import { DateRangeOption } from "@/lib/types/admin.types";
+import {
+  DATE_RANGE_OPTIONS,
+  CUSTOMER_OPTIONS,
+  PM_OPTIONS,
+} from "@/mock-data/admin-dashboard";
 
 interface FilterBarProps {
   dateRange: DateRangeOption;
@@ -27,14 +31,16 @@ export const FilterBar = ({
   selectedPM,
   onPMChange,
   onExportPDF,
-  isExporting = false
+  isExporting = false,
 }: FilterBarProps) => {
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm mb-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         {/* Date Range */}
         <div className="flex items-center gap-2 min-w-max">
-          <label className="text-sm font-medium text-gray-600">Date Range:</label>
+          <label className="text-sm font-medium text-gray-600">
+            Date Range:
+          </label>
           <Select
             value={dateRange}
             onChange={onDateRangeChange}

@@ -1,15 +1,15 @@
-import { Button, Badge } from 'antd';
-import { BellOutlined } from '@ant-design/icons';
-import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
+import { Button, Badge } from "antd";
+import { BellOutlined } from "@ant-design/icons";
+import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 
 /**
  * Admin Header Component
- * 
+ *
  * Top header for admin dashboard
  * Shows:
  * - Language switcher (left-aligned)
  * - Notification bell (right-aligned)
- * 
+ *
  * Note: Admin info is displayed in the sidebar, so no profile dropdown needed
  */
 export const AdminHeader = () => {
@@ -23,8 +23,8 @@ export const AdminHeader = () => {
         <LanguageSwitcher />
 
         <Badge count={5} size="small">
-          <Button 
-            type="text" 
+          <Button
+            type="text"
             icon={<BellOutlined style={{ fontSize: 20 }} />}
             size="large"
           />

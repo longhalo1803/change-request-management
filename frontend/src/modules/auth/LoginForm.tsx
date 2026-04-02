@@ -1,22 +1,26 @@
-import { Form, Input, Button, Checkbox } from 'antd';
-import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import { useLogin } from '@/hooks/useLogin';
-import { useValidationSchemas } from '@/hooks/useValidationMessages';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
-import type { LoginFormData } from '@/lib/validators';
-import { useTranslation } from '@/hooks/useTranslation';
+import { Form, Input, Button, Checkbox } from "antd";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
+import { useLogin } from "@/hooks/useLogin";
+import { useValidationSchemas } from "@/hooks/useValidationMessages";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, Controller } from "react-hook-form";
+import type { LoginFormData } from "@/lib/validators";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const LoginForm = () => {
-  const { t } = useTranslation('auth');
+  const { t } = useTranslation("auth");
   const { getLoginSchema } = useValidationSchemas();
   const loginMutation = useLogin();
 
   const loginSchema = getLoginSchema();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    mode: 'onBlur',
+    mode: "onBlur",
   });
 
   const onSubmit = (data: LoginFormData) => {
@@ -26,8 +30,8 @@ export const LoginForm = () => {
   return (
     <Form layout="vertical" size="large" onFinish={handleSubmit(onSubmit)}>
       <Form.Item
-        label={t('email')}
-        validateStatus={errors.email ? 'error' : ''}
+        label={t("email")}
+        validateStatus={errors.email ? "error" : ""}
         help={errors.email?.message}
       >
         <Controller
@@ -36,8 +40,8 @@ export const LoginForm = () => {
           render={({ field }) => (
             <Input
               {...field}
-              prefix={<MailOutlined style={{ color: '#bfbfbf' }} />}
-              placeholder={t('email_placeholder')}
+              prefix={<MailOutlined style={{ color: "#bfbfbf" }} />}
+              placeholder={t("email_placeholder")}
               autoComplete="email"
             />
           )}
@@ -45,12 +49,12 @@ export const LoginForm = () => {
       </Form.Item>
 
       <Form.Item
-        label={t('password')}
-        validateStatus={errors.password ? 'error' : ''}
+        label={t("password")}
+        validateStatus={errors.password ? "error" : ""}
         help={errors.password?.message}
         extra={
-          <a href="/forgot-password" style={{ float: 'right', marginTop: 4 }}>
-            {t('forgot_password')}
+          <a href="/forgot-password" style={{ float: "right", marginTop: 4 }}>
+            {t("forgot_password")}
           </a>
         }
       >
@@ -60,8 +64,8 @@ export const LoginForm = () => {
           render={({ field }) => (
             <Input.Password
               {...field}
-              prefix={<LockOutlined style={{ color: '#bfbfbf' }} />}
-              placeholder={t('password_placeholder')}
+              prefix={<LockOutlined style={{ color: "#bfbfbf" }} />}
+              placeholder={t("password_placeholder")}
               autoComplete="current-password"
             />
           )}
@@ -69,7 +73,7 @@ export const LoginForm = () => {
       </Form.Item>
 
       <Form.Item style={{ marginBottom: 24 }}>
-        <Checkbox>{t('remember_me')}</Checkbox>
+        <Checkbox>{t("remember_me")}</Checkbox>
       </Form.Item>
 
       <Form.Item style={{ marginBottom: 0 }}>
@@ -80,7 +84,7 @@ export const LoginForm = () => {
           loading={loginMutation.isPending}
           size="large"
         >
-          {t('sign_in_button')}
+          {t("sign_in_button")}
         </Button>
       </Form.Item>
     </Form>

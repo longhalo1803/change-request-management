@@ -4,60 +4,60 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Index
-} from 'typeorm';
+  Index,
+} from "typeorm";
 
 /**
  * User Entity
- * 
+ *
  * Represents system users with role-based access
  * Roles: admin, brse, developer, qa, customer
- * 
+ *
  * SOLID Principles:
  * - Single Responsibility: Only represents user data structure
  * - Open/Closed: Easy to extend with new fields without modifying existing code
  */
 
 export enum UserRole {
-  ADMIN = 'admin',
-  BRSE = 'brse',
-  DEVELOPER = 'developer',
-  QA = 'qa',
-  CUSTOMER = 'customer'
+  ADMIN = "admin",
+  BRSE = "brse",
+  DEVELOPER = "developer",
+  QA = "qa",
+  CUSTOMER = "customer",
 }
 
-@Entity('users')
+@Entity("users")
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: "varchar", length: 255, unique: true })
   @Index()
   email: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: "varchar", length: 255 })
   password: string;
 
-  @Column({ name: 'full_name', type: 'varchar', length: 255 })
+  @Column({ name: "full_name", type: "varchar", length: 255 })
   fullName: string;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: UserRole,
-    default: UserRole.CUSTOMER
+    default: UserRole.CUSTOMER,
   })
   @Index()
   role: UserRole;
 
-  @Column({ name: 'is_active', type: 'boolean', default: true })
+  @Column({ name: "is_active", type: "boolean", default: true })
   isActive: boolean;
 
-  @Column({ name: 'last_login_at', type: 'timestamp', nullable: true })
+  @Column({ name: "last_login_at", type: "timestamp", nullable: true })
   lastLoginAt: Date | null;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

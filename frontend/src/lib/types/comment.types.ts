@@ -1,7 +1,7 @@
 export enum CommentVisibility {
-  PUBLIC = 'public',
-  INTERNAL = 'internal',
-  PM_ONLY = 'pm_only'
+  PUBLIC = "public",
+  INTERNAL = "internal",
+  PM_ONLY = "pm_only",
 }
 
 export interface CrComment {

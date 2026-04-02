@@ -3,19 +3,24 @@
  * Main tab component with search, table, and user management
  */
 
-import { useState, useEffect } from 'react';
-import { Input, Button, message } from 'antd';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { AdminUser, UserFormData, PermissionGroup, UserStatus } from '@/lib/types';
-import { PermissionsTable } from './PermissionsTable';
-import { AccountModal } from './AccountModal';
+import { useState, useEffect } from "react";
+import { Input, Button, message } from "antd";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  AdminUser,
+  UserFormData,
+  PermissionGroup,
+  UserStatus,
+} from "@/lib/types";
+import { PermissionsTable } from "./PermissionsTable";
+import { AccountModal } from "./AccountModal";
 import {
   fetchUsers,
   createUser,
   updateUser,
   deleteUser,
   updateUserStatus,
-} from '@/services/permissions.service.mock';
+} from "@/services/permissions.service.mock";
 
 interface AccountsTabProps {
   permissionGroups: PermissionGroup[];
@@ -25,7 +30,7 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<AdminUser | undefined>();
   const [modalVisible, setModalVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -41,10 +46,11 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
       setFilteredUsers(users);
     } else {
       const searchLower = searchTerm.toLowerCase();
-      const filtered = users.filter(user =>
-        user.firstName.toLowerCase().includes(searchLower) ||
-        user.lastName.toLowerCase().includes(searchLower) ||
-        user.email.toLowerCase().includes(searchLower)
+      const filtered = users.filter(
+        (user) =>
+          user.firstName.toLowerCase().includes(searchLower) ||
+          user.lastName.toLowerCase().includes(searchLower) ||
+          user.email.toLowerCase().includes(searchLower),
       );
       setFilteredUsers(filtered);
     }
@@ -57,7 +63,7 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
       setUsers(data);
       setFilteredUsers(data);
     } catch (error) {
-      message.error('Failed to load users');
+      message.error("Failed to load users");
       console.error(error);
     } finally {
       setLoading(false);
@@ -73,10 +79,10 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
     try {
       setLoading(true);
       await deleteUser(id);
-      message.success('User deleted successfully');
+      message.success("User deleted successfully");
       await loadUsers();
     } catch (error) {
-      message.error('Failed to delete user');
+      message.error("Failed to delete user");
       console.error(error);
     } finally {
       setLoading(false);
@@ -87,10 +93,12 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
     try {
       setLoading(true);
       await updateUserStatus(id, status);
-      message.success(`User ${status === UserStatus.ACTIVE ? 'activated' : 'deactivated'} successfully`);
+      message.success(
+        `User ${status === UserStatus.ACTIVE ? "activated" : "deactivated"} successfully`,
+      );
       await loadUsers();
     } catch (error) {
-      message.error('Failed to update user status');
+      message.error("Failed to update user status");
       console.error(error);
     } finally {
       setLoading(false);
@@ -102,16 +110,18 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
       setSubmitting(true);
       if (selectedUser) {
         await updateUser(selectedUser.id, data);
-        message.success('User updated successfully');
+        message.success("User updated successfully");
       } else {
         await createUser(data);
-        message.success('User created successfully');
+        message.success("User created successfully");
       }
       setModalVisible(false);
       setSelectedUser(undefined);
       await loadUsers();
     } catch (error) {
-      message.error(selectedUser ? 'Failed to update user' : 'Failed to create user');
+      message.error(
+        selectedUser ? "Failed to update user" : "Failed to create user",
+      );
       console.error(error);
     } finally {
       setSubmitting(false);

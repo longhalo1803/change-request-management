@@ -1,14 +1,14 @@
-import 'i18next';
+import "i18next";
 
 /**
  * Type definitions for i18next
  * Provides type safety for translation keys
  */
 
-declare module 'i18next' {
+declare module "i18next" {
   interface CustomTypeOptions {
     returnNull: false;
-    defaultNS: 'common';
+    defaultNS: "common";
     resources: {
       common: {
         app: {

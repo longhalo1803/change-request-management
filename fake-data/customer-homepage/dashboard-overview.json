@@ -28,7 +28,7 @@
       "status": "rejected",
       "count": 1,
       "color": "#ff4d4f",
-      "label": "REJECTED / BLOCKED"
+      "label": "REJECTED"
     },
     {
       "status": "ongoing",

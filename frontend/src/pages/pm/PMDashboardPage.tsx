@@ -1,12 +1,12 @@
-import { Card, Row, Col, Button, Empty } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Button, Empty } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 /**
  * PM Dashboard Page
- * 
+ *
  * Placeholder PM dashboard for project managers
  * This page shows the PM workspace with project management features
- * 
+ *
  * Features to be implemented:
  * - Project overview
  * - Task management
@@ -23,16 +23,21 @@ export const PMDashboardPage = () => {
 
       <Row gutter={[24, 24]}>
         <Col xs={24}>
-          <Card 
+          <Card
             title="Welcome to PM Dashboard"
-            extra={<Button type="primary" icon={<PlusOutlined />}>New Project</Button>}
+            extra={
+              <Button type="primary" icon={<PlusOutlined />}>
+                New Project
+              </Button>
+            }
           >
             <Empty
               description="No projects yet"
-              style={{ marginTop: '50px', marginBottom: '50px' }}
+              style={{ marginTop: "50px", marginBottom: "50px" }}
             />
             <p className="text-center text-gray-600">
-              Start by creating a new project or contact your administrator for existing projects
+              Start by creating a new project or contact your administrator for
+              existing projects
             </p>
           </Card>
         </Col>

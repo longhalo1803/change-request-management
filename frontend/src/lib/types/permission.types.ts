@@ -1,8 +1,8 @@
-import { UserRole as BaseUserRole } from './user.types';
+import { UserRole as BaseUserRole } from "./user.types";
 
 export enum UserStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
+  ACTIVE = "active",
+  INACTIVE = "inactive",
 }
 
 export interface AdminUser {

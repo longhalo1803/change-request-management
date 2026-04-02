@@ -1,6 +1,6 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuthStore, selectUserRole } from '@/store/auth.store';
-import { UserRole } from '@/lib/types';
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuthStore, selectUserRole } from "@/store/auth.store";
+import { UserRole } from "@/lib/types";
 
 interface RoleBasedRouteProps {
   allowedRoles: UserRole[];
@@ -8,10 +8,10 @@ interface RoleBasedRouteProps {
 
 /**
  * Role-Based Route Guard
- * 
+ *
  * Ensures user has the required role to access the route
  * Redirects to appropriate dashboard if role mismatch
- * 
+ *
  * SOLID Principles:
  * - Single Responsibility: Only manages role-based access control
  * - Dependency Inversion: Depends on auth store abstraction

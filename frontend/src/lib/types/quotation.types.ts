@@ -1,7 +1,7 @@
 export enum TaskRole {
-  DEVELOPER = 'developer',
-  QA = 'qa',
-  PM = 'pm'
+  DEVELOPER = "developer",
+  QA = "qa",
+  PM = "pm",
 }
 
 export interface CrQuotationItem {

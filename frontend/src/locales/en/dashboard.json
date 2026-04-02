@@ -22,7 +22,7 @@
       "draft": "DRAFT",
       "in_discussion": "IN DISCUSSION",
       "approved": "APPROVED",
-      "rejected": "REJECTED / BLOCKED",
+      "rejected": "REJECTED",
       "ongoing": "ONGOING",
       "closed": "CLOSED"
     }

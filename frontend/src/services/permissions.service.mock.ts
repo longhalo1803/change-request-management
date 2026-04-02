@@ -1,12 +1,24 @@
-import { AdminUser, PermissionGroup, UserFormData, UserStatus, SearchFilters } from '@/lib/types';
-import { MOCK_USERS, MOCK_PERMISSION_GROUPS } from '@/mock-data/permissions.mock';
+import {
+  AdminUser,
+  PermissionGroup,
+  UserFormData,
+  UserStatus,
+  SearchFilters,
+} from "@/lib/types";
+import {
+  MOCK_USERS,
+  MOCK_PERMISSION_GROUPS,
+} from "@/mock-data/permissions.mock";
 
 // Simulate local data store
 let usersStore = [...MOCK_USERS];
 
-const delay = (ms: number = 500) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number = 500) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
-export const fetchUsers = async (filters?: SearchFilters): Promise<AdminUser[]> => {
+export const fetchUsers = async (
+  filters?: SearchFilters,
+): Promise<AdminUser[]> => {
   await delay();
 
   let results = [...usersStore];
@@ -14,21 +26,22 @@ export const fetchUsers = async (filters?: SearchFilters): Promise<AdminUser[]> 
   // Apply search filter
   if (filters?.searchTerm) {
     const searchLower = filters.searchTerm.toLowerCase();
-    results = results.filter(user =>
-      user.firstName.toLowerCase().includes(searchLower) ||
-      user.lastName.toLowerCase().includes(searchLower) ||
-      user.email.toLowerCase().includes(searchLower)
+    results = results.filter(
+      (user) =>
+        user.firstName.toLowerCase().includes(searchLower) ||
+        user.lastName.toLowerCase().includes(searchLower) ||
+        user.email.toLowerCase().includes(searchLower),
     );
   }
 
   // Apply status filter
   if (filters?.status) {
-    results = results.filter(user => user.status === filters.status);
+    results = results.filter((user) => user.status === filters.status);
   }
 
   // Apply role filter
   if (filters?.role) {
-    results = results.filter(user => user.role === filters.role);
+    results = results.filter((user) => user.role === filters.role);
   }
 
   return results;
@@ -52,17 +65,21 @@ export const createUser = async (data: UserFormData): Promise<AdminUser> => {
     role: data.role,
     status: UserStatus.ACTIVE,
     createdDate: new Date(),
-    avatar: `${data.firstName.charAt(0)}${data.lastName.charAt(0)}`.toUpperCase(),
+    avatar:
+      `${data.firstName.charAt(0)}${data.lastName.charAt(0)}`.toUpperCase(),
   };
 
   usersStore.push(newUser);
   return newUser;
 };
 
-export const updateUser = async (id: string, data: UserFormData): Promise<AdminUser> => {
+export const updateUser = async (
+  id: string,
+  data: UserFormData,
+): Promise<AdminUser> => {
   await delay();
 
-  const userIndex = usersStore.findIndex(u => u.id === id);
+  const userIndex = usersStore.findIndex((u) => u.id === id);
   if (userIndex === -1) {
     throw new Error(`User with id ${id} not found`);
   }
@@ -74,17 +91,21 @@ export const updateUser = async (id: string, data: UserFormData): Promise<AdminU
     email: data.email,
     phone: data.phone,
     role: data.role,
-    avatar: `${data.firstName.charAt(0)}${data.lastName.charAt(0)}`.toUpperCase(),
+    avatar:
+      `${data.firstName.charAt(0)}${data.lastName.charAt(0)}`.toUpperCase(),
   };
 
   usersStore[userIndex] = updatedUser;
   return updatedUser;
 };
 
-export const updateUserStatus = async (id: string, status: UserStatus): Promise<AdminUser> => {
+export const updateUserStatus = async (
+  id: string,
+  status: UserStatus,
+): Promise<AdminUser> => {
   await delay();
 
-  const userIndex = usersStore.findIndex(u => u.id === id);
+  const userIndex = usersStore.findIndex((u) => u.id === id);
   if (userIndex === -1) {
     throw new Error(`User with id ${id} not found`);
   }
@@ -101,7 +122,7 @@ export const updateUserStatus = async (id: string, status: UserStatus): Promise<
 export const deleteUser = async (id: string): Promise<void> => {
   await delay();
 
-  const userIndex = usersStore.findIndex(u => u.id === id);
+  const userIndex = usersStore.findIndex((u) => u.id === id);
   if (userIndex === -1) {
     throw new Error(`User with id ${id} not found`);
   }

@@ -3,8 +3,15 @@
  * Displays a donut chart showing the status breakdown of change requests
  */
 
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, PieLabelRenderProps } from 'recharts';
-import { StatusBreakdownItem } from '@/lib/types/admin.types';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  PieLabelRenderProps,
+} from "recharts";
+import { StatusBreakdownItem } from "@/lib/types/admin.types";
 
 interface StatusOverviewCardProps {
   data: StatusBreakdownItem[];
@@ -16,26 +23,41 @@ const RADIAN = Math.PI / 180;
 
 const renderCustomLabel = (props: PieLabelRenderProps) => {
   const { cx, cy, midAngle, innerRadius, outerRadius } = props;
-  if (cx === undefined || cy === undefined || midAngle === undefined) return null;
-  
-  const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.5;
-  const x = cx + radius * Math.cos((-midAngle) * RADIAN);
-  const y = cy + radius * Math.sin((-midAngle) * RADIAN);
+  if (cx === undefined || cy === undefined || midAngle === undefined)
+    return null;
+
+  const radius =
+    (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
   return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={12}>
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+      fontSize={12}
+    >
       {`${props.payload?.percentage || 0}%`}
     </text>
   );
 };
 
-export const StatusOverviewCard = ({ data, total, onViewBreakdown }: StatusOverviewCardProps) => {
+export const StatusOverviewCard = ({
+  data,
+  total,
+  onViewBreakdown,
+}: StatusOverviewCardProps) => {
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800">Status overview</h3>
+          <h3 className="text-lg font-semibold text-gray-800">
+            Status overview
+          </h3>
         </div>
         <div className="bg-blue-100 text-blue-600 text-xs font-medium px-3 py-1 rounded-full">
           Active Sprint: Y
@@ -63,9 +85,9 @@ export const StatusOverviewCard = ({ data, total, onViewBreakdown }: StatusOverv
             <Tooltip
               formatter={(value: any) => `${value} CRs`}
               contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #ddd',
-                borderRadius: '4px'
+                backgroundColor: "#fff",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
               }}
             />
           </PieChart>
@@ -74,7 +96,9 @@ export const StatusOverviewCard = ({ data, total, onViewBreakdown }: StatusOverv
         {/* Center Text */}
         <div className="text-center -mt-24">
           <div className="text-4xl font-bold text-gray-800">{total}</div>
-          <div className="text-sm text-gray-500 uppercase tracking-wider">Total CRs</div>
+          <div className="text-sm text-gray-500 uppercase tracking-wider">
+            Total CRs
+          </div>
         </div>
       </div>
 
@@ -83,10 +107,17 @@ export const StatusOverviewCard = ({ data, total, onViewBreakdown }: StatusOverv
         {data.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
             <div className="flex items-baseline gap-1">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-              <span className="text-xs font-medium text-gray-600 uppercase">{item.status}</span>
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: item.color }}
+              ></div>
+              <span className="text-xs font-medium text-gray-600 uppercase">
+                {item.status}
+              </span>
             </div>
-            <span className="text-sm font-bold text-gray-800 ml-auto">{item.count}</span>
+            <span className="text-sm font-bold text-gray-800 ml-auto">
+              {item.count}
+            </span>
           </div>
         ))}
       </div>
