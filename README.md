@@ -20,6 +20,7 @@ A full-stack web application for managing Change Requests (CR) between Japanese 
 ## 🛠️ Tech Stack
 
 ### Backend
+
 - **Runtime**: Node.js + TypeScript
 - **Framework**: Express.js
 - **ORM**: TypeORM
@@ -31,6 +32,7 @@ A full-stack web application for managing Change Requests (CR) between Japanese 
 - **Logging**: Winston + Morgan
 
 ### Frontend
+
 - **Framework**: React 18 + TypeScript
 - **Build Tool**: Vite
 - **Routing**: React Router v6
@@ -90,59 +92,66 @@ change-request-management/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/cr-management-system.git
    cd cr-management-system
    ```
 
 2. **Install dependencies**
+
    ```bash
    # Automatic installation (Windows)
    .\install-all.bat
-   
+
    # Or manual installation
    cd backend && npm install
    cd ../frontend && npm install
    ```
 
 3. **Setup environment variables**
+
    ```bash
    # Backend
    cd backend
    cp .env.example .env
    # Edit .env with your MySQL credentials
-   
+
    # Frontend
    cd frontend
    cp .env.example .env
    ```
 
 4. **Create database**
+
    ```sql
    CREATE DATABASE cr_management CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
    ```
 
 5. **Run migrations**
+
    ```bash
    cd backend
    npm run migration:run
    ```
 
 6. **Seed default users**
+
    ```bash
    cd backend
    npx ts-node -r tsconfig-paths/register src/utils/seed-users.ts
    ```
 
 7. **Start development servers**
+
    ```bash
    # Automatic (Windows)
    .\start-dev.bat
-   
+
    # Or manual
    # Terminal 1 - Backend
    cd backend && npm run dev
-   
+
    # Terminal 2 - Frontend
    cd frontend && npm run dev
    ```
@@ -211,9 +220,57 @@ The application supports 3 languages:
 - **Vietnamese (vi)** - Tiếng Việt
 
 Language detection:
+
 1. User selection (stored in localStorage)
 2. Browser language
 3. Falls back to English
+
+## 🎨 Code Formatting
+
+This project uses **Prettier** for consistent code formatting across the team.
+
+### Format Code
+
+```bash
+# Format entire project (from root)
+npm run format
+
+# Format specific parts
+npm run format:frontend
+npm run format:backend
+
+# Check formatting without making changes
+npm run format:check
+```
+
+### Editor Setup
+
+**VS Code** (Recommended):
+
+1. Install the [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+2. Add to your `.vscode/settings.json`:
+   ```json
+   {
+     "editor.defaultFormatter": "esbenp.prettier-vscode",
+     "editor.formatOnSave": true
+   }
+   ```
+
+**Other Editors**:
+
+- [WebStorm/IntelliJ](https://www.jetbrains.com/help/webstorm/prettier.html)
+- [Sublime Text](https://packagecontrol.io/packages/JsPrettier)
+- [Vim](https://github.com/prettier/vim-prettier)
+
+### Configuration
+
+Prettier settings are defined in `.prettierrc`:
+
+- Semi-colons: Yes
+- Quotes: Double quotes
+- Print width: 80 characters
+- Tab width: 2 spaces
+- Trailing commas: ES5 style
 
 ## 🧪 Testing
 
@@ -256,6 +313,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Team
 
 **SOLASHI Vietnam**
+
 - Senior Full-Stack Architect
 - Development Team
 
