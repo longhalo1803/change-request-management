@@ -1,14 +1,15 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { useAuthStore } from '@/store/auth.store';
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { useAuthStore } from "@/store/auth.store";
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 export const axiosInstance = axios.create({
   baseURL,
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    "Content-Type": "application/json",
+  },
 });
 
 // Request interceptor - attach access token
@@ -20,7 +21,7 @@ axiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor - handle 401 and refresh token
@@ -69,14 +70,14 @@ axiosInstance.interceptors.response.use(
 
     if (!refreshToken) {
       useAuthStore.getState().logout();
-      window.location.href = '/login';
+      window.location.href = "/login";
       return Promise.reject(error);
     }
 
     try {
       // Call refresh token API
       const response = await axios.post(`${baseURL}/auth/refresh`, {
-        refreshToken
+        refreshToken,
       });
 
       const { accessToken } = response.data.data;
@@ -100,11 +101,11 @@ axiosInstance.interceptors.response.use(
 
       // Refresh failed - logout user
       useAuthStore.getState().logout();
-      window.location.href = '/login';
+      window.location.href = "/login";
 
       return Promise.reject(refreshError);
     }
-  }
+  },
 );
 
 export default axiosInstance;

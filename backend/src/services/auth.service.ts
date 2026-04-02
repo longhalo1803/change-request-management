@@ -1,14 +1,14 @@
-import { UserRepository } from '@/repositories/user.repository';
-import { TokenService, TokenPair } from './token.service';
-import { PasswordUtil } from '@/utils/password';
-import { AppError } from '@/utils/app-error';
-import { User } from '@/entities/user.entity';
+import { UserRepository } from "@/repositories/user.repository";
+import { TokenService, TokenPair } from "./token.service";
+import { PasswordUtil } from "@/utils/password";
+import { AppError } from "@/utils/app-error";
+import { User } from "@/entities/user.entity";
 
 /**
  * Auth Service
- * 
+ *
  * Business logic for authentication operations
- * 
+ *
  * SOLID Principles:
  * - Single Responsibility: Only handles authentication logic
  * - Dependency Inversion: Depends on repository and token service abstractions
@@ -21,7 +21,7 @@ export interface LoginCredentials {
 }
 
 export interface LoginResponse {
-  user: Omit<User, 'password'>;
+  user: Omit<User, "password">;
   tokens: TokenPair;
 }
 
@@ -43,18 +43,18 @@ export class AuthService {
     // Find user by email
     const user = await this.userRepo.findByEmail(email);
     if (!user) {
-      throw new AppError('auth.invalid_credentials', 401);
+      throw new AppError("auth.invalid_credentials", 401);
     }
 
     // Check if user is active
     if (!user.isActive) {
-      throw new AppError('auth.account_inactive', 403);
+      throw new AppError("auth.account_inactive", 403);
     }
 
     // Verify password
     const isPasswordValid = await PasswordUtil.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new AppError('auth.invalid_credentials', 401);
+      throw new AppError("auth.invalid_credentials", 401);
     }
 
     // Update last login timestamp
@@ -64,7 +64,7 @@ export class AuthService {
     const tokens = await this.tokenService.generateTokenPair({
       userId: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
 
     // Remove password from response
@@ -72,7 +72,7 @@ export class AuthService {
 
     return {
       user: userWithoutPassword,
-      tokens
+      tokens,
     };
   }
 
@@ -81,10 +81,11 @@ export class AuthService {
    */
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     try {
-      const accessToken = await this.tokenService.refreshAccessToken(refreshToken);
+      const accessToken =
+        await this.tokenService.refreshAccessToken(refreshToken);
       return { accessToken };
     } catch (error) {
-      throw new AppError('auth.invalid_refresh_token', 401);
+      throw new AppError("auth.invalid_refresh_token", 401);
     }
   }
 

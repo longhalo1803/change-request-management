@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "email_required": "Email is required",
+    "email_invalid": "Email is invalid",
+    "password_required": "Password is required"
+  },
+  "comment": {
+    "content_required": "Comment content is required",
+    "content_min_length": "Content must be at least 2 characters"
+  },
+  "cr": {
+    "title_required": "Title is required",
+    "title_min_length": "Title must be at least 5 characters",
+    "description_required": "Description is required",
+    "description_min_length": "Description must be at least 10 characters",
+    "status_required": "Status is required"
+  }
+}

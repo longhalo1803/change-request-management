@@ -1,0 +1,72 @@
+{
+  "page_title": "Change Requests",
+  "search_placeholder": "Search by title or ID...",
+  "filter_button": "Filter",
+  "create_button": "Create New CR",
+  "table": {
+    "id": "ID",
+    "title": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "created_at": "Created",
+    "updated_at": "Updated",
+    "actions": "Actions"
+  },
+  "filters": {
+    "title": "Filters",
+    "status": "Status",
+    "priority": "Priority",
+    "date_range": "Date Range",
+    "apply": "Apply Filters",
+    "reset": "Reset Filters",
+    "search_placeholder": "Search by title or ID",
+    "status_placeholder": "Select Status",
+    "priority_placeholder": "Select Priority",
+    "clear_button": "Clear",
+    "create_cr_button": "Create CR"
+  },
+  "messages": {
+    "no_data": "No change requests found",
+    "loading": "Loading change requests..."
+  },
+  "modal": {
+    "create_title": "Create New Change Request",
+    "edit_title": "Edit Change Request",
+    "details_title": "Change Request Details",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "buttons": {
+    "approve": "Approve",
+    "reject": "Reject",
+    "cancel": "Cancel"
+  },
+  "create_modal": {
+    "title": "Create Requirement",
+    "subtitle": "SOLASHI Connect • Project Alpha",
+    "draft_info": "Draft will be saved automatically",
+    "project_label": "Project / Space",
+    "project_error": "Please select project",
+    "issue_type_label": "Issue Type",
+    "issue_type_error": "Please select issue type",
+    "parent_task_label": "Parent Task",
+    "parent_task_placeholder": "None",
+    "status_label": "Status",
+    "summary_label": "Summary",
+    "summary_placeholder": "e.g., Unified login flow for enterprise users",
+    "summary_error": "Please enter summary",
+    "summary_max_error": "Summary must be less than 255 characters",
+    "summary_counter": "{current}/255",
+    "description_label": "Description",
+    "description_placeholder": "Describe the requirement in detail...",
+    "priority_label": "Priority",
+    "priority_error": "Please select priority",
+    "start_date_label": "Start Date",
+    "due_date_label": "Due Date",
+    "attachments_label": "Attachments",
+    "attachments_hint": "Drop files here or browse",
+    "success_message": "Change Request created successfully!"
+  }
+}

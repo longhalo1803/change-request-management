@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { User } from '@/lib/types/cr.types';
+import { create } from "zustand";
+import { User } from "@/lib/types/user.types";
 
 interface AuthState {
   user: User | null;
@@ -17,56 +17,64 @@ interface AuthActions {
 
 type AuthStore = AuthState & AuthActions;
 
-const STORAGE_KEY = 'cr_auth_token';
+const STORAGE_KEY = "cr_auth_token";
+const USER_STORAGE_KEY = "cr_auth_user";
 
-// Load initial state from localStorage
-const loadInitialState = (): Pick<AuthState, 'accessToken'> => {
+const loadInitialState = (): Pick<AuthState, "accessToken" | "user"> => {
   try {
     const token = localStorage.getItem(STORAGE_KEY);
-    return { accessToken: token };
-  } catch {
-    return { accessToken: null };
+    const userJson = localStorage.getItem(USER_STORAGE_KEY);
+    const user = userJson ? JSON.parse(userJson) : null;
+    return { accessToken: token, user };
+  } catch (error) {
+    return { accessToken: null, user: null };
   }
 };
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  // Initial state
-  user: null,
-  accessToken: loadInitialState().accessToken,
-  refreshToken: null,
-  isAuthenticated: !!loadInitialState().accessToken,
+export const useAuthStore = create<AuthStore>((set) => {
+  const initialState = loadInitialState();
 
-  // Actions
-  setTokens: (accessToken: string, refreshToken: string) => {
-    localStorage.setItem(STORAGE_KEY, accessToken);
-    set({
-      accessToken,
-      refreshToken,
-      isAuthenticated: true
-    });
-  },
+  return {
+    user: initialState.user,
+    accessToken: initialState.accessToken,
+    refreshToken: null,
+    isAuthenticated: !!(initialState.accessToken && initialState.user),
 
-  setUser: (user: User) => {
-    set({ user, isAuthenticated: true });
-  },
+    setTokens: (accessToken: string, refreshToken: string) => {
+      localStorage.setItem(STORAGE_KEY, accessToken);
+      set({
+        accessToken,
+        refreshToken,
+      });
+    },
 
-  updateAccessToken: (accessToken: string) => {
-    localStorage.setItem(STORAGE_KEY, accessToken);
-    set({ accessToken });
-  },
+    setUser: (user: User) => {
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+      set({
+        user,
+        isAuthenticated: true,
+      });
+    },
 
-  logout: () => {
-    localStorage.removeItem(STORAGE_KEY);
-    set({
-      user: null,
-      accessToken: null,
-      refreshToken: null,
-      isAuthenticated: false
-    });
-  }
-}));
+    updateAccessToken: (accessToken: string) => {
+      localStorage.setItem(STORAGE_KEY, accessToken);
+      set({ accessToken });
+    },
 
-// Selectors
+    logout: () => {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(USER_STORAGE_KEY);
+      set({
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+        isAuthenticated: false,
+      });
+    },
+  };
+});
+
 export const selectUser = (state: AuthStore) => state.user;
-export const selectIsAuthenticated = (state: AuthStore) => state.isAuthenticated;
+export const selectIsAuthenticated = (state: AuthStore) =>
+  state.isAuthenticated;
 export const selectUserRole = (state: AuthStore) => state.user?.role;

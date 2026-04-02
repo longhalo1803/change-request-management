@@ -1,0 +1,72 @@
+{
+  "page_title": "変更リクエスト",
+  "search_placeholder": "タイトルまたはIDで検索...",
+  "filter_button": "フィルター",
+  "create_button": "新しいCRを作成",
+  "table": {
+    "id": "ID",
+    "title": "タイトル",
+    "description": "説明",
+    "status": "ステータス",
+    "priority": "優先度",
+    "created_at": "作成日",
+    "updated_at": "更新日",
+    "actions": "アクション"
+  },
+  "filters": {
+    "title": "フィルター",
+    "status": "ステータス",
+    "priority": "優先度",
+    "date_range": "日付範囲",
+    "apply": "フィルターを適用",
+    "reset": "フィルターをリセット",
+    "search_placeholder": "タイトルまたはIDで検索",
+    "status_placeholder": "ステータスを選択",
+    "priority_placeholder": "優先度を選択",
+    "clear_button": "クリア",
+    "create_cr_button": "CR を作成"
+  },
+  "messages": {
+    "no_data": "変更リクエストが見つかりません",
+    "loading": "変更リクエストを読み込んでいます..."
+  },
+  "modal": {
+    "create_title": "新しい変更リクエストを作成",
+    "edit_title": "変更リクエストを編集",
+    "details_title": "変更リクエストの詳細",
+    "close": "閉じる",
+    "save": "保存",
+    "cancel": "キャンセル"
+  },
+  "buttons": {
+    "approve": "承認",
+    "reject": "拒否",
+    "cancel": "キャンセル"
+  },
+  "create_modal": {
+    "title": "要件を作成",
+    "subtitle": "SOLASHI Connect • Project Alpha",
+    "draft_info": "ドラフトは自動的に保存されます",
+    "project_label": "プロジェクト / スペース",
+    "project_error": "プロジェクトを選択してください",
+    "issue_type_label": "問題のタイプ",
+    "issue_type_error": "問題のタイプを選択してください",
+    "parent_task_label": "親タスク",
+    "parent_task_placeholder": "なし",
+    "status_label": "ステータス",
+    "summary_label": "要約",
+    "summary_placeholder": "例：エンタープライズユーザーの統一ログインフロー",
+    "summary_error": "要約を入力してください",
+    "summary_max_error": "要約は255文字未満である必要があります",
+    "summary_counter": "{current}/255",
+    "description_label": "説明",
+    "description_placeholder": "要件の詳細を説明してください...",
+    "priority_label": "優先度",
+    "priority_error": "優先度を選択してください",
+    "start_date_label": "開始日",
+    "due_date_label": "期限",
+    "attachments_label": "添付ファイル",
+    "attachments_hint": "ファイルをここにドラッグするか、参照してください",
+    "success_message": "変更リクエストが正常に作成されました！"
+  }
+}

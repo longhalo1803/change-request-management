@@ -1,12 +1,12 @@
-import { Repository } from 'typeorm';
-import { AppDataSource } from '@/config/database';
-import { User, UserRole } from '@/entities/user.entity';
+import { Repository } from "typeorm";
+import { AppDataSource } from "@/config/database";
+import { User, UserRole } from "@/entities/user.entity";
 
 /**
  * User Repository
- * 
+ *
  * Data access layer for User entity
- * 
+ *
  * SOLID Principles:
  * - Single Responsibility: Only handles User data access
  * - Interface Segregation: Provides specific methods for user operations
@@ -51,7 +51,7 @@ export class UserRepository {
    */
   async updateLastLogin(userId: string): Promise<void> {
     await this.repository.update(userId, {
-      lastLoginAt: new Date()
+      lastLoginAt: new Date(),
     });
   }
 
@@ -68,7 +68,7 @@ export class UserRepository {
    */
   async findAll(): Promise<User[]> {
     return this.repository.find({
-      select: ['id', 'email', 'fullName', 'role', 'isActive', 'createdAt']
+      select: ["id", "email", "fullName", "role", "isActive", "createdAt"],
     });
   }
 }

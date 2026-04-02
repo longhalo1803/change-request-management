@@ -1,0 +1,30 @@
+{
+  "page_title": "見積書",
+  "page_subtitle": "変更リクエストの見積書を表示および管理します",
+  "empty_state": "利用可能な見積書はありません",
+  "table": {
+    "cr_id": "CR ID",
+    "cr_title": "CRタイトル",
+    "vendor": "ベンダー",
+    "amount": "金額",
+    "validity_date": "有効期限",
+    "status": "ステータス",
+    "actions": "アクション"
+  },
+  "status": {
+    "pending": "保留中",
+    "accepted": "承認済み",
+    "rejected": "拒否",
+    "expired": "期限切れ"
+  },
+  "buttons": {
+    "download": "ダウンロード",
+    "view": "表示",
+    "accept": "承認",
+    "reject": "拒否"
+  },
+  "messages": {
+    "loading": "見積書を読み込んでいます...",
+    "no_quotations": "見積書が見つかりません"
+  }
+}

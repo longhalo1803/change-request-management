@@ -1,11 +1,11 @@
-import i18next, { TFunction } from 'i18next';
-import { SupportedLanguage } from '@/config/i18n';
+import i18next, { TFunction } from "i18next";
+import { SupportedLanguage } from "@/config/i18n";
 
 /**
  * Translation Utility
- * 
+ *
  * Provides type-safe translation functions for backend services
- * 
+ *
  * SOLID Principles:
  * - Single Responsibility: Only handles translation logic
  * - Dependency Inversion: Depends on i18next abstraction, not concrete implementation
@@ -14,7 +14,7 @@ import { SupportedLanguage } from '@/config/i18n';
 export class Translator {
   private t: TFunction;
 
-  constructor(language: SupportedLanguage, namespace: string = 'common') {
+  constructor(language: SupportedLanguage, namespace: string = "common") {
     this.t = i18next.getFixedT(language, namespace);
   }
 
@@ -28,7 +28,11 @@ export class Translator {
   /**
    * Translate with fallback
    */
-  translateWithFallback(key: string, fallback: string, options?: Record<string, unknown>): string {
+  translateWithFallback(
+    key: string,
+    fallback: string,
+    options?: Record<string, unknown>,
+  ): string {
     const result = this.t(key, options);
     return result === key ? fallback : result;
   }
@@ -46,7 +50,7 @@ export class Translator {
  */
 export const createTranslator = (
   language: SupportedLanguage,
-  namespace?: string
+  namespace?: string,
 ): Translator => {
   return new Translator(language, namespace);
 };
@@ -54,6 +58,10 @@ export const createTranslator = (
 /**
  * Quick translation helper for controllers
  */
-export const t = (language: string, key: string, options?: Record<string, unknown>): string => {
+export const t = (
+  language: string,
+  key: string,
+  options?: Record<string, unknown>,
+): string => {
   return i18next.t(key, { ...options, lng: language as SupportedLanguage });
 };
