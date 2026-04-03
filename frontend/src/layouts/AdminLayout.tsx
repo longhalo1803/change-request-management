@@ -31,7 +31,7 @@ export const AdminLayout: React.FC = () => {
         <Content
           style={{
             padding: "24px",
-            background: "#f5f5f5",
+            background: "#ffffff",
             minHeight: "calc(100vh - 64px)",
           }}
         >

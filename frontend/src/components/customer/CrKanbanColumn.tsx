@@ -8,6 +8,19 @@ interface CrKanbanColumnProps {
   onCardClick?: (cr: ChangeRequest) => void;
 }
 
+const getColumnBackgroundColor = (status: CrStatus): string => {
+  const colorMap: Record<CrStatus, string> = {
+    [CrStatus.DRAFT]: "#f5f5f5", // Light gray
+    [CrStatus.SUBMITTED]: "#f0f5ff", // Light blue
+    [CrStatus.IN_DISCUSSION]: "#fffbe6", // Light yellow
+    [CrStatus.APPROVED]: "#f6ffed", // Light green
+    [CrStatus.REJECTED]: "#fff1f0", // Light red
+    [CrStatus.ONGOING]: "#f9f0ff", // Light purple
+    [CrStatus.CLOSED]: "#fafafa", // Very light gray
+  };
+  return colorMap[status] || "#f5f5f5";
+};
+
 const getStatusColor = (status: CrStatus): string => {
   const colorMap: Record<CrStatus, string> = {
     [CrStatus.DRAFT]: "#bfbfbf",
@@ -28,13 +41,20 @@ export const CrKanbanColumn: React.FC<CrKanbanColumnProps> = ({
   onCardClick,
 }) => {
   const statusColor = getStatusColor(status);
+  const bgColor = getColumnBackgroundColor(status);
 
   return (
-    <div className="flex-shrink-0 w-80 bg-gray-100 rounded-lg border border-gray-200">
+    <div
+      className="flex-shrink-0 w-80 rounded-lg border border-gray-200"
+      style={{ backgroundColor: bgColor }}
+    >
       {/* Column Header */}
       <div
-        className="px-4 py-2 border-b-2 bg-white rounded-t-lg"
-        style={{ borderBottomColor: statusColor }}
+        className="px-4 py-2 border-b-2 rounded-t-lg"
+        style={{
+          borderBottomColor: statusColor,
+          backgroundColor: bgColor,
+        }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
