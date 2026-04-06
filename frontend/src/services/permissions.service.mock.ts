@@ -5,10 +5,7 @@ import {
   UserStatus,
   SearchFilters,
 } from "@/lib/types";
-import {
-  MOCK_USERS,
-  MOCK_PERMISSION_GROUPS,
-} from "@/mock-data/permissions.mock";
+import { MOCK_USERS, MOCK_PERMISSION_GROUPS } from "@/fake-data";
 
 // Simulate local data store
 let usersStore = [...MOCK_USERS];
@@ -17,7 +14,7 @@ const delay = (ms: number = 500) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export const fetchUsers = async (
-  filters?: SearchFilters,
+  filters?: SearchFilters
 ): Promise<AdminUser[]> => {
   await delay();
 
@@ -30,7 +27,7 @@ export const fetchUsers = async (
       (user) =>
         user.firstName.toLowerCase().includes(searchLower) ||
         user.lastName.toLowerCase().includes(searchLower) ||
-        user.email.toLowerCase().includes(searchLower),
+        user.email.toLowerCase().includes(searchLower)
     );
   }
 
@@ -75,7 +72,7 @@ export const createUser = async (data: UserFormData): Promise<AdminUser> => {
 
 export const updateUser = async (
   id: string,
-  data: UserFormData,
+  data: UserFormData
 ): Promise<AdminUser> => {
   await delay();
 
@@ -101,7 +98,7 @@ export const updateUser = async (
 
 export const updateUserStatus = async (
   id: string,
-  status: UserStatus,
+  status: UserStatus
 ): Promise<AdminUser> => {
   await delay();
 

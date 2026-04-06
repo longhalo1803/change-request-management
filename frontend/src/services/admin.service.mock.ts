@@ -8,14 +8,14 @@ import {
   DateRangeOption,
   DashboardFilters,
 } from "@/lib/types/admin.types";
-import { ADMIN_DASHBOARD_MOCK_DATA } from "@/mock-data/admin-dashboard";
+import { ADMIN_DASHBOARD_MOCK_DATA } from "@/fake-data";
 
 /**
  * Simulates fetching dashboard statistics
  * In a real app, this would call an API endpoint
  */
 export const fetchDashboardStats = async (
-  _filters?: DashboardFilters,
+  _filters?: DashboardFilters
 ): Promise<DashboardStats> => {
   // Simulate network delay
   return new Promise((resolve) => {
@@ -31,7 +31,7 @@ export const fetchDashboardStats = async (
  * Get dashboard stats with date range filter
  */
 export const getDashboardStatsByDateRange = async (
-  dateRange: DateRangeOption,
+  dateRange: DateRangeOption
 ): Promise<DashboardStats> => {
   return fetchDashboardStats({ dateRange, customer: "all", pm: "all" });
 };
@@ -42,7 +42,7 @@ export const getDashboardStatsByDateRange = async (
 export const getDashboardStatsFiltered = async (
   dateRange: DateRangeOption,
   customer: string,
-  pm: string,
+  pm: string
 ): Promise<DashboardStats> => {
   return fetchDashboardStats({ dateRange, customer, pm });
 };

@@ -1,66 +1,38 @@
-# Stage 1: Build
-FROM node:20-alpine AS builder
-
-# Set working directory
+FROM node:20.12.2 AS deps
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm ci --only=production && \
-    npm cache clean --force
+FROM node:20.12.2 AS builder
+WORKDIR /app
 
-# Copy source code
 COPY . .
-
-# Build TypeScript
+COPY --from=deps /app/node_modules ./node_modules
 RUN npm run build
 
-# Stage 2: Production
-FROM node:20-alpine
-
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
-
-# Create app user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
-
-# Set working directory
+FROM node:20.12.2 AS runner
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+ENV NODE_ENV=production
 
-# Install production dependencies only
-RUN npm ci --only=production && \
-    npm cache clean --force
+COPY package.json package-lock.json ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/src/locales ./dist/locales
+COPY --from=builder /app/node_modules ./node_modules
 
-# Copy built files from builder
-COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nodejs:nodejs /app/src/locales ./dist/locales
+RUN npm prune --omit=dev && \
+    npm cache clean --force && \
+    mkdir -p uploads logs && \
+    groupadd -g 1001 nodejs && \
+    useradd -u 1001 -g nodejs -m -s /bin/bash appuser && \
+    chown -R appuser:nodejs /app
 
-# Create necessary directories
-RUN mkdir -p uploads logs && \
-    chown -R nodejs:nodejs uploads logs
+USER appuser
 
-# Copy entrypoint script
-COPY --chown=nodejs:nodejs docker-entrypoint.sh ./
-RUN chmod +x docker-entrypoint.sh
-
-# Switch to non-root user
-USER nodejs
-
-# Expose port
 EXPOSE 3000
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Use dumb-init to handle signals properly
-ENTRYPOINT ["dumb-init", "--"]
-
-# Start application
-CMD ["./docker-entrypoint.sh"]
+CMD ["npm", "run", "start"]
