@@ -55,6 +55,5 @@ backend/uploads/
 *.db
 
 # Package manager
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
