@@ -15,14 +15,14 @@ export class Translator {
   private t: TFunction;
 
   constructor(language: SupportedLanguage, namespace: string = "common") {
-    this.t = i18next.getFixedT(language, namespace);
+    this.t = i18next.getFixedT(language, namespace as any);
   }
 
   /**
    * Translate a key with optional interpolation
    */
   translate(key: string, options?: Record<string, unknown>): string {
-    return this.t(key, options);
+    return this.t(key, options as any) as string;
   }
 
   /**
@@ -31,9 +31,9 @@ export class Translator {
   translateWithFallback(
     key: string,
     fallback: string,
-    options?: Record<string, unknown>,
+    options?: Record<string, unknown>
   ): string {
-    const result = this.t(key, options);
+    const result = this.t(key, options as any) as string;
     return result === key ? fallback : result;
   }
 
@@ -50,7 +50,7 @@ export class Translator {
  */
 export const createTranslator = (
   language: SupportedLanguage,
-  namespace?: string,
+  namespace?: string
 ): Translator => {
   return new Translator(language, namespace);
 };
@@ -61,7 +61,10 @@ export const createTranslator = (
 export const t = (
   language: string,
   key: string,
-  options?: Record<string, unknown>,
+  options?: Record<string, unknown>
 ): string => {
-  return i18next.t(key, { ...options, lng: language as SupportedLanguage });
+  return i18next.t(key, {
+    lng: language as SupportedLanguage,
+    ...options,
+  } as any) as string;
 };
