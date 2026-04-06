@@ -1,0 +1,22 @@
+{
+  "required": "{{field}}は必須です",
+  "invalid_email": "無効なメールアドレス形式",
+  "invalid_url": "無効なURL形式",
+  "min_length": "{{field}}は最低{{min}}文字である必要があります",
+  "max_length": "{{field}}は{{max}}文字を超えることはできません",
+  "min_value": "{{field}}は最低{{min}}である必要があります",
+  "max_value": "{{field}}は{{max}}を超えることはできません",
+  "invalid_format": "{{field}}の形式が無効です",
+  "string_expected": "{{field}}は文字列である必要があります",
+  "number_expected": "{{field}}は数値である必要があります",
+  "boolean_expected": "{{field}}はブール値である必要があります",
+  "array_expected": "{{field}}は配列である必要があります",
+  "object_expected": "{{field}}はオブジェクトである必要があります",
+  "date_expected": "{{field}}は有効な日付である必要があります",
+  "password_weak": "パスワードは最低8文字で、大文字、小文字、数字を含む必要があります",
+  "enum_invalid": "{{field}}は次のいずれかである必要があります: {{values}}",
+  "duplicate_value": "{{field}}は既に存在します",
+  "invalid_uuid": "{{field}}は有効なUUIDである必要があります",
+  "past_date_expected": "{{field}}は過去の日付である必要があります",
+  "future_date_expected": "{{field}}は未来の日付である必要があります"
+}

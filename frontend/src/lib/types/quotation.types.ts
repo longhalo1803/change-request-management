@@ -1,29 +1,14 @@
-export enum TaskRole {
-  DEVELOPER = "developer",
-  QA = "qa",
-  PM = "pm",
-}
-
-export interface CrQuotationItem {
+export interface Quotation {
   id: string;
-  quotationId: string;
-  description: string;
-  hours: number;
-  rate: number;
-  cost: number;
-  role: TaskRole;
-}
-
-export interface CrQuotation {
-  id: string;
-  changeRequestId: string;
-  totalHours: number;
-  totalCost: number;
-  currency: string;
-  notes?: string;
-  createdById: string;
-  createdBy?: any;
-  items?: CrQuotationItem[];
+  title: string;
+  description?: string;
+  projectId: string;
+  project?: any;
+  amount: number;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  validUntil?: string;
+  quotedBy: string;
+  quoter?: any;
   createdAt: string;
   updatedAt: string;
 }

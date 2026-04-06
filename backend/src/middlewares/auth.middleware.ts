@@ -67,7 +67,7 @@ export const authenticate = asyncHandler(
       }
       throw new AppError("auth.token_invalid", 401);
     }
-  },
+  }
 );
 
 /**
@@ -85,6 +85,15 @@ export const authorize = (...allowedRoles: UserRole[]) => {
       }
 
       next();
-    },
+    }
   );
+};
+
+/**
+ * Aliases for convenience
+ */
+export const requireAuth = authenticate;
+
+export const requireRole = (roles: UserRole[]) => {
+  return authorize(...roles);
 };

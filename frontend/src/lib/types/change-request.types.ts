@@ -10,14 +10,20 @@ export enum CrStatus {
 
 export interface ChangeRequest {
   id: string;
+  crKey: string;
   title: string;
   description: string;
+  spaceId: string;
+  space?: any;
   status: CrStatus;
+  statusId?: string;
   priority: "low" | "medium" | "high" | "critical";
-  customerId: string;
-  customer?: any;
+  priorityId?: string;
+  worktypeId?: string;
+  worktype?: any;
   assigneeId?: string;
   assignee?: any;
+  assignedTo?: string;
   createdById?: string;
   createdBy?: {
     id: string;
@@ -34,6 +40,5 @@ export interface ChangeRequest {
   updatedAt: string;
   comments?: any[];
   attachments?: any[];
-  quotation?: any;
   statusHistory?: any[];
 }

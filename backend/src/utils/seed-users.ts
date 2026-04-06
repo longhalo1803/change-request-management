@@ -9,7 +9,7 @@ import { logger } from "./logger";
  *
  * Creates default users for testing:
  * - Admin user
- * - BrSE user
+ * - PM (Project Manager) user
  * - Customer user
  *
  * Usage: ts-node -r tsconfig-paths/register src/utils/seed-users.ts
@@ -26,16 +26,16 @@ const seedUsers = async () => {
     // Default users
     const defaultUsers = [
       {
-        email: "admin@solashi.com",
+        email: "admin@example.com",
         password: await PasswordUtil.hash("Admin@123"),
         fullName: "System Administrator",
         role: UserRole.ADMIN,
       },
       {
-        email: "brse@solashi.com",
-        password: await PasswordUtil.hash("Brse@123"),
-        fullName: "BrSE Manager",
-        role: UserRole.BRSE,
+        email: "pm@example.com",
+        password: await PasswordUtil.hash("PM@123"),
+        fullName: "Project Manager",
+        role: UserRole.PM,
       },
       {
         email: "customer@example.com",
