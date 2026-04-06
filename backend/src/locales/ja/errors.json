@@ -1,0 +1,22 @@
+{
+  "internal_server": "内部サーバーエラー",
+  "bad_request": "不正なリクエスト",
+  "not_found": "リソースが見つかりません",
+  "forbidden": "アクセスが禁止されています",
+  "validation_failed": "検証に失敗しました",
+  "unauthorized": "認可されていないアクセス",
+  "conflict": "リソースが競合しています",
+  "unprocessable_entity": "処理できないエンティティ",
+  "method_not_allowed": "メソッドが許可されていません",
+  "email_already_exists": "メールアドレスが既に存在します",
+  "invalid_password": "無効なパスワード",
+  "user_not_found": "ユーザーが見つかりません",
+  "cr_not_found": "変更要求が見つかりません",
+  "space_not_found": "スペースが見つかりません",
+  "sprint_not_found": "スプリントが見つかりません",
+  "invalid_role": "無効なユーザーロール",
+  "database_error": "データベース操作に失敗しました",
+  "file_upload_failed": "ファイルアップロードに失敗しました",
+  "invalid_file_type": "無効なファイルタイプ",
+  "file_too_large": "ファイルサイズが制限を超えています"
+}

@@ -1,0 +1,22 @@
+{
+  "internal_server": "Lỗi máy chủ nội bộ",
+  "bad_request": "Yêu cầu không hợp lệ",
+  "not_found": "Không tìm thấy tài nguyên",
+  "forbidden": "Truy cập bị cấm",
+  "validation_failed": "Xác thực không thành công",
+  "unauthorized": "Truy cập không được phép",
+  "conflict": "Xung đột tài nguyên",
+  "unprocessable_entity": "Không thể xử lý thực thể",
+  "method_not_allowed": "Phương thức không được phép",
+  "email_already_exists": "Email đã tồn tại",
+  "invalid_password": "Mật khẩu không hợp lệ",
+  "user_not_found": "Không tìm thấy người dùng",
+  "cr_not_found": "Không tìm thấy yêu cầu thay đổi",
+  "space_not_found": "Không tìm thấy không gian",
+  "sprint_not_found": "Không tìm thấy sprint",
+  "invalid_role": "Vai trò người dùng không hợp lệ",
+  "database_error": "Lỗi vận hành cơ sở dữ liệu",
+  "file_upload_failed": "Tải tệp lên không thành công",
+  "invalid_file_type": "Loại tệp không hợp lệ",
+  "file_too_large": "Kích thước tệp vượt quá giới hạn"
+}

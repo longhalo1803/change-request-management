@@ -66,9 +66,57 @@ export class UserRepository {
   /**
    * Find all users (for admin)
    */
-  async findAll(): Promise<User[]> {
+  async findAll(options?: {
+    skip?: number;
+    take?: number;
+  }): Promise<{ data: User[]; total: number }> {
+    const [data, total] = await this.repository.findAndCount({
+      select: [
+        "id",
+        "email",
+        "fullName",
+        "role",
+        "isActive",
+        "lastLoginAt",
+        "createdAt",
+        "updatedAt",
+      ],
+      skip: options?.skip || 0,
+      take: options?.take || 20,
+      order: { createdAt: "DESC" },
+    });
+    return { data, total };
+  }
+
+  /**
+   * Update user
+   */
+  async update(id: string, userData: Partial<User>): Promise<void> {
+    await this.repository.update(id, userData);
+  }
+
+  /**
+   * Delete user
+   */
+  async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
+  }
+
+  /**
+   * Find users by role
+   */
+  async findByRole(role: UserRole): Promise<User[]> {
     return this.repository.find({
+      where: { role },
       select: ["id", "email", "fullName", "role", "isActive", "createdAt"],
     });
+  }
+
+  /**
+   * Check if email exists
+   */
+  async emailExists(email: string): Promise<boolean> {
+    const user = await this.findByEmail(email);
+    return !!user;
   }
 }

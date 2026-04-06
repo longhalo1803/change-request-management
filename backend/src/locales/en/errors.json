@@ -1,0 +1,22 @@
+{
+  "internal_server": "Internal server error",
+  "bad_request": "Bad request",
+  "not_found": "Resource not found",
+  "forbidden": "Access forbidden",
+  "validation_failed": "Validation failed",
+  "unauthorized": "Unauthorized access",
+  "conflict": "Resource conflict",
+  "unprocessable_entity": "Unprocessable entity",
+  "method_not_allowed": "Method not allowed",
+  "email_already_exists": "Email already exists",
+  "invalid_password": "Invalid password",
+  "user_not_found": "User not found",
+  "cr_not_found": "Change request not found",
+  "space_not_found": "Space not found",
+  "sprint_not_found": "Sprint not found",
+  "invalid_role": "Invalid user role",
+  "database_error": "Database operation failed",
+  "file_upload_failed": "File upload failed",
+  "invalid_file_type": "Invalid file type",
+  "file_too_large": "File size exceeds maximum limit"
+}

@@ -11,7 +11,7 @@ import {
  * User Entity
  *
  * Represents system users with role-based access
- * Roles: admin, brse, developer, qa, customer
+ * Roles: ADMIN, PM, CUSTOMER
  *
  * SOLID Principles:
  * - Single Responsibility: Only represents user data structure
@@ -19,11 +19,9 @@ import {
  */
 
 export enum UserRole {
-  ADMIN = "admin",
-  BRSE = "brse",
-  DEVELOPER = "developer",
-  QA = "qa",
-  CUSTOMER = "customer",
+  ADMIN = "ADMIN",
+  PM = "PM",
+  CUSTOMER = "CUSTOMER",
 }
 
 @Entity("users")
