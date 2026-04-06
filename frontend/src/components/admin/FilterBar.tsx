@@ -6,11 +6,7 @@
 import { Select, Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import { DateRangeOption } from "@/lib/types/admin.types";
-import {
-  DATE_RANGE_OPTIONS,
-  CUSTOMER_OPTIONS,
-  PM_OPTIONS,
-} from "@/mock-data/admin-dashboard";
+import { DATE_RANGE_OPTIONS, CUSTOMER_OPTIONS, PM_OPTIONS } from "@/fake-data";
 
 interface FilterBarProps {
   dateRange: DateRangeOption;
