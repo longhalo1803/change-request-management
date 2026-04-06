@@ -1,47 +1,106 @@
-import { Card, Row, Col, Button, Empty } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { Tabs, Empty } from "antd";
+import { CrKanbanBoard, CrTable, CrFilter, CrDetailModal } from "@/components";
+import { ChangeRequest } from "@/lib/types";
+import { getPMViewCRs } from "@/fake-data";
 
 /**
  * PM Dashboard Page
  *
- * Placeholder PM dashboard for project managers
- * This page shows the PM workspace with project management features
+ * Shows all Change Requests that are NOT in Draft status
+ * PMs can view and work on CRs but cannot create new ones
  *
- * Features to be implemented:
- * - Project overview
- * - Task management
- * - Team management
- * - Project metrics
+ * Features:
+ * - View all submitted CRs (Submitted, In Discussion, Approved, Rejected, Ongoing, Closed)
+ * - Filter and search CRs
+ * - Switch between Table and Kanban views
+ * - View CR details
  */
 export const PMDashboardPage = () => {
+  const [crData] = useState<ChangeRequest[]>(getPMViewCRs());
+  const [selectedCr, setSelectedCr] = useState<ChangeRequest | null>(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"table" | "kanban">("kanban");
+
+  const handleCrClick = (cr: ChangeRequest) => {
+    setSelectedCr(cr);
+    setDetailModalOpen(true);
+  };
+
+  const handleDetailClose = () => {
+    setDetailModalOpen(false);
+    setSelectedCr(null);
+  };
+
+  const tabItems = [
+    {
+      key: "kanban",
+      label: "📊 Kanban Board",
+      children:
+        crData.length > 0 ? (
+          <CrKanbanBoard
+            data={crData}
+            onCardClick={handleCrClick}
+            actorType="pm"
+          />
+        ) : (
+          <Empty description="No Change Requests found" />
+        ),
+    },
+    {
+      key: "table",
+      label: "📋 Table View",
+      children:
+        crData.length > 0 ? (
+          <CrTable data={crData} onRowClick={handleCrClick} actorType="pm" />
+        ) : (
+          <Empty description="No Change Requests found" />
+        ),
+    },
+  ];
+
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900">PM Dashboard</h1>
-        <p className="text-gray-600 mt-2">Project Management Overview</p>
+        <p className="text-gray-600 mt-2">
+          Manage and resolve customer Change Requests
+        </p>
       </div>
 
-      <Row gutter={[24, 24]}>
-        <Col xs={24}>
-          <Card
-            title="Welcome to PM Dashboard"
-            extra={
-              <Button type="primary" icon={<PlusOutlined />}>
-                New Project
-              </Button>
-            }
-          >
-            <Empty
-              description="No projects yet"
-              style={{ marginTop: "50px", marginBottom: "50px" }}
-            />
-            <p className="text-center text-gray-600">
-              Start by creating a new project or contact your administrator for
-              existing projects
-            </p>
-          </Card>
-        </Col>
-      </Row>
+      {/* Filter Bar */}
+      <div className="mb-6">
+        <CrFilter actorType="pm" />
+      </div>
+
+      {/* Tabs: Kanban and Table */}
+      <div className="bg-white rounded-lg shadow">
+        <Tabs
+          activeKey={viewMode}
+          onChange={(key) => setViewMode(key as "table" | "kanban")}
+          items={tabItems}
+          className="px-6"
+        />
+      </div>
+
+      {/* Detail Modal */}
+      <CrDetailModal
+        open={detailModalOpen}
+        cr={selectedCr}
+        onCancel={handleDetailClose}
+        actorType="pm"
+      />
+
+      {/* Stats Footer */}
+      {crData.length > 0 && (
+        <div className="mt-6 text-center text-gray-600">
+          <p>
+            Showing {crData.length} Change Request
+            {crData.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

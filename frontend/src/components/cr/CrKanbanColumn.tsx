@@ -1,11 +1,14 @@
 import { ChangeRequest, CrStatus } from "@/lib/types";
 import { CrCard } from "./CrCard";
 
+type ActorType = "customer" | "pm" | "admin";
+
 interface CrKanbanColumnProps {
   status: CrStatus;
   title: string;
   crs: ChangeRequest[];
   onCardClick?: (cr: ChangeRequest) => void;
+  actorType?: ActorType;
 }
 
 const getColumnBackgroundColor = (status: CrStatus): string => {
@@ -34,11 +37,16 @@ const getStatusColor = (status: CrStatus): string => {
   return colorMap[status] || "#d9d9d9";
 };
 
+/**
+ * Shared Kanban Column Component
+ * Used by Customer, PM, and Admin actors
+ */
 export const CrKanbanColumn: React.FC<CrKanbanColumnProps> = ({
   status,
   title,
   crs,
   onCardClick,
+  actorType = "customer",
 }) => {
   const statusColor = getStatusColor(status);
   const bgColor = getColumnBackgroundColor(status);
@@ -71,7 +79,12 @@ export const CrKanbanColumn: React.FC<CrKanbanColumnProps> = ({
         {crs.length > 0 ? (
           <div className="space-y-3">
             {crs.map((cr) => (
-              <CrCard key={cr.id} cr={cr} onClick={onCardClick} />
+              <CrCard
+                key={cr.id}
+                cr={cr}
+                onClick={onCardClick}
+                actorType={actorType}
+              />
             ))}
           </div>
         ) : (

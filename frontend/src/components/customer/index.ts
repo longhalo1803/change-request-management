@@ -1,10 +1,10 @@
+/**
+ * Customer Component Exports
+ * Re-exports shared CR components + Customer-specific components
+ */
+
 export { Header } from "./Header";
-export * from "./CrTable";
-export * from "./CrFilter";
-export * from "./CustomerSidebar";
-export * from "./CreateCrModal";
-export * from "./CrDetailModal";
-export * from "./CrCard";
-export * from "./CrKanbanColumn";
-export * from "./CrKanbanBoard";
-export * from "./CrFilterBar";
+export { CustomerSidebar } from "./CustomerSidebar";
+
+// Re-export shared CR components from @cr/
+export * from "../cr";

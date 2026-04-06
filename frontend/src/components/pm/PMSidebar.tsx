@@ -61,13 +61,13 @@ export const PMSidebar = () => {
     <Sider
       width={240}
       style={{
-        overflow: "auto",
+        overflow: "hidden",
         height: "100vh",
         position: "fixed",
         left: 0,
         top: 0,
         bottom: 0,
-        background: "#ffffff",
+        background: "#fafafa",
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
       }}
     >
@@ -96,19 +96,24 @@ export const PMSidebar = () => {
       </div>
 
       {/* Main Menu */}
-      <Menu
-        theme="light"
-        mode="inline"
-        selectedKeys={[getSelectedKey()]}
-        items={menuItems}
-        style={{
-          border: "none",
-          background: "#ffffff",
-        }}
-      />
+      <div style={{ height: "calc(100vh - 240px)", overflowY: "auto" }}>
+        <Menu
+          theme="light"
+          mode="inline"
+          selectedKeys={[getSelectedKey()]}
+          items={menuItems}
+          style={{
+            border: "none",
+            background: "#fafafa",
+          }}
+        />
+      </div>
 
       {/* Logout Section */}
-      <div className="absolute bottom-0 w-full p-4 border-t border-gray-200 bg-white">
+      <div
+        className="absolute bottom-0 w-full p-4 border-t border-gray-200"
+        style={{ background: "#fafafa" }}
+      >
         <button
           onClick={logout}
           className="w-full text-left px-4 py-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors text-sm"

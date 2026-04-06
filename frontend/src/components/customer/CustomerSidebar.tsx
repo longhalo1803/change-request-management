@@ -74,14 +74,14 @@ export const CustomerSidebar: React.FC = () => {
     <Sider
       width={240}
       style={{
-        background: "#fff",
+        background: "#fafafa",
         borderRight: "1px solid #f0f0f0",
         height: "100vh",
         position: "fixed",
         left: 0,
         top: 0,
         bottom: 0,
-        overflow: "auto",
+        overflow: "hidden",
       }}
     >
       <div className="p-6 border-b border-gray-100">
@@ -90,24 +90,30 @@ export const CustomerSidebar: React.FC = () => {
 
       <div
         className="flex flex-col justify-between"
-        style={{ height: "calc(100vh - 100px)" }}
+        style={{ height: "calc(100vh - 100px)", overflow: "hidden" }}
       >
-        <Menu
-          mode="inline"
-          selectedKeys={[selectedKey]}
-          style={{ border: "none", paddingTop: 16 }}
-          items={mainMenuItems.map((item) => ({
-            key: item.key,
-            icon: item.icon,
-            label: item.label,
-            onClick: () => handleMenuClick(item.path),
-          }))}
-        />
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          <Menu
+            mode="inline"
+            selectedKeys={[selectedKey]}
+            style={{ border: "none", paddingTop: 16, background: "#fafafa" }}
+            items={mainMenuItems.map((item) => ({
+              key: item.key,
+              icon: item.icon,
+              label: item.label,
+              onClick: () => handleMenuClick(item.path),
+            }))}
+          />
+        </div>
 
         <Menu
           mode="inline"
           selectedKeys={[selectedKey]}
-          style={{ border: "none", borderTop: "1px solid #f0f0f0" }}
+          style={{
+            border: "none",
+            borderTop: "1px solid #f0f0f0",
+            background: "#fafafa",
+          }}
           items={bottomMenuItems.map((item) => ({
             key: item.key,
             icon: item.icon,
