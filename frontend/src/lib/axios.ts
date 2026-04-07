@@ -1,12 +1,14 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { useAuthStore } from "@/store/auth.store";
+import { appConfig } from "@/config/app.config";
 
-const baseURL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+// Use centralized API configuration (single source of truth)
+const baseURL = appConfig.apiBaseUrl;
+const timeout = appConfig.apiTimeout;
 
 export const axiosInstance = axios.create({
   baseURL,
-  timeout: 30000,
+  timeout,
   headers: {
     "Content-Type": "application/json",
   },
@@ -21,7 +23,7 @@ axiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 // Response interceptor - handle 401 and refresh token
@@ -105,7 +107,7 @@ axiosInstance.interceptors.response.use(
 
       return Promise.reject(refreshError);
     }
-  },
+  }
 );
 
 export default axiosInstance;

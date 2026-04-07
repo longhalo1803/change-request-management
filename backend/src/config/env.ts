@@ -1,6 +1,11 @@
 import dotenv from "dotenv";
 import path from "path";
 
+// Load .env.local first (if exists), then .env
+// This allows local development to override production values
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: path.join(__dirname, "../../.env.local") });
+}
 dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 export const config = {
@@ -30,6 +35,6 @@ export const config = {
     allowedTypes: (process.env.ALLOWED_FILE_TYPES || "").split(","),
   },
 
-  corsOrigin: process.env.CORS_ORIGIN || "http://localhost:5173",
+  corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
   logLevel: process.env.LOG_LEVEL || "info",
 };
