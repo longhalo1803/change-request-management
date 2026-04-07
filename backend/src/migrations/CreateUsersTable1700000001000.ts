@@ -41,7 +41,7 @@ export class CreateUsersTable1700000001000 implements MigrationInterface {
           {
             name: "role",
             type: "enum",
-            enum: ["admin", "brse", "developer", "qa", "customer"],
+            enum: ["admin", "pm", "customer"],
             default: "'customer'",
             isNullable: false,
           },
@@ -71,7 +71,7 @@ export class CreateUsersTable1700000001000 implements MigrationInterface {
           },
         ],
       }),
-      true,
+      true
     );
 
     // Create indexes
@@ -80,7 +80,7 @@ export class CreateUsersTable1700000001000 implements MigrationInterface {
       new TableIndex({
         name: "IDX_users_email",
         columnNames: ["email"],
-      }),
+      })
     );
 
     await queryRunner.createIndex(
@@ -88,7 +88,7 @@ export class CreateUsersTable1700000001000 implements MigrationInterface {
       new TableIndex({
         name: "IDX_users_role",
         columnNames: ["role"],
-      }),
+      })
     );
   }
 

@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
-import { ChangeRequestService } from "@/services/change-request.service";
+import {
+  ChangeRequestService,
+  SearchCRInput,
+} from "@/services/change-request.service";
 import { AppError } from "@/utils/app-error";
 
 /**
  * ChangeRequest Controller
  *
- * Handles HTTP requests for CR operations
+ * Handles HTTP requests for CR operations with role-based access control
  *
  * SOLID Principles:
  * - Single Responsibility: Only handles HTTP request/response
@@ -20,404 +23,453 @@ export class ChangeRequestController {
   }
 
   /**
-   * GET /change-requests/:id
+   * Helper to extract user info from request
    */
-  async getCrById(req: Request, res: Response): Promise<void> {
+  private getUserFromRequest(req: Request) {
+    const user = (req as any).user;
+    if (!user || !user.id) {
+      throw new AppError("auth.unauthorized", 401);
+    }
+    return {
+      id: user.id,
+      role: user.role?.toLowerCase() || "customer",
+    };
+  }
+
+  /**
+   * Helper to send success response
+   */
+  private sendSuccess(
+    res: Response,
+    data: any,
+    message: string = "Success",
+    statusCode: number = 200
+  ): void {
+    res.status(statusCode).json({
+      success: true,
+      data,
+      message,
+    });
+  }
+
+  /**
+   * Helper to send error response
+   */
+  private sendError(
+    res: Response,
+    error: Error | AppError,
+    statusCode: number = 500
+  ): void {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        data: null,
+        message: error.message,
+        code: error.message,
+      });
+    } else {
+      res.status(statusCode).json({
+        success: false,
+        data: null,
+        message: error.message || "Internal server error",
+        code: "INTERNAL_SERVER_ERROR",
+      });
+    }
+  }
+
+  /**
+   * GET /api/change-requests
+   * Get all CRs with search/filter and visibility based on role
+   */
+  async getChangeRequests(req: Request, res: Response): Promise<void> {
     try {
+      const user = this.getUserFromRequest(req);
+
+      const filters: SearchCRInput = {
+        search: req.query.search as string,
+        id: req.query.id as string,
+        name: req.query.name as string,
+        statusId: req.query.statusId as string,
+        priorityId: req.query.priorityId as string,
+        spaceId: req.query.spaceId as string,
+        assignedTo: req.query.assignedTo as string,
+        parentId: req.query.parentId as string,
+        sortBy:
+          (req.query.sortBy as
+            | "createdAt"
+            | "priority"
+            | "dueDate"
+            | "title") || "createdAt",
+        sortOrder: (req.query.sortOrder as "asc" | "desc") || "desc",
+      };
+
+      const result = await this.crService.searchCRs(
+        filters,
+        user.id,
+        user.role
+      );
+
+      this.sendSuccess(res, result, "Change requests retrieved successfully");
+    } catch (error) {
+      this.sendError(res, error as Error);
+    }
+  }
+
+  /**
+   * GET /api/change-requests/:id
+   * Get single CR by ID
+   */
+  async getChangeRequest(req: Request, res: Response): Promise<void> {
+    try {
+      const user = this.getUserFromRequest(req);
       const { id } = req.params;
-      const cr = await this.crService.getCrById(id);
-      res.json({ status: "success", data: cr });
+
+      const cr = await this.crService.getCrById(id, user.id, user.role);
+
+      this.sendSuccess(res, cr, "Change request retrieved successfully");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
     }
   }
 
   /**
-   * GET /change-requests/key/:crKey
+   * POST /api/change-requests
+   * Create new CR (CUSTOMER ONLY)
+   * Status: Always DRAFT
    */
-  async getCrByCrKey(req: Request, res: Response): Promise<void> {
+  async createChangeRequest(req: Request, res: Response): Promise<void> {
     try {
-      const { crKey } = req.params;
-      const cr = await this.crService.getCrByCrKey(crKey);
-      res.json({ status: "success", data: cr });
-    } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
-    }
-  }
-
-  /**
-   * GET /spaces/:spaceId/change-requests
-   */
-  async getCrsBySpaceId(req: Request, res: Response): Promise<void> {
-    try {
-      const { spaceId } = req.params;
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
-
-      const result = await this.crService.getCrsBySpaceId(spaceId, page, limit);
-      res.json({ status: "success", data: result });
-    } catch (error) {
-      res
-        .status(500)
-        .json({ status: "error", message: "Internal server error" });
-    }
-  }
-
-  /**
-   * GET /change-requests/assigned/to-me
-   */
-  async getCrsAssignedToMe(req: Request, res: Response): Promise<void> {
-    try {
-      const userId = (req as any).user?.id;
-      if (!userId) {
-        res.status(401).json({ status: "error", message: "Unauthorized" });
-        return;
-      }
-
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
-
-      const result = await this.crService.getCrsAssignedToUser(
-        userId,
-        page,
-        limit
-      );
-      res.json({ status: "success", data: result });
-    } catch (error) {
-      res
-        .status(500)
-        .json({ status: "error", message: "Internal server error" });
-    }
-  }
-
-  /**
-   * GET /change-requests/created/by-me
-   */
-  async getCrsCreatedByMe(req: Request, res: Response): Promise<void> {
-    try {
-      const userId = (req as any).user?.id;
-      if (!userId) {
-        res.status(401).json({ status: "error", message: "Unauthorized" });
-        return;
-      }
-
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
-
-      const result = await this.crService.getCrsCreatedByUser(
-        userId,
-        page,
-        limit
-      );
-      res.json({ status: "success", data: result });
-    } catch (error) {
-      res
-        .status(500)
-        .json({ status: "error", message: "Internal server error" });
-    }
-  }
-
-  /**
-   * POST /spaces/:spaceId/change-requests
-   */
-  async createCr(req: Request, res: Response): Promise<void> {
-    try {
-      const { spaceId } = req.params;
-      const userId = (req as any).user?.id;
-
-      if (!userId) {
-        res.status(401).json({ status: "error", message: "Unauthorized" });
-        return;
-      }
-
+      const user = this.getUserFromRequest(req);
       const {
-        title,
-        description,
-        statusId,
-        priorityId,
-        worktypeId,
-        assignedTo,
-        sprintId,
-        estimatedHours,
-        dueDate,
-      } = req.body;
-
-      if (!title || !statusId || !priorityId || !worktypeId) {
-        res
-          .status(400)
-          .json({ status: "error", message: "Missing required fields" });
-        return;
-      }
-
-      const cr = await this.crService.createCr({
         title,
         description,
         spaceId,
-        statusId,
         priorityId,
         worktypeId,
-        createdBy: userId,
-        assignedTo,
         sprintId,
         estimatedHours,
         dueDate,
-      });
+      } = req.body;
 
-      res.status(201).json({ status: "success", data: cr });
+      // Validate required fields
+      if (!title || !spaceId || !priorityId || !worktypeId) {
+        this.sendError(
+          res,
+          new AppError("cr.missing_required_fields", 400),
+          400
+        );
+        return;
+      }
+
+      const cr = await this.crService.createCr(
+        {
+          title,
+          description,
+          spaceId,
+          priorityId,
+          worktypeId,
+          createdBy: user.id,
+          sprintId,
+          estimatedHours,
+          dueDate,
+        },
+        user.role
+      );
+
+      this.sendSuccess(res, cr, "Change request created successfully", 201);
     } catch (error) {
-      res
-        .status(500)
-        .json({ status: "error", message: "Internal server error" });
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
     }
   }
 
   /**
-   * PUT /change-requests/:id
+   * PUT /api/change-requests/:id
+   * Update CR (CUSTOMER ONLY, DRAFT status only)
    */
-  async updateCr(req: Request, res: Response): Promise<void> {
+  async updateChangeRequest(req: Request, res: Response): Promise<void> {
     try {
+      const user = this.getUserFromRequest(req);
       const { id } = req.params;
       const {
         title,
         description,
-        statusId,
         priorityId,
         worktypeId,
-        assignedTo,
         sprintId,
         estimatedHours,
-        actualHours,
         dueDate,
       } = req.body;
 
-      const cr = await this.crService.updateCr(id, {
-        title,
-        description,
-        statusId,
-        priorityId,
-        worktypeId,
-        assignedTo,
-        sprintId,
-        estimatedHours,
-        actualHours,
-        dueDate,
-      });
+      const cr = await this.crService.updateCr(
+        id,
+        {
+          title,
+          description,
+          priorityId,
+          worktypeId,
+          sprintId,
+          estimatedHours,
+          dueDate,
+        },
+        user.id,
+        user.role
+      );
 
-      res.json({ status: "success", data: cr });
+      this.sendSuccess(res, cr, "Change request updated successfully");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
     }
   }
 
   /**
-   * DELETE /change-requests/:id
+   * DELETE /api/change-requests/:id
+   * Delete CR (CUSTOMER ONLY, DRAFT status only)
    */
-  async deleteCr(req: Request, res: Response): Promise<void> {
+  async deleteChangeRequest(req: Request, res: Response): Promise<void> {
     try {
+      const user = this.getUserFromRequest(req);
       const { id } = req.params;
-      await this.crService.deleteCr(id);
-      res.json({ status: "success", message: "CR deleted" });
+
+      await this.crService.deleteCr(id, user.id, user.role);
+
+      this.sendSuccess(res, { id }, "Change request deleted successfully");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
     }
   }
 
   /**
-   * POST /change-requests/:id/comments
+   * POST /api/change-requests/:id/submit
+   * Submit CR from DRAFT to SUBMITTED (CUSTOMER ONLY)
    */
-  async addComment(req: Request, res: Response): Promise<void> {
+  async submitChangeRequest(req: Request, res: Response): Promise<void> {
     try {
+      const user = this.getUserFromRequest(req);
       const { id } = req.params;
-      const userId = (req as any).user?.id;
-      const { content } = req.body;
 
-      if (!userId || !content) {
-        res
-          .status(400)
-          .json({ status: "error", message: "Missing required fields" });
-        return;
-      }
+      const cr = await this.crService.submitCr(id, user.id, user.role);
 
-      const comment = await this.crService.addComment(id, content, userId);
-      res.status(201).json({ status: "success", data: comment });
+      this.sendSuccess(res, cr, "Change request submitted successfully");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
     }
   }
 
   /**
-   * GET /change-requests/:id/comments
-   */
-  async getComments(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const comments = await this.crService.getComments(id);
-      res.json({ status: "success", data: comments });
-    } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
-    }
-  }
-
-  /**
-   * DELETE /change-requests/:id/comments/:commentId
-   */
-  async deleteComment(req: Request, res: Response): Promise<void> {
-    try {
-      const { id, commentId } = req.params;
-      await this.crService.deleteComment(id, commentId);
-      res.json({ status: "success", message: "Comment deleted" });
-    } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
-    }
-  }
-
-  /**
-   * GET /change-requests/:id/attachments
-   */
-  async getAttachments(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const attachments = await this.crService.getAttachments(id);
-      res.json({ status: "success", data: attachments });
-    } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
-    }
-  }
-
-  /**
-   * DELETE /change-requests/:id/attachments/:attachmentId
-   */
-  async deleteAttachment(req: Request, res: Response): Promise<void> {
-    try {
-      const { id, attachmentId } = req.params;
-      await this.crService.deleteAttachment(id, attachmentId);
-      res.json({ status: "success", message: "Attachment deleted" });
-    } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
-    }
-  }
-
-  /**
-   * GET /change-requests/:id/status-history
+   * GET /api/change-requests/:id/status-history
+   * Get status history for a CR
    */
   async getStatusHistory(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+
       const history = await this.crService.getStatusHistory(id);
-      res.json({ status: "success", data: history });
+
+      this.sendSuccess(res, history, "Status history retrieved successfully");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
     }
   }
 
   /**
-   * POST /change-requests/:id/status-change
+   * GET /api/change-requests/:id/comments
+   * Get comments for a CR
    */
-  async recordStatusChange(req: Request, res: Response): Promise<void> {
+  async getComments(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const userId = (req as any).user?.id;
-      const { statusId, notes } = req.body;
 
-      if (!userId || !statusId) {
-        res
-          .status(400)
-          .json({ status: "error", message: "Missing required fields" });
+      const comments = await this.crService.getComments(id);
+
+      this.sendSuccess(res, comments, "Comments retrieved successfully");
+    } catch (error) {
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
+    }
+  }
+
+  /**
+   * GET /api/change-requests/:id/attachments
+   * Get attachments for a CR
+   */
+  async getAttachments(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const attachments = await this.crService.getAttachments(id);
+
+      this.sendSuccess(res, attachments, "Attachments retrieved successfully");
+    } catch (error) {
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
+    }
+  }
+
+  /**
+   * DELETE /api/change-requests/:id/attachments/:attachmentId
+   * Delete attachment
+   */
+  async deleteAttachment(req: Request, res: Response): Promise<void> {
+    try {
+      const { id, attachmentId } = req.params;
+
+      await this.crService.deleteAttachment(id, attachmentId);
+
+      this.sendSuccess(
+        res,
+        { id: attachmentId },
+        "Attachment deleted successfully"
+      );
+    } catch (error) {
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
+    }
+  }
+
+  /**
+   * GET /api/change-requests/by-space/:spaceId
+   * Get all CRs for a specific space with role-based visibility
+   */
+  async getCRsBySpace(req: Request, res: Response): Promise<void> {
+    try {
+      const user = this.getUserFromRequest(req);
+      const { spaceId } = req.params;
+
+      const result = await this.crService.getCrsBySpaceId(
+        spaceId,
+        user.id,
+        user.role
+      );
+
+      this.sendSuccess(
+        res,
+        result,
+        "Change requests for space retrieved successfully"
+      );
+    } catch (error) {
+      this.sendError(res, error as Error);
+    }
+  }
+
+  /**
+   * GET /api/change-requests/assigned/to-me
+   * Get CRs assigned to current user
+   */
+  async getAssignedToMe(req: Request, res: Response): Promise<void> {
+    try {
+      const user = this.getUserFromRequest(req);
+
+      const result = await this.crService.getCrsAssignedToUser(user.id);
+
+      this.sendSuccess(
+        res,
+        result,
+        "Assigned change requests retrieved successfully"
+      );
+    } catch (error) {
+      this.sendError(res, error as Error);
+    }
+  }
+
+  /**
+   * POST /api/change-requests/:id/comments
+   * Add comment to CR (CUSTOMER and PM only, not on DRAFT)
+   */
+  async addComment(req: Request, res: Response): Promise<void> {
+    try {
+      const user = this.getUserFromRequest(req);
+      const { id } = req.params;
+      const { content } = req.body;
+      const files = (req as any).files as Express.Multer.File[] | undefined;
+
+      if (!content) {
+        this.sendError(
+          res,
+          new AppError("cr.comment_content_required", 400),
+          400
+        );
         return;
       }
 
-      await this.crService.recordStatusChange(id, statusId, userId, notes);
-      res.json({ status: "success", message: "Status updated" });
-    } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
+      // Prepare attachments if files uploaded
+      let attachments: Array<{
+        fileName: string;
+        fileUrl: string;
+        fileSize: number;
+        mimeType: string;
+      }> = [];
+      if (files && files.length > 0) {
+        const { getRelativeFilePath } =
+          await import("@/middlewares/upload.middleware");
+        attachments = files.map((file) => ({
+          fileName: file.originalname,
+          fileUrl: getRelativeFilePath(id, file.filename),
+          fileSize: file.size,
+          mimeType: file.mimetype,
+        }));
       }
+
+      const comment = await this.crService.addCommentWithAttachments(
+        id,
+        content,
+        user.id,
+        user.role,
+        attachments
+      );
+
+      this.sendSuccess(res, comment, "Comment added successfully", 201);
+    } catch (error) {
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
+    }
+  }
+
+  /**
+   * DELETE /api/change-requests/:id/comments/:commentId
+   * Delete comment (owner only)
+   */
+  async deleteComment(req: Request, res: Response): Promise<void> {
+    try {
+      const user = this.getUserFromRequest(req);
+      const { id, commentId } = req.params;
+
+      await this.crService.deleteComment(id, commentId, user.id, user.role);
+
+      this.sendSuccess(res, { id: commentId }, "Comment deleted successfully");
+    } catch (error) {
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
+    }
+  }
+
+  /**
+   * POST /api/change-requests/:id/status-transition
+   * Transition CR status (PM or Customer based on current status)
+   */
+  async transitionStatus(req: Request, res: Response): Promise<void> {
+    try {
+      const user = this.getUserFromRequest(req);
+      const { id } = req.params;
+      const { toStatusId, notes } = req.body;
+
+      const cr = await this.crService.transitionStatus(
+        id,
+        toStatusId,
+        user.id,
+        user.role,
+        notes
+      );
+
+      this.sendSuccess(res, cr, "Status transitioned successfully");
+    } catch (error) {
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
     }
   }
 }

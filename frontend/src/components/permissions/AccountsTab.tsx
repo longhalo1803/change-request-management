@@ -14,13 +14,7 @@ import {
 } from "@/lib/types";
 import { PermissionsTable } from "./PermissionsTable";
 import { AccountModal } from "./AccountModal";
-import {
-  fetchUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-  updateUserStatus,
-} from "@/services/permissions.service.mock";
+import { permissionsService } from "@/services/permissions.service";
 
 interface AccountsTabProps {
   permissionGroups: PermissionGroup[];
@@ -50,7 +44,7 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
         (user) =>
           user.firstName.toLowerCase().includes(searchLower) ||
           user.lastName.toLowerCase().includes(searchLower) ||
-          user.email.toLowerCase().includes(searchLower),
+          user.email.toLowerCase().includes(searchLower)
       );
       setFilteredUsers(filtered);
     }
@@ -59,7 +53,7 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const data = await fetchUsers();
+      const data = await permissionsService.fetchUsers();
       setUsers(data);
       setFilteredUsers(data);
     } catch (error) {
@@ -78,7 +72,7 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
   const handleDelete = async (id: string) => {
     try {
       setLoading(true);
-      await deleteUser(id);
+      await permissionsService.deleteUser(id);
       message.success("User deleted successfully");
       await loadUsers();
     } catch (error) {
@@ -92,9 +86,9 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
   const handleStatusChange = async (id: string, status: UserStatus) => {
     try {
       setLoading(true);
-      await updateUserStatus(id, status);
+      await permissionsService.updateUserStatus(id, status);
       message.success(
-        `User ${status === UserStatus.ACTIVE ? "activated" : "deactivated"} successfully`,
+        `User ${status === UserStatus.ACTIVE ? "activated" : "deactivated"} successfully`
       );
       await loadUsers();
     } catch (error) {
@@ -109,10 +103,10 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
     try {
       setSubmitting(true);
       if (selectedUser) {
-        await updateUser(selectedUser.id, data);
+        await permissionsService.updateUser(selectedUser.id, data);
         message.success("User updated successfully");
       } else {
-        await createUser(data);
+        await permissionsService.createUser(data);
         message.success("User created successfully");
       }
       setModalVisible(false);
@@ -120,7 +114,7 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
       await loadUsers();
     } catch (error) {
       message.error(
-        selectedUser ? "Failed to update user" : "Failed to create user",
+        selectedUser ? "Failed to update user" : "Failed to create user"
       );
       console.error(error);
     } finally {

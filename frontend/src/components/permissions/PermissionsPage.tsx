@@ -7,11 +7,11 @@ import { useState, useEffect } from "react";
 import { Tabs, Spin, message } from "antd";
 import { PermissionGroup } from "@/lib/types";
 import { AccountsTab } from "./AccountsTab";
-import { fetchPermissionGroups } from "@/services/permissions.service.mock";
+import { permissionsService } from "@/services/permissions.service";
 
 export const PermissionsPage = () => {
   const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>(
-    [],
+    []
   );
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +22,7 @@ export const PermissionsPage = () => {
   const loadPermissionGroups = async () => {
     try {
       setLoading(true);
-      const groups = await fetchPermissionGroups();
+      const groups = await permissionsService.fetchPermissionGroups();
       setPermissionGroups(groups);
     } catch (error) {
       message.error("Failed to load permission groups");

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tabs, Empty } from "antd";
+import { Tabs, Empty, Spin, message } from "antd";
 import {
   CrKanbanBoard,
   CreateCrModal,
@@ -8,7 +8,7 @@ import {
   CrTable,
 } from "@/components";
 import { ChangeRequest } from "@/lib/types";
-import { getCustomerCRs } from "@/fake-data";
+import { useChangeRequest } from "@/hooks";
 import type { FilterOptions } from "@/components/cr/CrFilterBar";
 
 /**
@@ -29,8 +29,8 @@ const CrListPage = () => {
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({});
   const [viewMode, setViewMode] = useState<"table" | "kanban">("kanban");
 
-  // Get CRs for the current customer (using customer-1 as default)
-  const crData = getCustomerCRs("customer-1");
+  // Get CRs assigned to the current user (customer)
+  const { data: crData = [], isLoading } = useChangeRequest.useAssignedToMe();
 
   // Filter CRs based on search and filters
   const filteredCRs = crData.filter((cr) => {
@@ -116,25 +116,45 @@ const CrListPage = () => {
         </p>
       </div>
 
-      {/* Filter and Search */}
-      <div className="mb-6">
-        <CrFilter
-          onSearchChange={setSearchText}
-          onClearFilters={handleClearFilters}
-          onCreateClick={handleCreateClick}
-          actorType="customer"
-        />
-      </div>
+      {/* Loading state */}
+      {isLoading ? (
+        <div className="flex items-center justify-center h-96">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <>
+          {/* Filter and Search */}
+          <div className="mb-6">
+            <CrFilter
+              onSearchChange={setSearchText}
+              onClearFilters={handleClearFilters}
+              onCreateClick={handleCreateClick}
+              actorType="customer"
+            />
+          </div>
 
-      {/* Tabs: Kanban and Table */}
-      <div className="bg-white rounded-lg shadow">
-        <Tabs
-          activeKey={viewMode}
-          onChange={(key) => setViewMode(key as "table" | "kanban")}
-          items={tabItems}
-          className="px-6"
-        />
-      </div>
+          {/* Tabs: Kanban and Table */}
+          <div className="bg-white rounded-lg shadow">
+            <Tabs
+              activeKey={viewMode}
+              onChange={(key) => setViewMode(key as "table" | "kanban")}
+              items={tabItems}
+              className="px-6"
+            />
+          </div>
+
+          {/* Stats Footer */}
+          {crData.length > 0 && (
+            <div className="mt-6 text-center text-gray-600">
+              <p>
+                Total: {crData.length} | Showing: {filteredCRs.length} Change
+                Request
+                {filteredCRs.length !== 1 ? "s" : ""}
+              </p>
+            </div>
+          )}
+        </>
+      )}
 
       {/* Create CR Modal */}
       <CreateCrModal
@@ -151,17 +171,6 @@ const CrListPage = () => {
         onCancel={handleDetailClose}
         actorType="customer"
       />
-
-      {/* Stats Footer */}
-      {crData.length > 0 && (
-        <div className="mt-6 text-center text-gray-600">
-          <p>
-            Total: {crData.length} | Showing: {filteredCRs.length} Change
-            Request
-            {filteredCRs.length !== 1 ? "s" : ""}
-          </p>
-        </div>
-      )}
     </div>
   );
 };

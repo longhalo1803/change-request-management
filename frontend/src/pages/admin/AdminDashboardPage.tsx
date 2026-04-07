@@ -12,10 +12,7 @@ import {
   MetricsFooter,
 } from "@/components/admin";
 import { DashboardStats, DateRangeOption } from "@/lib/types/admin.types";
-import {
-  fetchDashboardStats,
-  exportDashboardAsPDF,
-} from "@/services/admin.service.mock";
+import { adminService } from "@/services/admin.service";
 
 /**
  * Admin Dashboard Page
@@ -38,7 +35,7 @@ const AdminDashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [dashboardData, setDashboardData] = useState<DashboardStats | null>(
-    null,
+    null
   );
   const [filters, setFilters] = useState({
     dateRange: "last_30_days" as DateRangeOption,
@@ -51,7 +48,7 @@ const AdminDashboardPage = () => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await fetchDashboardStats(filters);
+        const data = await adminService.fetchDashboardStats(filters);
         setDashboardData(data);
       } catch (error) {
         message.error("Failed to load dashboard data");
@@ -80,7 +77,7 @@ const AdminDashboardPage = () => {
   const handleExportPDF = async () => {
     try {
       setExporting(true);
-      await exportDashboardAsPDF();
+      await adminService.exportDashboardAsPDF();
       message.success("Dashboard exported as PDF successfully!");
     } catch (error) {
       message.error("Failed to export dashboard");

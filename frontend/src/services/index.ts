@@ -4,4 +4,34 @@ export type {
   LoginResponse,
   RefreshTokenResponse,
 } from "./auth.service";
-export { authServiceMock } from "./auth.service.mock";
+
+export { changeRequestService } from "./changeRequest.service";
+export { commentService } from "./comment.service";
+export { projectService } from "./project.service";
+
+// All types are now in @/lib/types/
+export type {
+  ChangeRequest,
+  CreateChangeRequestInput,
+  UpdateChangeRequestInput,
+  StatusTransitionInput,
+  SearchChangeRequestInput,
+  SearchChangeRequestResponse,
+  ChangeRequestStatus,
+  ChangeRequestPriority,
+} from "@/lib/types/changeRequest.types";
+
+export type {
+  ChangeRequestComment,
+  ChangeRequestAttachment,
+  CreateCommentInput,
+} from "@/lib/types/comment.types";
+
+export type {
+  Project,
+  CreateProjectInput,
+  UpdateProjectInput,
+  Space,
+  CreateSpaceInput,
+  UpdateSpaceInput,
+} from "@/lib/types/project.types";
