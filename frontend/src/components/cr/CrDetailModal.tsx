@@ -4,7 +4,9 @@ import {
   CloseOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { ChangeRequest, CrStatus } from "@/lib/types";
+import { ChangeRequest, ChangeRequestStatus } from "@/lib/types";
+import { getCrStatus, getCrPriority } from "@/lib/helpers/cr.helpers";
+import { getStatusConfig, getPriorityConfig } from "@/lib/constants";
 import { useTranslation } from "@/hooks/useTranslation";
 
 type ActorType = "customer" | "pm" | "admin";
@@ -21,31 +23,6 @@ interface CrDetailModalProps {
 }
 
 const { TextArea } = Input;
-
-const getStatusConfig = (status: CrStatus) => {
-  const configMap: Record<CrStatus, { color: string; text: string }> = {
-    [CrStatus.DRAFT]: { color: "default", text: "Draft" },
-    [CrStatus.SUBMITTED]: { color: "blue", text: "Submitted" },
-    [CrStatus.IN_DISCUSSION]: { color: "orange", text: "In Discussion" },
-    [CrStatus.APPROVED]: { color: "green", text: "Approved" },
-    [CrStatus.ONGOING]: { color: "processing", text: "Ongoing" },
-    [CrStatus.REJECTED]: { color: "red", text: "Rejected" },
-    [CrStatus.CLOSED]: { color: "default", text: "Closed" },
-  };
-  return configMap[status] || { color: "default", text: status };
-};
-
-const getPriorityConfig = (priority: string) => {
-  const configMap: Record<string, { color: string; text: string }> = {
-    low: { color: "blue", text: "LOW" },
-    medium: { color: "orange", text: "MEDIUM" },
-    high: { color: "red", text: "HIGH" },
-    critical: { color: "red", text: "CRITICAL" },
-  };
-  return (
-    configMap[priority] || { color: "default", text: priority.toUpperCase() }
-  );
-};
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -67,8 +44,10 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
   const { t } = useTranslation("cr-list");
   if (!cr) return null;
 
-  const statusConfig = getStatusConfig(cr.status);
-  const priorityConfig = getPriorityConfig(cr.priority);
+  const status = getCrStatus(cr);
+  const priority = getCrPriority(cr);
+  const statusConfig = getStatusConfig(status);
+  const priorityConfig = getPriorityConfig(priority);
 
   // Mock activity log data
   const activityLog = [
@@ -190,7 +169,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
         <div className="flex-1 p-6">
           {/* Status Badge */}
           <Tag color={statusConfig.color} className="mb-4 px-3 py-1">
-            {statusConfig.text}
+            {statusConfig.label}
           </Tag>
 
           {/* Title */}
@@ -249,7 +228,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
             <div>
               <div className="text-xs text-gray-500 mb-1">Priority</div>
               <Tag color={priorityConfig.color} className="px-2 py-1">
-                🔴 {priorityConfig.text}
+                🔴 {priorityConfig.label}
               </Tag>
             </div>
 
@@ -291,7 +270,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
 
           {/* Action Buttons */}
           <div className="mt-6 space-y-2">
-            {cr.status === CrStatus.DRAFT && (
+            {cr.statusId === ChangeRequestStatus.DRAFT && (
               <>
                 <Button danger block onClick={onDelete}>
                   Delete
@@ -301,7 +280,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
                 </Button>
               </>
             )}
-            {cr.status === CrStatus.IN_DISCUSSION && (
+            {cr.statusId === ChangeRequestStatus.IN_DISCUSSION && (
               <>
                 <Button danger block onClick={onReject}>
                   {t("buttons.reject")}

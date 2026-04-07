@@ -1,5 +1,13 @@
 import { Avatar } from "antd";
 import { ChangeRequest } from "@/lib/types";
+import {
+  getCrPriority,
+  getCreatorInfo,
+  getUserDisplayName,
+  getUserInitials,
+  getAvatarColor,
+} from "@/lib/helpers/cr.helpers";
+import { getPriorityHex } from "@/lib/constants";
 
 type ActorType = "customer" | "pm" | "admin";
 
@@ -9,45 +17,16 @@ interface CrCardProps {
   actorType?: ActorType;
 }
 
-const getPriorityConfig = (priority: string) => {
-  const configMap: Record<string, { color: string; icon: string }> = {
-    low: { color: "#1890ff", icon: "↓" },
-    medium: { color: "#faad14", icon: "●" },
-    high: { color: "#f5222d", icon: "↑" },
-    critical: { color: "#722ed1", icon: "⚠" },
-  };
-  return configMap[priority] || { color: "#d9d9d9", icon: "" };
-};
-
-const getAvatarColor = (name: string) => {
-  const colors = [
-    "#f56a00",
-    "#7265e6",
-    "#ffbf00",
-    "#00a2ae",
-    "#52c41a",
-    "#eb2f96",
-  ];
-  const hash = name.charCodeAt(0) + name.charCodeAt(name.length - 1);
-  return colors[hash % colors.length];
-};
-
-/**
- * Shared Change Request Card Component
- * Used by Customer, PM, and Admin actors with role-specific rendering
- */
 export const CrCard: React.FC<CrCardProps> = ({
   cr,
   onClick,
   actorType = "customer",
 }) => {
-  const priorityConfig = getPriorityConfig(cr.priority);
-  const initials =
-    cr.createdBy?.fullName
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase() || "?";
+  const priorityName = getCrPriority(cr);
+  const creatorInfo = getCreatorInfo(cr);
+  const creatorName = getUserDisplayName(creatorInfo);
+  const priorityHex = getPriorityHex(priorityName);
+  const initials = getUserInitials(creatorName);
 
   return (
     <div
@@ -56,11 +35,11 @@ export const CrCard: React.FC<CrCardProps> = ({
     >
       {/* CR ID and Priority Badge */}
       <div className="flex items-start justify-between mb-3">
-        <span className="text-sm font-semibold text-blue-600">{cr.id}</span>
+        <span className="text-sm font-semibold text-blue-600">{cr.crKey}</span>
         <div
           className="w-2 h-2 rounded-full"
-          style={{ backgroundColor: priorityConfig.color }}
-          title={cr.priority}
+          style={{ backgroundColor: priorityHex }}
+          title={priorityName}
         />
       </div>
 
@@ -76,22 +55,18 @@ export const CrCard: React.FC<CrCardProps> = ({
         <Avatar
           size="small"
           style={{
-            backgroundColor: getAvatarColor(
-              cr.createdBy?.fullName || "Unknown"
-            ),
+            backgroundColor: getAvatarColor(creatorName),
           }}
         >
           {initials}
         </Avatar>
-        <span className="text-xs text-gray-600">
-          {cr.createdBy?.fullName || "Unknown"}
-        </span>
+        <span className="text-xs text-gray-600">{creatorName}</span>
       </div>
 
       {/* Role-Specific Indicators */}
       {actorType === "pm" && (
         <div className="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-500">
-          Status: {cr.status}
+          Status: {cr.status?.name || cr.statusId}
         </div>
       )}
     </div>

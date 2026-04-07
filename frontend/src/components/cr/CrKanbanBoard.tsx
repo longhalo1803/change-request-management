@@ -1,4 +1,4 @@
-import { ChangeRequest, CrStatus } from "@/lib/types";
+import { ChangeRequest, ChangeRequestStatus } from "@/lib/types";
 import { CrKanbanColumn } from "./CrKanbanColumn";
 
 type ActorType = "customer" | "pm" | "admin";
@@ -9,14 +9,14 @@ interface CrKanbanBoardProps {
   actorType?: ActorType;
 }
 
-const KANBAN_COLUMNS: Array<{ status: CrStatus; title: string }> = [
-  { status: CrStatus.DRAFT, title: "Draft" },
-  { status: CrStatus.SUBMITTED, title: "Submitted" },
-  { status: CrStatus.IN_DISCUSSION, title: "In Discussion" },
-  { status: CrStatus.APPROVED, title: "Approved" },
-  { status: CrStatus.REJECTED, title: "Rejected" },
-  { status: CrStatus.ONGOING, title: "On Going" },
-  { status: CrStatus.CLOSED, title: "Closed" },
+const KANBAN_COLUMNS: Array<{ status: ChangeRequestStatus; title: string }> = [
+  { status: ChangeRequestStatus.DRAFT, title: "Draft" },
+  { status: ChangeRequestStatus.SUBMITTED, title: "Submitted" },
+  { status: ChangeRequestStatus.IN_DISCUSSION, title: "In Discussion" },
+  { status: ChangeRequestStatus.APPROVED, title: "Approved" },
+  { status: ChangeRequestStatus.REJECTED, title: "Rejected" },
+  { status: ChangeRequestStatus.ON_GOING, title: "On Going" },
+  { status: ChangeRequestStatus.CLOSED, title: "Closed" },
 ];
 
 /**
@@ -32,13 +32,13 @@ export const CrKanbanBoard: React.FC<CrKanbanBoardProps> = ({
   // PM actors don't see Draft columns (they can't see customer's draft CRs)
   const visibleColumns =
     actorType === "pm"
-      ? KANBAN_COLUMNS.filter((col) => col.status !== CrStatus.DRAFT)
+      ? KANBAN_COLUMNS.filter((col) => col.status !== ChangeRequestStatus.DRAFT)
       : KANBAN_COLUMNS;
 
-  // Group CRs by status
+  // Group CRs by status - compare statusId with the status value
   const groupedByStatus = visibleColumns.map((column) => ({
     ...column,
-    crs: data.filter((cr) => cr.status === column.status),
+    crs: data.filter((cr) => cr.statusId === column.status),
   }));
 
   return (

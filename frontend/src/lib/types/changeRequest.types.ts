@@ -3,6 +3,30 @@
  * All types related to change requests
  */
 
+export interface TaskStatus {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export interface TaskPriority {
+  id: string;
+  name: string;
+  level: number;
+}
+
+export interface TaskWorktype {
+  id: string;
+  name: string;
+}
+
+export interface UserInfo {
+  id: string;
+  fullName: string;
+  email: string;
+  avatar?: string;
+}
+
 export interface ChangeRequest {
   id: string;
   crKey: string;
@@ -10,14 +34,18 @@ export interface ChangeRequest {
   description?: string;
   spaceId: string;
   statusId: string;
+  status?: TaskStatus;
   priorityId?: string;
+  priority?: TaskPriority;
   worktypeId?: string;
+  worktype?: TaskWorktype;
   createdBy: string;
-  assignedTo?: string;
+  creator?: UserInfo;
+  assignedTo?: string | null;
+  assignee?: UserInfo | null;
   sprintId?: string;
   estimatedHours?: number;
   dueDate?: string;
-  parentId?: string; // For parent tasks
   createdAt: string;
   updatedAt: string;
 }
@@ -31,7 +59,6 @@ export interface CreateChangeRequestInput {
   sprintId?: string;
   estimatedHours?: number;
   dueDate?: string;
-  parentId?: string;
 }
 
 export interface UpdateChangeRequestInput {
@@ -42,7 +69,6 @@ export interface UpdateChangeRequestInput {
   sprintId?: string;
   estimatedHours?: number;
   dueDate?: string;
-  parentId?: string;
 }
 
 export interface StatusTransitionInput {
@@ -58,7 +84,6 @@ export interface SearchChangeRequestInput {
   id?: string; // Search by exact ID
   name?: string; // Search by title/name
   priorityId?: string; // Filter by priority
-  parentId?: string; // Filter by parent task
   sortBy?: "createdAt" | "priority" | "dueDate" | "title"; // Sort field
   sortOrder?: "asc" | "desc"; // Sort order
 }
@@ -73,8 +98,8 @@ export enum ChangeRequestStatus {
   SUBMITTED = "SUBMITTED",
   IN_DISCUSSION = "IN_DISCUSSION",
   APPROVED = "APPROVED",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
+  REJECTED = "REJECTED",
+  ON_GOING = "ON_GOING",
   CLOSED = "CLOSED",
 }
 
@@ -84,3 +109,6 @@ export enum ChangeRequestPriority {
   MEDIUM = "MEDIUM",
   LOW = "LOW",
 }
+
+// Alias for backward compatibility
+export type CrStatus = ChangeRequestStatus;

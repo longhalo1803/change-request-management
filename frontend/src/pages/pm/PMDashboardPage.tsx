@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tabs, Empty, Spin } from "antd";
 import { CrKanbanBoard, CrTable, CrFilter, CrDetailModal } from "@/components";
 import { ChangeRequest } from "@/lib/types";
-import { useChangeRequest } from "@/hooks";
+import { useChangeRequests } from "@/hooks";
 
 /**
  * PM Dashboard Page
@@ -22,7 +22,8 @@ export const PMDashboardPage = () => {
   const [viewMode, setViewMode] = useState<"table" | "kanban">("kanban");
 
   // Get all CRs (excluding Draft)
-  const { data: crData = [], isLoading } = useChangeRequest.useList();
+  const { data: crResponse, isLoading } = useChangeRequests({});
+  const crData = crResponse?.items || [];
 
   const handleCrClick = (cr: ChangeRequest) => {
     setSelectedCr(cr);
