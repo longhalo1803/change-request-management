@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Tabs, Empty } from "antd";
+import { Tabs, Empty, Spin } from "antd";
 import { CrKanbanBoard, CrTable, CrFilter, CrDetailModal } from "@/components";
 import { ChangeRequest } from "@/lib/types";
-import { getPMViewCRs } from "@/fake-data";
+import { useChangeRequest } from "@/hooks";
 
 /**
  * PM Dashboard Page
@@ -17,10 +17,12 @@ import { getPMViewCRs } from "@/fake-data";
  * - View CR details
  */
 export const PMDashboardPage = () => {
-  const [crData] = useState<ChangeRequest[]>(getPMViewCRs());
   const [selectedCr, setSelectedCr] = useState<ChangeRequest | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"table" | "kanban">("kanban");
+
+  // Get all CRs (excluding Draft)
+  const { data: crData = [], isLoading } = useChangeRequest.useList();
 
   const handleCrClick = (cr: ChangeRequest) => {
     setSelectedCr(cr);
@@ -69,20 +71,39 @@ export const PMDashboardPage = () => {
         </p>
       </div>
 
-      {/* Filter Bar */}
-      <div className="mb-6">
-        <CrFilter actorType="pm" />
-      </div>
+      {/* Loading state */}
+      {isLoading ? (
+        <div className="flex items-center justify-center h-96">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <>
+          {/* Filter Bar */}
+          <div className="mb-6">
+            <CrFilter actorType="pm" />
+          </div>
 
-      {/* Tabs: Kanban and Table */}
-      <div className="bg-white rounded-lg shadow">
-        <Tabs
-          activeKey={viewMode}
-          onChange={(key) => setViewMode(key as "table" | "kanban")}
-          items={tabItems}
-          className="px-6"
-        />
-      </div>
+          {/* Tabs: Kanban and Table */}
+          <div className="bg-white rounded-lg shadow">
+            <Tabs
+              activeKey={viewMode}
+              onChange={(key) => setViewMode(key as "table" | "kanban")}
+              items={tabItems}
+              className="px-6"
+            />
+          </div>
+
+          {/* Stats Footer */}
+          {crData.length > 0 && (
+            <div className="mt-6 text-center text-gray-600">
+              <p>
+                Showing {crData.length} Change Request
+                {crData.length !== 1 ? "s" : ""}
+              </p>
+            </div>
+          )}
+        </>
+      )}
 
       {/* Detail Modal */}
       <CrDetailModal
@@ -91,16 +112,6 @@ export const PMDashboardPage = () => {
         onCancel={handleDetailClose}
         actorType="pm"
       />
-
-      {/* Stats Footer */}
-      {crData.length > 0 && (
-        <div className="mt-6 text-center text-gray-600">
-          <p>
-            Showing {crData.length} Change Request
-            {crData.length !== 1 ? "s" : ""}
-          </p>
-        </div>
-      )}
     </div>
   );
 };
