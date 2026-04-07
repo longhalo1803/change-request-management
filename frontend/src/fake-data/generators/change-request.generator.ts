@@ -30,7 +30,8 @@ export const generateChangeRequest = (
     description: generateCRDescription(),
     status: options.status,
     priority: options.priority,
-    customerId: options.createdBy.id,
+    crKey: `CR-${options.id}`,
+    spaceId: options.project,
     createdBy: {
       id: options.createdBy.id,
       fullName: `${options.createdBy.firstName} ${options.createdBy.lastName}`,

@@ -4,13 +4,14 @@ import {
   Table,
   TableForeignKey,
   TableIndex,
+  TableUnique,
 } from "typeorm";
 
-export class CreateSprintsTable1700000006 implements MigrationInterface {
+export class CreateSpaceAssignmentsTable1700000005000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "sprints",
+        name: "space_assignments",
         columns: [
           {
             name: "id",
@@ -18,18 +19,6 @@ export class CreateSprintsTable1700000006 implements MigrationInterface {
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
-          },
-          {
-            name: "name",
-            type: "varchar",
-            length: "255",
-            isNullable: false,
-          },
-          {
-            name: "description",
-            type: "text",
-            isNullable: true,
           },
           {
             name: "space_id",
@@ -38,20 +27,16 @@ export class CreateSprintsTable1700000006 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: "start_date",
-            type: "date",
+            name: "user_id",
+            type: "varchar",
+            length: "36",
             isNullable: false,
           },
           {
-            name: "end_date",
-            type: "date",
-            isNullable: false,
-          },
-          {
-            name: "status",
+            name: "role",
             type: "varchar",
             length: "50",
-            default: "'PLANNING'",
+            isNullable: false,
           },
           {
             name: "created_at",
@@ -66,15 +51,17 @@ export class CreateSprintsTable1700000006 implements MigrationInterface {
           },
         ],
         indices: [
-          new TableIndex({ columnNames: ["space_id"] }),
-          new TableIndex({ columnNames: ["status"] }),
+          new TableIndex({
+            columnNames: ["space_id", "user_id"],
+            isUnique: true,
+          }),
         ],
       }),
       true
     );
 
     await queryRunner.createForeignKey(
-      "sprints",
+      "space_assignments",
       new TableForeignKey({
         columnNames: ["space_id"],
         referencedTableName: "spaces",
@@ -82,18 +69,26 @@ export class CreateSprintsTable1700000006 implements MigrationInterface {
         onDelete: "CASCADE",
       })
     );
+
+    await queryRunner.createForeignKey(
+      "space_assignments",
+      new TableForeignKey({
+        columnNames: ["user_id"],
+        referencedTableName: "users",
+        referencedColumnNames: ["id"],
+        onDelete: "CASCADE",
+      })
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable("sprints");
+    const table = await queryRunner.getTable("space_assignments");
     if (table) {
-      const foreignKey = table.foreignKeys.find((fk) =>
-        fk.columnNames.includes("space_id")
-      );
-      if (foreignKey) {
-        await queryRunner.dropForeignKey("sprints", foreignKey);
+      const foreignKeys = table.foreignKeys;
+      for (const fk of foreignKeys) {
+        await queryRunner.dropForeignKey("space_assignments", fk);
       }
     }
-    await queryRunner.dropTable("sprints", true);
+    await queryRunner.dropTable("space_assignments", true);
   }
 }

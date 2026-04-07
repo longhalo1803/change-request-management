@@ -6,7 +6,7 @@ import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm";
  * Creates the users table with all necessary fields and indexes
  */
 
-export class CreateUsersTable1700000001 implements MigrationInterface {
+export class CreateUsersTable1700000001000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

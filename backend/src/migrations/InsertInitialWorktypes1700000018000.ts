@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class InsertInitialWorktypes1700000018 implements MigrationInterface {
+export class InsertInitialWorktypes1700000018000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       INSERT INTO task_worktypes (id, name, description, icon, created_at, updated_at)

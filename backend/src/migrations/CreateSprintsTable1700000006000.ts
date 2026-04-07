@@ -6,11 +6,11 @@ import {
   TableIndex,
 } from "typeorm";
 
-export class CreateProjectsTable1700000003 implements MigrationInterface {
+export class CreateSprintsTable1700000006000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "projects",
+        name: "sprints",
         columns: [
           {
             name: "id",
@@ -18,7 +18,6 @@ export class CreateProjectsTable1700000003 implements MigrationInterface {
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
             name: "name",
@@ -32,22 +31,26 @@ export class CreateProjectsTable1700000003 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: "project_key",
-            type: "varchar",
-            length: "50",
-            isNullable: false,
-            isUnique: true,
-          },
-          {
-            name: "owner_id",
+            name: "space_id",
             type: "varchar",
             length: "36",
             isNullable: false,
           },
           {
-            name: "is_active",
-            type: "boolean",
-            default: true,
+            name: "start_date",
+            type: "date",
+            isNullable: false,
+          },
+          {
+            name: "end_date",
+            type: "date",
+            isNullable: false,
+          },
+          {
+            name: "status",
+            type: "varchar",
+            length: "50",
+            default: "'PLANNING'",
           },
           {
             name: "created_at",
@@ -62,35 +65,34 @@ export class CreateProjectsTable1700000003 implements MigrationInterface {
           },
         ],
         indices: [
-          new TableIndex({ columnNames: ["name"] }),
-          new TableIndex({ columnNames: ["project_key"] }),
-          new TableIndex({ columnNames: ["is_active"] }),
+          new TableIndex({ columnNames: ["space_id"] }),
+          new TableIndex({ columnNames: ["status"] }),
         ],
       }),
       true
     );
 
     await queryRunner.createForeignKey(
-      "projects",
+      "sprints",
       new TableForeignKey({
-        columnNames: ["owner_id"],
-        referencedTableName: "users",
+        columnNames: ["space_id"],
+        referencedTableName: "spaces",
         referencedColumnNames: ["id"],
-        onDelete: "RESTRICT",
+        onDelete: "CASCADE",
       })
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable("projects");
+    const table = await queryRunner.getTable("sprints");
     if (table) {
       const foreignKey = table.foreignKeys.find((fk) =>
-        fk.columnNames.includes("owner_id")
+        fk.columnNames.includes("space_id")
       );
       if (foreignKey) {
-        await queryRunner.dropForeignKey("projects", foreignKey);
+        await queryRunner.dropForeignKey("sprints", foreignKey);
       }
     }
-    await queryRunner.dropTable("projects", true);
+    await queryRunner.dropTable("sprints", true);
   }
 }

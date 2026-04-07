@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class InsertInitialPriorities1700000017 implements MigrationInterface {
+export class InsertInitialPriorities1700000017000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       INSERT INTO task_priorities (id, name, description, color, level, created_at, updated_at)

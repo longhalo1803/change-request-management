@@ -48,7 +48,6 @@ export const CR_STATUS_CONFIG: Record<CrStatus, CrStatusConfig> = {
     icon: "SyncOutlined",
     allowedActions: {
       [UserRole.PM]: ["block", "close"],
-      [UserRole.DEVELOPER]: ["block"],
     },
   },
   [CrStatus.REJECTED]: {

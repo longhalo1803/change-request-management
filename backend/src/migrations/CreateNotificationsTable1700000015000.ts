@@ -6,11 +6,11 @@ import {
   TableIndex,
 } from "typeorm";
 
-export class CreateSpacesTable1700000004 implements MigrationInterface {
+export class CreateNotificationsTable1700000015000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "spaces",
+        name: "notifications",
         columns: [
           {
             name: "id",
@@ -18,29 +18,46 @@ export class CreateSpacesTable1700000004 implements MigrationInterface {
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
-            name: "name",
-            type: "varchar",
-            length: "255",
-            isNullable: false,
-          },
-          {
-            name: "description",
-            type: "text",
-            isNullable: true,
-          },
-          {
-            name: "project_id",
+            name: "user_id",
             type: "varchar",
             length: "36",
             isNullable: false,
           },
           {
-            name: "is_active",
+            name: "title",
+            type: "varchar",
+            length: "255",
+            isNullable: false,
+          },
+          {
+            name: "message",
+            type: "text",
+            isNullable: false,
+          },
+          {
+            name: "type",
+            type: "varchar",
+            length: "50",
+            default: "'INFO'",
+          },
+          {
+            name: "is_read",
             type: "boolean",
-            default: true,
+            default: false,
+          },
+          {
+            name: "related_id",
+            type: "varchar",
+            length: "36",
+            isNullable: true,
+          },
+          {
+            name: "related_type",
+            type: "varchar",
+            length: "50",
+            isNullable: true,
           },
           {
             name: "created_at",
@@ -54,16 +71,19 @@ export class CreateSpacesTable1700000004 implements MigrationInterface {
             onUpdate: "CURRENT_TIMESTAMP",
           },
         ],
-        indices: [new TableIndex({ columnNames: ["project_id"] })],
+        indices: [
+          new TableIndex({ columnNames: ["user_id"] }),
+          new TableIndex({ columnNames: ["is_read"] }),
+        ],
       }),
       true
     );
 
     await queryRunner.createForeignKey(
-      "spaces",
+      "notifications",
       new TableForeignKey({
-        columnNames: ["project_id"],
-        referencedTableName: "projects",
+        columnNames: ["user_id"],
+        referencedTableName: "users",
         referencedColumnNames: ["id"],
         onDelete: "CASCADE",
       })
@@ -71,15 +91,15 @@ export class CreateSpacesTable1700000004 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable("spaces");
+    const table = await queryRunner.getTable("notifications");
     if (table) {
       const foreignKey = table.foreignKeys.find((fk) =>
-        fk.columnNames.includes("project_id")
+        fk.columnNames.includes("user_id")
       );
       if (foreignKey) {
-        await queryRunner.dropForeignKey("spaces", foreignKey);
+        await queryRunner.dropForeignKey("notifications", foreignKey);
       }
     }
-    await queryRunner.dropTable("spaces", true);
+    await queryRunner.dropTable("notifications", true);
   }
 }

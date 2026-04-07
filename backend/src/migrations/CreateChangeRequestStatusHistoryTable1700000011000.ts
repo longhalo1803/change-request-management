@@ -6,11 +6,11 @@ import {
   TableIndex,
 } from "typeorm";
 
-export class CreateChangeRequestCommentsTable1700000013 implements MigrationInterface {
+export class CreateChangeRequestStatusHistoryTable1700000011000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "change_request_comments",
+        name: "change_request_status_history",
         columns: [
           {
             name: "id",
@@ -18,7 +18,6 @@ export class CreateChangeRequestCommentsTable1700000013 implements MigrationInte
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
             name: "change_request_id",
@@ -27,35 +26,38 @@ export class CreateChangeRequestCommentsTable1700000013 implements MigrationInte
             isNullable: false,
           },
           {
-            name: "content",
-            type: "text",
-            isNullable: false,
-          },
-          {
-            name: "commented_by",
+            name: "status_id",
             type: "varchar",
             length: "36",
             isNullable: false,
+          },
+          {
+            name: "changed_by",
+            type: "varchar",
+            length: "36",
+            isNullable: false,
+          },
+          {
+            name: "notes",
+            type: "text",
+            isNullable: true,
           },
           {
             name: "created_at",
             type: "timestamp",
             default: "CURRENT_TIMESTAMP",
           },
-          {
-            name: "updated_at",
-            type: "timestamp",
-            default: "CURRENT_TIMESTAMP",
-            onUpdate: "CURRENT_TIMESTAMP",
-          },
         ],
-        indices: [new TableIndex({ columnNames: ["change_request_id"] })],
+        indices: [
+          new TableIndex({ columnNames: ["change_request_id"] }),
+          new TableIndex({ columnNames: ["status_id"] }),
+        ],
       }),
       true
     );
 
     await queryRunner.createForeignKey(
-      "change_request_comments",
+      "change_request_status_history",
       new TableForeignKey({
         columnNames: ["change_request_id"],
         referencedTableName: "change_requests",
@@ -65,9 +67,19 @@ export class CreateChangeRequestCommentsTable1700000013 implements MigrationInte
     );
 
     await queryRunner.createForeignKey(
-      "change_request_comments",
+      "change_request_status_history",
       new TableForeignKey({
-        columnNames: ["commented_by"],
+        columnNames: ["status_id"],
+        referencedTableName: "task_statuses",
+        referencedColumnNames: ["id"],
+        onDelete: "RESTRICT",
+      })
+    );
+
+    await queryRunner.createForeignKey(
+      "change_request_status_history",
+      new TableForeignKey({
+        columnNames: ["changed_by"],
         referencedTableName: "users",
         referencedColumnNames: ["id"],
         onDelete: "RESTRICT",
@@ -76,13 +88,13 @@ export class CreateChangeRequestCommentsTable1700000013 implements MigrationInte
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable("change_request_comments");
+    const table = await queryRunner.getTable("change_request_status_history");
     if (table) {
       const foreignKeys = table.foreignKeys;
       for (const fk of foreignKeys) {
-        await queryRunner.dropForeignKey("change_request_comments", fk);
+        await queryRunner.dropForeignKey("change_request_status_history", fk);
       }
     }
-    await queryRunner.dropTable("change_request_comments", true);
+    await queryRunner.dropTable("change_request_status_history", true);
   }
 }

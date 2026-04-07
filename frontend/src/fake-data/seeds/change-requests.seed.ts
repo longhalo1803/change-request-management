@@ -43,7 +43,8 @@ const createCR = (
       `Description for ${title}. This is a detailed description of what needs to be done.`,
     status,
     priority,
-    customerId: customer.id,
+    crKey: id,
+    spaceId: "default-space",
     createdBy: {
       id: customer.id,
       fullName: `${customer.firstName} ${customer.lastName}`,

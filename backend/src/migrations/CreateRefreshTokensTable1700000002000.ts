@@ -12,7 +12,7 @@ import {
  * Creates the refresh_tokens table for JWT token management
  */
 
-export class CreateRefreshTokensTable1700000002 implements MigrationInterface {
+export class CreateRefreshTokensTable1700000002000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class InsertInitialStatuses1700000016 implements MigrationInterface {
+export class InsertInitialStatuses1700000016000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       INSERT INTO task_statuses (id, name, description, color, \`order\`, created_at, updated_at)

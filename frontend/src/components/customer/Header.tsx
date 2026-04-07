@@ -11,7 +11,7 @@ interface HeaderProps {
   onSearch?: (value: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({}) => {
+export const Header: React.FC<HeaderProps> = () => {
   const { user, logout } = useAuth();
   const { t } = useTranslation("common");
   const navigate = useNavigate();

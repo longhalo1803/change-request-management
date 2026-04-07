@@ -6,11 +6,11 @@ import {
   TableIndex,
 } from "typeorm";
 
-export class CreateQuotationsTable1700000014 implements MigrationInterface {
+export class CreateProjectsTable1700000003000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "quotations",
+        name: "projects",
         columns: [
           {
             name: "id",
@@ -18,10 +18,9 @@ export class CreateQuotationsTable1700000014 implements MigrationInterface {
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
-            name: "title",
+            name: "name",
             type: "varchar",
             length: "255",
             isNullable: false,
@@ -32,34 +31,22 @@ export class CreateQuotationsTable1700000014 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: "project_id",
-            type: "varchar",
-            length: "36",
-            isNullable: false,
-          },
-          {
-            name: "quoted_by",
-            type: "varchar",
-            length: "36",
-            isNullable: false,
-          },
-          {
-            name: "amount",
-            type: "decimal",
-            precision: 12,
-            scale: 2,
-            isNullable: false,
-          },
-          {
-            name: "status",
+            name: "project_key",
             type: "varchar",
             length: "50",
-            default: "'PENDING'",
+            isNullable: false,
+            isUnique: true,
           },
           {
-            name: "valid_until",
-            type: "date",
-            isNullable: true,
+            name: "owner_id",
+            type: "varchar",
+            length: "36",
+            isNullable: false,
+          },
+          {
+            name: "is_active",
+            type: "boolean",
+            default: true,
           },
           {
             name: "created_at",
@@ -74,28 +61,18 @@ export class CreateQuotationsTable1700000014 implements MigrationInterface {
           },
         ],
         indices: [
-          new TableIndex({ columnNames: ["title"] }),
-          new TableIndex({ columnNames: ["project_id"] }),
-          new TableIndex({ columnNames: ["status"] }),
+          new TableIndex({ columnNames: ["name"] }),
+          new TableIndex({ columnNames: ["project_key"] }),
+          new TableIndex({ columnNames: ["is_active"] }),
         ],
       }),
       true
     );
 
     await queryRunner.createForeignKey(
-      "quotations",
+      "projects",
       new TableForeignKey({
-        columnNames: ["project_id"],
-        referencedTableName: "projects",
-        referencedColumnNames: ["id"],
-        onDelete: "CASCADE",
-      })
-    );
-
-    await queryRunner.createForeignKey(
-      "quotations",
-      new TableForeignKey({
-        columnNames: ["quoted_by"],
+        columnNames: ["owner_id"],
         referencedTableName: "users",
         referencedColumnNames: ["id"],
         onDelete: "RESTRICT",
@@ -104,13 +81,15 @@ export class CreateQuotationsTable1700000014 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable("quotations");
+    const table = await queryRunner.getTable("projects");
     if (table) {
-      const foreignKeys = table.foreignKeys;
-      for (const fk of foreignKeys) {
-        await queryRunner.dropForeignKey("quotations", fk);
+      const foreignKey = table.foreignKeys.find((fk) =>
+        fk.columnNames.includes("owner_id")
+      );
+      if (foreignKey) {
+        await queryRunner.dropForeignKey("projects", foreignKey);
       }
     }
-    await queryRunner.dropTable("quotations", true);
+    await queryRunner.dropTable("projects", true);
   }
 }

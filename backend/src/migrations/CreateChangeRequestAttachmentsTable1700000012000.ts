@@ -6,7 +6,7 @@ import {
   TableIndex,
 } from "typeorm";
 
-export class CreateChangeRequestAttachmentsTable1700000012 implements MigrationInterface {
+export class CreateChangeRequestAttachmentsTable1700000012000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -16,9 +16,7 @@ export class CreateChangeRequestAttachmentsTable1700000012 implements MigrationI
             name: "id",
             type: "varchar",
             length: "36",
-            isPrimary: true,
-            generationStrategy: "uuid",
-            default: "UUID()",
+            isPrimary: true,generationStrategy: "uuid",
           },
           {
             name: "change_request_id",
