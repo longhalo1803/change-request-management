@@ -1,13 +1,13 @@
 import { Card, Input, Select, Button, Space } from "antd";
 import { SearchOutlined, ClearOutlined, PlusOutlined } from "@ant-design/icons";
-import { CrStatus } from "@/lib/types";
+import { ChangeRequestStatus } from "@/lib/types";
 import { useTranslation } from "react-i18next";
 
 type ActorType = "customer" | "pm" | "admin";
 
 interface CrFilterProps {
   onSearchChange?: (value: string) => void;
-  onStatusChange?: (status: CrStatus | undefined) => void;
+  onStatusChange?: (status: ChangeRequestStatus | undefined) => void;
   onPriorityChange?: (priority: string | undefined) => void;
   onCreateClick?: () => void;
   onClearFilters?: () => void;
@@ -47,7 +47,7 @@ export const CrFilter: React.FC<CrFilterProps> = ({
             onChange={onStatusChange}
             allowClear
             style={{ width: 150 }}
-            options={Object.values(CrStatus).map((status) => ({
+            options={Object.values(ChangeRequestStatus).map((status) => ({
               label: status.toUpperCase(),
               value: status,
             }))}

@@ -69,6 +69,7 @@ export type DateRangeOption =
   | "last_7_days"
   | "last_30_days"
   | "last_90_days"
+  | "all_time"
   | "custom";
 
 export interface DashboardFilters {

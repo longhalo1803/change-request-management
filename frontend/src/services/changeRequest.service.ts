@@ -29,7 +29,6 @@ export const changeRequestService = {
     if (filters.id) params.append("id", filters.id);
     if (filters.name) params.append("name", filters.name);
     if (filters.priorityId) params.append("priorityId", filters.priorityId);
-    if (filters.parentId) params.append("parentId", filters.parentId);
     if (filters.sortBy) params.append("sortBy", filters.sortBy);
     if (filters.sortOrder) params.append("sortOrder", filters.sortOrder);
 

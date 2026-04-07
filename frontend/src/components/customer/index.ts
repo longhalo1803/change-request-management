@@ -1,10 +1,10 @@
 /**
  * Customer Component Exports
- * Re-exports shared CR components + Customer-specific components
+ * Exports Customer-specific components + shared CR components used by customers
  */
 
 export { Header } from "./Header";
 export { CustomerSidebar } from "./CustomerSidebar";
 
-// Re-export shared CR components from @cr/
-export * from "../cr";
+// Re-export CR components that customers use
+export { CreateCrModal } from "../cr";

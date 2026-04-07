@@ -79,13 +79,15 @@ export const CrFilterBar: React.FC<CrFilterBarProps> = ({
   const uniqueActors = useMemo(() => {
     const actorsMap = new Map();
     data.forEach((cr) => {
-      if (cr.createdBy) {
-        const userId = cr.createdBy.id;
+      // Try to get creator info from creator object first, otherwise skip
+      const creator = cr.creator;
+      if (creator && typeof creator === "object" && "id" in creator) {
+        const userId = creator.id;
         if (!actorsMap.has(userId)) {
           actorsMap.set(userId, {
             id: userId,
-            fullName: cr.createdBy.fullName,
-            email: cr.createdBy.email,
+            fullName: creator.fullName || "Unknown",
+            email: creator.email || "",
             color: getAvatarColor(actorsMap.size),
             index: actorsMap.size,
           });

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tabs, Empty, Spin, message } from "antd";
+import { Tabs, Empty, Spin } from "antd";
 import {
   CrKanbanBoard,
   CreateCrModal,
@@ -8,7 +8,8 @@ import {
   CrTable,
 } from "@/components";
 import { ChangeRequest } from "@/lib/types";
-import { useChangeRequest } from "@/hooks";
+import { useChangeRequests } from "@/hooks";
+import { getCrPriority } from "@/lib/helpers/cr.helpers";
 import type { FilterOptions } from "@/components/cr/CrFilterBar";
 
 /**
@@ -29,20 +30,21 @@ const CrListPage = () => {
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({});
   const [viewMode, setViewMode] = useState<"table" | "kanban">("kanban");
 
-  // Get CRs assigned to the current user (customer)
-  const { data: crData = [], isLoading } = useChangeRequest.useAssignedToMe();
+  // Get all CRs for the current user (customer)
+  const { data: crResponse, isLoading } = useChangeRequests({});
 
   // Filter CRs based on search and filters
-  const filteredCRs = crData.filter((cr) => {
+  const crData = crResponse?.items || [];
+  const filteredCRs = crData.filter((cr: ChangeRequest) => {
     const matchesSearch =
       !searchText ||
       cr.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      cr.description.toLowerCase().includes(searchText.toLowerCase());
+      cr.description?.toLowerCase().includes(searchText.toLowerCase());
 
     const matchesPriorities =
       !activeFilters.priorities ||
       activeFilters.priorities.length === 0 ||
-      activeFilters.priorities.includes(cr.priority);
+      activeFilters.priorities.includes(getCrPriority(cr));
 
     return matchesSearch && matchesPriorities;
   });

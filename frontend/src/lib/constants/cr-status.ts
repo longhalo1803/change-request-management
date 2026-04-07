@@ -1,73 +1,53 @@
-import { CrStatus, UserRole } from "@/lib/types";
+import { ChangeRequestStatus } from "@/lib/types";
 
 export interface CrStatusConfig {
   label: string;
   color: string;
   icon: string;
-  allowedActions: {
-    [key in UserRole]?: string[];
-  };
 }
 
-export const CR_STATUS_CONFIG: Record<CrStatus, CrStatusConfig> = {
-  [CrStatus.DRAFT]: {
-    label: "Nháp",
+export const CR_STATUS_CONFIG: Record<string, CrStatusConfig> = {
+  [ChangeRequestStatus.DRAFT]: {
+    label: "Draft",
     color: "#d9d9d9",
     icon: "FileTextOutlined",
-    allowedActions: {
-      [UserRole.CUSTOMER]: ["submit"],
-    },
   },
-  [CrStatus.SUBMITTED]: {
-    label: "Đã gửi",
+  [ChangeRequestStatus.SUBMITTED]: {
+    label: "Submitted",
     color: "#1890ff",
     icon: "SendOutlined",
-    allowedActions: {
-      [UserRole.PM]: ["accept", "reject"],
-    },
   },
-  [CrStatus.IN_DISCUSSION]: {
-    label: "Đang thảo luận",
+  [ChangeRequestStatus.IN_DISCUSSION]: {
+    label: "In Discussion",
     color: "#722ed1",
     icon: "SearchOutlined",
-    allowedActions: {
-      [UserRole.PM]: ["request-info", "submit-quotation"],
-    },
   },
-  [CrStatus.APPROVED]: {
-    label: "Đã phê duyệt",
+  [ChangeRequestStatus.APPROVED]: {
+    label: "Approved",
     color: "#52c41a",
     icon: "CheckCircleOutlined",
-    allowedActions: {
-      [UserRole.PM]: ["start"],
-    },
   },
-  [CrStatus.ONGOING]: {
-    label: "Đang thực hiện",
+  [ChangeRequestStatus.REJECTED]: {
+    label: "Rejected",
     color: "#13c2c2",
     icon: "SyncOutlined",
-    allowedActions: {
-      [UserRole.PM]: ["block", "close"],
-    },
   },
-  [CrStatus.REJECTED]: {
-    label: "Từ chối",
-    color: "#ff4d4f",
-    icon: "CloseCircleOutlined",
-    allowedActions: {},
+  [ChangeRequestStatus.ON_GOING]: {
+    label: "On going",
+    color: "#52c41a",
+    icon: "CheckOutlined",
   },
-  [CrStatus.CLOSED]: {
-    label: "Đã đóng",
+  [ChangeRequestStatus.CLOSED]: {
+    label: "Closed",
     color: "#8c8c8c",
     icon: "CheckOutlined",
-    allowedActions: {},
   },
 };
 
-export const getCrStatusLabel = (status: CrStatus): string => {
+export const getCrStatusLabel = (status: string): string => {
   return CR_STATUS_CONFIG[status]?.label || status;
 };
 
-export const getCrStatusColor = (status: CrStatus): string => {
+export const getCrStatusColor = (status: string): string => {
   return CR_STATUS_CONFIG[status]?.color || "#d9d9d9";
 };
