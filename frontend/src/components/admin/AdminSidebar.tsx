@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Logo } from "@/components/shared/Logo";
 import type { MenuProps } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { UserRole } from "@/lib/types";
 
 const { Sider } = Layout;
 
@@ -94,7 +95,7 @@ export const AdminSidebar = () => {
               {user?.fullName || "Admin User"}
             </div>
             <div className="text-xs text-gray-500 uppercase tracking-wider truncate">
-              {user?.role === "admin" ? "Administrator" : user?.role}
+              {user?.role === UserRole.ADMIN ? "Administrator" : user?.role}
             </div>
           </div>
         </div>

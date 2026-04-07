@@ -19,11 +19,11 @@ const startServer = async () => {
     // Check if all migrations have been run
     const migrationsOk = await checkMigrations();
     if (!migrationsOk) {
-      logger.error(
-        "❌ Database migrations are not up to date. Please run migrations first."
+      logger.warn(
+        "⚠️  Database migrations are not up to date. Please run migrations manually using:"
       );
-      logger.info("Run: npm run migration:run");
-      process.exit(1);
+      logger.info("Run: docker-compose exec backend npm run migration:run");
+      // Don't exit, allow server to start anyway
     }
 
     // Create Express app

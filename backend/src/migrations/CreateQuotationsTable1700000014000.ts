@@ -6,11 +6,11 @@ import {
   TableIndex,
 } from "typeorm";
 
-export class CreateChangeRequestStatusHistoryTable1700000011 implements MigrationInterface {
+export class CreateQuotationsTable1700000014000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "change_request_status_history",
+        name: "quotations",
         columns: [
           {
             name: "id",
@@ -18,29 +18,46 @@ export class CreateChangeRequestStatusHistoryTable1700000011 implements Migratio
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
-            name: "change_request_id",
+            name: "title",
             type: "varchar",
-            length: "36",
+            length: "255",
             isNullable: false,
           },
           {
-            name: "status_id",
-            type: "varchar",
-            length: "36",
-            isNullable: false,
-          },
-          {
-            name: "changed_by",
-            type: "varchar",
-            length: "36",
-            isNullable: false,
-          },
-          {
-            name: "notes",
+            name: "description",
             type: "text",
+            isNullable: true,
+          },
+          {
+            name: "project_id",
+            type: "varchar",
+            length: "36",
+            isNullable: false,
+          },
+          {
+            name: "quoted_by",
+            type: "varchar",
+            length: "36",
+            isNullable: false,
+          },
+          {
+            name: "amount",
+            type: "decimal",
+            precision: 12,
+            scale: 2,
+            isNullable: false,
+          },
+          {
+            name: "status",
+            type: "varchar",
+            length: "50",
+            default: "'PENDING'",
+          },
+          {
+            name: "valid_until",
+            type: "date",
             isNullable: true,
           },
           {
@@ -48,39 +65,36 @@ export class CreateChangeRequestStatusHistoryTable1700000011 implements Migratio
             type: "timestamp",
             default: "CURRENT_TIMESTAMP",
           },
+          {
+            name: "updated_at",
+            type: "timestamp",
+            default: "CURRENT_TIMESTAMP",
+            onUpdate: "CURRENT_TIMESTAMP",
+          },
         ],
         indices: [
-          new TableIndex({ columnNames: ["change_request_id"] }),
-          new TableIndex({ columnNames: ["status_id"] }),
+          new TableIndex({ columnNames: ["title"] }),
+          new TableIndex({ columnNames: ["project_id"] }),
+          new TableIndex({ columnNames: ["status"] }),
         ],
       }),
       true
     );
 
     await queryRunner.createForeignKey(
-      "change_request_status_history",
+      "quotations",
       new TableForeignKey({
-        columnNames: ["change_request_id"],
-        referencedTableName: "change_requests",
+        columnNames: ["project_id"],
+        referencedTableName: "projects",
         referencedColumnNames: ["id"],
         onDelete: "CASCADE",
       })
     );
 
     await queryRunner.createForeignKey(
-      "change_request_status_history",
+      "quotations",
       new TableForeignKey({
-        columnNames: ["status_id"],
-        referencedTableName: "task_statuses",
-        referencedColumnNames: ["id"],
-        onDelete: "RESTRICT",
-      })
-    );
-
-    await queryRunner.createForeignKey(
-      "change_request_status_history",
-      new TableForeignKey({
-        columnNames: ["changed_by"],
+        columnNames: ["quoted_by"],
         referencedTableName: "users",
         referencedColumnNames: ["id"],
         onDelete: "RESTRICT",
@@ -89,13 +103,13 @@ export class CreateChangeRequestStatusHistoryTable1700000011 implements Migratio
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable("change_request_status_history");
+    const table = await queryRunner.getTable("quotations");
     if (table) {
       const foreignKeys = table.foreignKeys;
       for (const fk of foreignKeys) {
-        await queryRunner.dropForeignKey("change_request_status_history", fk);
+        await queryRunner.dropForeignKey("quotations", fk);
       }
     }
-    await queryRunner.dropTable("change_request_status_history", true);
+    await queryRunner.dropTable("quotations", true);
   }
 }

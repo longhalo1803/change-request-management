@@ -6,11 +6,11 @@ import {
   TableIndex,
 } from "typeorm";
 
-export class CreateNotificationsTable1700000015 implements MigrationInterface {
+export class CreateSpacesTable1700000004000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "notifications",
+        name: "spaces",
         columns: [
           {
             name: "id",
@@ -18,47 +18,28 @@ export class CreateNotificationsTable1700000015 implements MigrationInterface {
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
-            name: "user_id",
-            type: "varchar",
-            length: "36",
-            isNullable: false,
-          },
-          {
-            name: "title",
+            name: "name",
             type: "varchar",
             length: "255",
             isNullable: false,
           },
           {
-            name: "message",
+            name: "description",
             type: "text",
+            isNullable: true,
+          },
+          {
+            name: "project_id",
+            type: "varchar",
+            length: "36",
             isNullable: false,
           },
           {
-            name: "type",
-            type: "varchar",
-            length: "50",
-            default: "'INFO'",
-          },
-          {
-            name: "is_read",
+            name: "is_active",
             type: "boolean",
-            default: false,
-          },
-          {
-            name: "related_id",
-            type: "varchar",
-            length: "36",
-            isNullable: true,
-          },
-          {
-            name: "related_type",
-            type: "varchar",
-            length: "50",
-            isNullable: true,
+            default: true,
           },
           {
             name: "created_at",
@@ -72,19 +53,16 @@ export class CreateNotificationsTable1700000015 implements MigrationInterface {
             onUpdate: "CURRENT_TIMESTAMP",
           },
         ],
-        indices: [
-          new TableIndex({ columnNames: ["user_id"] }),
-          new TableIndex({ columnNames: ["is_read"] }),
-        ],
+        indices: [new TableIndex({ columnNames: ["project_id"] })],
       }),
       true
     );
 
     await queryRunner.createForeignKey(
-      "notifications",
+      "spaces",
       new TableForeignKey({
-        columnNames: ["user_id"],
-        referencedTableName: "users",
+        columnNames: ["project_id"],
+        referencedTableName: "projects",
         referencedColumnNames: ["id"],
         onDelete: "CASCADE",
       })
@@ -92,15 +70,15 @@ export class CreateNotificationsTable1700000015 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable("notifications");
+    const table = await queryRunner.getTable("spaces");
     if (table) {
       const foreignKey = table.foreignKeys.find((fk) =>
-        fk.columnNames.includes("user_id")
+        fk.columnNames.includes("project_id")
       );
       if (foreignKey) {
-        await queryRunner.dropForeignKey("notifications", foreignKey);
+        await queryRunner.dropForeignKey("spaces", foreignKey);
       }
     }
-    await queryRunner.dropTable("notifications", true);
+    await queryRunner.dropTable("spaces", true);
   }
 }

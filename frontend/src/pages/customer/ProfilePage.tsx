@@ -3,6 +3,7 @@ import { Form, Input, Select, Button, Avatar, message, DatePicker } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuthStore } from "@/store/auth.store";
 import { useTranslation } from "@/hooks/useTranslation";
+import { UserRole } from "@/lib/types";
 import dayjs from "dayjs";
 
 const ProfilePage = () => {
@@ -68,8 +69,10 @@ const ProfilePage = () => {
                 {user?.fullName || "Alex Nguyen"}
               </h2>
               <p className="text-gray-500 mb-6">
-                {user?.role === "customer" ? "Customer" : "Project Manager"} •
-                Hanoi Project
+                {user?.role === UserRole.CUSTOMER
+                  ? "Customer"
+                  : "Project Manager"}{" "}
+                • Hanoi Project
               </p>
 
               {/* Action Buttons */}

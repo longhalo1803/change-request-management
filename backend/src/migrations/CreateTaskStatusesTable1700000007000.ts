@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm";
 
-export class CreateTaskStatusesTable1700000007 implements MigrationInterface {
+export class CreateTaskStatusesTable1700000007000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -12,7 +12,6 @@ export class CreateTaskStatusesTable1700000007 implements MigrationInterface {
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
             name: "name",

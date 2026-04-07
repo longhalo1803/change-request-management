@@ -5,7 +5,8 @@ import { authService, LoginCredentials } from "@/services/auth.service";
 import { useAuthStore } from "@/store/auth.store";
 import { useTranslation } from "./useTranslation";
 import { AxiosError } from "axios";
-import type { ApiErrorResponse, User, UserRole } from "@/lib/types";
+import type { ApiErrorResponse, User } from "@/lib/types";
+import { UserRole } from "@/lib/types";
 
 export const useLogin = () => {
   const { t } = useTranslation("auth");
@@ -14,11 +15,11 @@ export const useLogin = () => {
 
   const getRedirectPath = (role: UserRole) => {
     switch (role) {
-      case "admin":
+      case UserRole.ADMIN:
         return "/admin/dashboard";
-      case "pm":
+      case UserRole.PM:
         return "/pm/dashboard";
-      case "customer":
+      case UserRole.CUSTOMER:
       default:
         return "/dashboard";
     }

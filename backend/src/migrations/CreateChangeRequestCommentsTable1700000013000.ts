@@ -4,14 +4,13 @@ import {
   Table,
   TableForeignKey,
   TableIndex,
-  TableUnique,
 } from "typeorm";
 
-export class CreateSpaceAssignmentsTable1700000005 implements MigrationInterface {
+export class CreateChangeRequestCommentsTable1700000013000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "space_assignments",
+        name: "change_request_comments",
         columns: [
           {
             name: "id",
@@ -19,24 +18,22 @@ export class CreateSpaceAssignmentsTable1700000005 implements MigrationInterface
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
-            name: "space_id",
+            name: "change_request_id",
             type: "varchar",
             length: "36",
             isNullable: false,
           },
           {
-            name: "user_id",
-            type: "varchar",
-            length: "36",
+            name: "content",
+            type: "text",
             isNullable: false,
           },
           {
-            name: "role",
+            name: "commented_by",
             type: "varchar",
-            length: "50",
+            length: "36",
             isNullable: false,
           },
           {
@@ -51,45 +48,40 @@ export class CreateSpaceAssignmentsTable1700000005 implements MigrationInterface
             onUpdate: "CURRENT_TIMESTAMP",
           },
         ],
-        indices: [
-          new TableIndex({
-            columnNames: ["space_id", "user_id"],
-            isUnique: true,
-          }),
-        ],
+        indices: [new TableIndex({ columnNames: ["change_request_id"] })],
       }),
       true
     );
 
     await queryRunner.createForeignKey(
-      "space_assignments",
+      "change_request_comments",
       new TableForeignKey({
-        columnNames: ["space_id"],
-        referencedTableName: "spaces",
+        columnNames: ["change_request_id"],
+        referencedTableName: "change_requests",
         referencedColumnNames: ["id"],
         onDelete: "CASCADE",
       })
     );
 
     await queryRunner.createForeignKey(
-      "space_assignments",
+      "change_request_comments",
       new TableForeignKey({
-        columnNames: ["user_id"],
+        columnNames: ["commented_by"],
         referencedTableName: "users",
         referencedColumnNames: ["id"],
-        onDelete: "CASCADE",
+        onDelete: "RESTRICT",
       })
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable("space_assignments");
+    const table = await queryRunner.getTable("change_request_comments");
     if (table) {
       const foreignKeys = table.foreignKeys;
       for (const fk of foreignKeys) {
-        await queryRunner.dropForeignKey("space_assignments", fk);
+        await queryRunner.dropForeignKey("change_request_comments", fk);
       }
     }
-    await queryRunner.dropTable("space_assignments", true);
+    await queryRunner.dropTable("change_request_comments", true);
   }
 }

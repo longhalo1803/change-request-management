@@ -18,10 +18,7 @@ export const useVisibility = (userRole?: UserRole) => {
       userRole === UserRole.PM || userRole === UserRole.ADMIN;
 
     const canSeeInternalComment =
-      userRole === UserRole.PM ||
-      userRole === UserRole.DEVELOPER ||
-      userRole === UserRole.QA ||
-      userRole === UserRole.ADMIN;
+      userRole === UserRole.PM || userRole === UserRole.ADMIN;
 
     const canSeePmComment =
       userRole === UserRole.PM || userRole === UserRole.ADMIN;
@@ -30,7 +27,7 @@ export const useVisibility = (userRole?: UserRole) => {
 
     const canTriggerAction = (
       action: string,
-      currentStatus: CrStatus,
+      currentStatus: CrStatus
     ): boolean => {
       const statusConfig = CR_STATUS_CONFIG[currentStatus];
       if (!statusConfig) return false;

@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm";
 
-export class CreateTaskWorktypesTable1700000009 implements MigrationInterface {
+export class CreateTaskPrioritiesTable1700000008000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "task_worktypes",
+        name: "task_priorities",
         columns: [
           {
             name: "id",
@@ -12,7 +12,6 @@ export class CreateTaskWorktypesTable1700000009 implements MigrationInterface {
             length: "36",
             isPrimary: true,
             generationStrategy: "uuid",
-            default: "UUID()",
           },
           {
             name: "name",
@@ -28,9 +27,14 @@ export class CreateTaskWorktypesTable1700000009 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: "icon",
+            name: "color",
             type: "varchar",
             length: "10",
+            isNullable: false,
+          },
+          {
+            name: "level",
+            type: "int",
             isNullable: false,
           },
           {
@@ -52,6 +56,6 @@ export class CreateTaskWorktypesTable1700000009 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("task_worktypes", true);
+    await queryRunner.dropTable("task_priorities", true);
   }
 }

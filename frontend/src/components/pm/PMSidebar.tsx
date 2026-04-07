@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Logo } from "@/components/shared/Logo";
 import type { MenuProps } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { UserRole } from "@/lib/types";
 
 const { Sider } = Layout;
 
@@ -89,7 +90,7 @@ export const PMSidebar = () => {
               {user?.fullName || "PM User"}
             </div>
             <div className="text-xs text-gray-500 uppercase tracking-wider truncate">
-              {user?.role === "pm" ? "Project Manager" : user?.role}
+              {user?.role === UserRole.PM ? "Project Manager" : user?.role}
             </div>
           </div>
         </div>
