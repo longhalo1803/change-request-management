@@ -8,8 +8,10 @@ import { Tabs, Spin } from "antd";
 import { PermissionGroup } from "@/lib/types";
 import { AccountsTab } from "./AccountsTab";
 import { permissionsService } from "@/services/permissions.service";
+import { useTranslation } from "react-i18next";
 
 export const PermissionsPage = () => {
+  const { t } = useTranslation("admin");
   const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>(
     []
   );
@@ -35,12 +37,12 @@ export const PermissionsPage = () => {
   const tabs = [
     {
       key: "accounts",
-      label: "Tài khoản (Accounts)",
+      label: t("permissions.accounts_tab"),
       children: <AccountsTab permissionGroups={permissionGroups} />,
     },
     {
       key: "groups",
-      label: "Nhóm quyền (Permission Groups)",
+      label: t("permissions.groups_tab"),
       children: (
         <div className="text-center py-12">
           <p className="text-gray-500">
@@ -62,13 +64,6 @@ export const PermissionsPage = () => {
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Quản lý quyền</h1>
-        <p className="text-gray-600 mt-2">
-          Manage user accounts and permissions
-        </p>
-      </div>
-
       <Tabs
         items={tabs}
         defaultActiveKey="accounts"

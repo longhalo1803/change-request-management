@@ -18,7 +18,35 @@
     },
     "recent_activity": "Hoạt động Gần đây",
     "quick_stats": "Thống kê Nhanh",
-    "no_data": "Không có dữ liệu"
+    "no_data": "Không có dữ liệu",
+    "process_efficiency": "HIỆU QUẢ QUY TRÌNH",
+    "rejected_rate": "Tỷ lệ từ chối",
+    "overdue_ongoing": "Quá hạn Đang xử lý",
+    "customer_cancellation": "Khách hàng hủy",
+    "tasks": "Nhiệm vụ",
+    "status_overview": "Tổng quan trạng thái",
+    "active_sprint": "Sprint Hiện tại",
+    "total_crs": "Tổng số CR",
+    "view_full_breakdown": "Xem chi tiết →",
+    "cr_volume_trends": "Khối lượng CR theo mức độ",
+    "annual_projection": "📊 Dự phóng hàng năm",
+    "annual_growth": "+{{percentage}}% TĂNG TRƯỞNG NĂM",
+    "critical": "NGHIÊM TRỌNG",
+    "high": "CAO",
+    "medium": "TRUNG BÌNH",
+    "low": "THẤP",
+    "total": "Tổng",
+    "top_5_customers": "Top 5 Khách hàng",
+    "crs": "CRs",
+    "user_management": "QUẢN LÝ NGƯỜI DÙNG",
+    "new_30_days": "Mới (30 ngày)",
+    "active_ratio": "Tỷ lệ hoạt động",
+    "customer": "KHÁCH HÀNG",
+    "pm": "PM",
+    "admin": "ADMIN",
+    "growth_metrics": "CHỈ SỐ TĂNG TRƯỞNG",
+    "priority_alert": "CẢNH BÁO ƯU TIÊN",
+    "health_index": "CHỈ SỐ SỨC KHỎE"
   },
   "users": {
     "title": "Quản lý Người dùng",
@@ -53,5 +81,60 @@
     "system_settings": "Cài đặt Hệ thống",
     "notifications": "Thông báo",
     "security": "Bảo mật"
+  },
+  "cr_list": {
+    "title": "Tất cả yêu cầu thay đổi",
+    "subtitle": "Giám sát tất cả Yêu cầu thay đổi trên toàn hệ thống",
+    "table_view": "Dạng bảng",
+    "kanban_board": "Bảng Kanban",
+    "no_crs": "Không tìm thấy Yêu cầu thay đổi nào",
+    "showing": "Đang hiển thị {{count}} Yêu cầu thay đổi",
+    "showing_plural": "Đang hiển thị {{count}} Yêu cầu thay đổi"
+  },
+  "permissions": {
+    "title": "Quản lý quyền",
+    "subtitle": "Quản lý tài khoản người dùng và nhóm quyền",
+    "accounts_tab": "Tài khoản",
+    "groups_tab": "Nhóm quyền",
+    "search_placeholder": "Tìm kiếm theo tên hoặc email",
+    "create_user": "Tạo người dùng mới",
+    "delete_confirm": "Bạn có chắc chắn muốn xóa {{name}} không?",
+    "user_deleted": "Xóa người dùng thành công",
+    "user_deleted_fail": "Lỗi khi xóa người dùng",
+    "user_updated": "Cập nhật người dùng thành công",
+    "user_created": "Tạo người dùng thành công",
+    "user_status_active": "Kích hoạt người dùng thành công",
+    "user_status_inactive": "Vô hiệu hóa người dùng thành công",
+    "status_update_fail": "Lỗi khi cập nhật trạng thái người dùng",
+    "failed_to_load": "Lỗi tải người dùng, đang dùng dữ liệu mẫu",
+    "columns": {
+      "name": "Tên",
+      "first_name": "Tên",
+      "last_name": "Họ",
+      "phone": "Số điện thoại",
+      "password": "Mật khẩu",
+      "email": "Email",
+      "role": "Vai trò",
+      "created_date": "Ngày tạo",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "roles": {
+      "admin": "Quản trị viên",
+      "pm": "Quản lý dự án",
+      "customer": "Khách hàng"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Vô hiệu"
+    },
+    "actions": {
+      "edit": "Sửa",
+      "deactivate": "Vô hiệu hóa",
+      "activate": "Kích hoạt",
+      "delete": "Xóa"
+    },
+    "total_users": "Tổng cộng {{total}} người dùng",
+    "no_users": "Không tìm thấy người dùng nào"
   }
 }

@@ -54,8 +54,11 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
     try {
       setLoading(true);
       const data = await permissionsService.fetchUsers();
-      setUsers(data || []);
-      setFilteredUsers(data || []);
+
+      // Ensure data is always an array to prevent "rawData.some is not a function" in antd Table
+      const safeData = Array.isArray(data) ? data : [];
+      setUsers(safeData);
+      setFilteredUsers(safeData);
     } catch (error) {
       console.warn("Failed to load users, using fallback data");
       setUsers([]);
@@ -151,7 +154,7 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
 
       {/* Users Table */}
       <PermissionsTable
-        data={filteredUsers}
+        data={Array.isArray(filteredUsers) ? filteredUsers : []}
         loading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}

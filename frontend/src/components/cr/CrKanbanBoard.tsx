@@ -1,5 +1,6 @@
 import { ChangeRequest, ChangeRequestStatus } from "@/lib/types";
 import { CrKanbanColumn } from "./CrKanbanColumn";
+import { useTranslation } from "react-i18next";
 
 type ActorType = "customer" | "pm" | "admin";
 
@@ -9,15 +10,19 @@ interface CrKanbanBoardProps {
   actorType?: ActorType;
 }
 
-const KANBAN_COLUMNS: Array<{ status: ChangeRequestStatus; title: string }> = [
-  { status: ChangeRequestStatus.DRAFT, title: "Draft" },
-  { status: ChangeRequestStatus.SUBMITTED, title: "Submitted" },
-  { status: ChangeRequestStatus.IN_DISCUSSION, title: "In Discussion" },
-  { status: ChangeRequestStatus.APPROVED, title: "Approved" },
-  { status: ChangeRequestStatus.REJECTED, title: "Rejected" },
-  { status: ChangeRequestStatus.ON_GOING, title: "On Going" },
-  { status: ChangeRequestStatus.CLOSED, title: "Closed" },
-];
+const KANBAN_COLUMNS: Array<{ status: ChangeRequestStatus; labelKey: string }> =
+  [
+    { status: ChangeRequestStatus.DRAFT, labelKey: "status.draft" },
+    { status: ChangeRequestStatus.SUBMITTED, labelKey: "status.submitted" },
+    {
+      status: ChangeRequestStatus.IN_DISCUSSION,
+      labelKey: "status.in_discussion",
+    },
+    { status: ChangeRequestStatus.APPROVED, labelKey: "status.approved" },
+    { status: ChangeRequestStatus.REJECTED, labelKey: "status.rejected" },
+    { status: ChangeRequestStatus.ON_GOING, labelKey: "status.ongoing" },
+    { status: ChangeRequestStatus.CLOSED, labelKey: "status.closed" },
+  ];
 
 /**
  * Shared Kanban Board Component
@@ -28,6 +33,8 @@ export const CrKanbanBoard: React.FC<CrKanbanBoardProps> = ({
   onCardClick,
   actorType = "customer",
 }) => {
+  const { t } = useTranslation("common");
+
   // Filter columns based on actor type
   // PM actors don't see Draft columns (they can't see customer's draft CRs)
   const visibleColumns =
@@ -38,6 +45,7 @@ export const CrKanbanBoard: React.FC<CrKanbanBoardProps> = ({
   // Group CRs by status - compare statusId with the status value
   const groupedByStatus = visibleColumns.map((column) => ({
     ...column,
+    title: t(column.labelKey as any) as string,
     crs: data.filter((cr) => cr.statusId === column.status),
   }));
 

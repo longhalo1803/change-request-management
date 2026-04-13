@@ -68,5 +68,14 @@
     "attachments_label": "Attachments",
     "attachments_hint": "Drop files here or browse",
     "success_message": "Change Request created successfully!"
+  },
+  "cr_list": {
+    "customer_title": "My Change Requests",
+    "no_crs": "No Change Requests found",
+    "customer_subtitle": "View and manage your change requests",
+    "total": "Total",
+    "showing": "Showing",
+    "change_request": "Change Request",
+    "change_requests": "Change Requests"
   }
 }

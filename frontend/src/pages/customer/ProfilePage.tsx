@@ -119,7 +119,7 @@ const ProfilePage = () => {
               {/* Row 1: First Name & Last Name */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Form.Item
-                  label="First Name"
+                  label={t("personal_info.first_name")}
                   name="firstName"
                   rules={[
                     { required: true, message: "Please enter your first name" },
@@ -132,7 +132,7 @@ const ProfilePage = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label="Last Name"
+                  label={t("personal_info.last_name")}
                   name="lastName"
                   rules={[
                     { required: true, message: "Please enter your last name" },

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Tabs, Empty, Spin } from "antd";
-import { CrKanbanBoard, CrTable, CrFilter, CrDetailModal } from "@/components";
+import { useTranslation } from "react-i18next";
+import { Empty, Spin } from "antd";
+import { CrKanbanBoard, CrFilter, CrDetailModal } from "@/components";
 import { ChangeRequest } from "@/lib/types";
 import { useChangeRequests } from "@/hooks";
 
@@ -17,9 +18,9 @@ import { useChangeRequests } from "@/hooks";
  * - View CR details
  */
 export const PMCrListPage = () => {
+  const { t } = useTranslation("pm");
   const [selectedCr, setSelectedCr] = useState<ChangeRequest | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<"table" | "kanban">("table");
 
   // Get all CRs (excluding Draft)
   const { data: crResponse, isLoading } = useChangeRequests({});
@@ -35,41 +36,14 @@ export const PMCrListPage = () => {
     setSelectedCr(null);
   };
 
-  const tabItems = [
-    {
-      key: "table",
-      label: "📋 Table View",
-      children:
-        crData.length > 0 ? (
-          <CrTable data={crData} onRowClick={handleCrClick} actorType="pm" />
-        ) : (
-          <Empty description="No Change Requests found" />
-        ),
-    },
-    {
-      key: "kanban",
-      label: "📊 Kanban Board",
-      children:
-        crData.length > 0 ? (
-          <CrKanbanBoard
-            data={crData}
-            onCardClick={handleCrClick}
-            actorType="pm"
-          />
-        ) : (
-          <Empty description="No Change Requests found" />
-        ),
-    },
-  ];
-
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Change Requests</h1>
-        <p className="text-gray-600 mt-2">
-          Manage and resolve customer Change Requests
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {t("cr_list.title")}
+        </h1>
+        <p className="text-gray-600 mt-2">{t("cr_list.subtitle")}</p>
       </div>
 
       {/* Loading state */}
@@ -84,22 +58,29 @@ export const PMCrListPage = () => {
             <CrFilter actorType="pm" />
           </div>
 
-          {/* Tabs: Kanban and Table */}
-          <div className="bg-white rounded-lg shadow">
-            <Tabs
-              activeKey={viewMode}
-              onChange={(key) => setViewMode(key as "table" | "kanban")}
-              items={tabItems}
-              className="px-6"
-            />
+          {/* Kanban Board */}
+          <div className="bg-white rounded-lg shadow p-6">
+            {crData.length > 0 ? (
+              <CrKanbanBoard
+                data={crData}
+                onCardClick={handleCrClick}
+                actorType="pm"
+              />
+            ) : (
+              <Empty description={t("cr_list.no_data")} />
+            )}
           </div>
 
           {/* Stats Footer */}
           {crData.length > 0 && (
             <div className="mt-6 text-center text-gray-600">
               <p>
-                Showing {crData.length} Change Request
-                {crData.length !== 1 ? "s" : ""}
+                {t(
+                  crData.length === 1
+                    ? "cr_list.showing_count_one"
+                    : "cr_list.showing_count_other",
+                  { count: crData.length }
+                )}
               </p>
             </div>
           )}

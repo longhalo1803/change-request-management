@@ -1,0 +1,31 @@
+{
+  "title": "PM Dashboard",
+  "subtitle": "Project overview and recent activities",
+  "stats": {
+    "total_crs": "Total CRs",
+    "active_crs": "Active CRs",
+    "completed": "Completed",
+    "ongoing": "Ongoing",
+    "subtitle_total": "All received CRs",
+    "subtitle_active": "Currently processing",
+    "subtitle_completed": "Closed CRs",
+    "subtitle_ongoing": "Currently in implementation"
+  },
+  "cr_list": {
+    "title": "Change Requests",
+    "subtitle": "Manage and resolve customer Change Requests",
+    "no_data": "No Change Requests found",
+    "showing_count_zero": "Showing 0 Change Requests",
+    "showing_count_one": "Showing 1 Change Request",
+    "showing_count_other": "Showing {{count}} Change Requests"
+  },
+  "header": {
+    "profile": "Profile"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "cr_list": "CR List",
+    "pm_user": "PM User",
+    "project_manager": "Project Manager"
+  }
+}

@@ -68,5 +68,14 @@
     "attachments_label": "Tệp đính kèm",
     "attachments_hint": "Thả tệp ở đây hoặc duyệt",
     "success_message": "Yêu cầu thay đổi đã được tạo thành công!"
+  },
+  "cr_list": {
+    "customer_title": "Yêu cầu thay đổi của tôi",
+    "no_crs": "Không tìm thấy yêu cầu thay đổi nào",
+    "customer_subtitle": "Xem và quản lý các yêu cầu thay đổi của bạn",
+    "total": "Tổng số",
+    "showing": "Đang hiển thị",
+    "change_request": "Yêu cầu thay đổi",
+    "change_requests": "Yêu cầu thay đổi"
   }
 }

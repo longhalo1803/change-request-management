@@ -15,6 +15,7 @@ import { useChangeRequests } from "@/hooks";
 export const PMDashboardPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation("dashboard");
+  const { t: tPm } = useTranslation("pm");
 
   // Fetch CR data to get real stats
   const { data: crResponse, isLoading } = useChangeRequests({});
@@ -114,10 +115,8 @@ export const PMDashboardPage = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">PM Dashboard</h1>
-        <p className="text-gray-600 mt-2">
-          Project overview and recent activities
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900">{tPm("title")}</h1>
+        <p className="text-gray-600 mt-2">{tPm("subtitle")}</p>
       </div>
 
       <Row gutter={[16, 16]} className="mb-6">
@@ -125,8 +124,8 @@ export const PMDashboardPage = () => {
           <StatCard
             icon={<FileTextOutlined />}
             value={isLoading ? "-" : stats.total}
-            label={"Total CRs"}
-            subtitle={"All received CRs"}
+            label={tPm("stats.total_crs")}
+            subtitle={tPm("stats.subtitle_total")}
             iconColor="#722ed1"
             iconBgColor="#f9f0ff"
           />
@@ -135,8 +134,8 @@ export const PMDashboardPage = () => {
           <StatCard
             icon={<EditOutlined />}
             value={isLoading ? "-" : stats.active}
-            label={"Active CRs"}
-            subtitle={"Currently processing"}
+            label={tPm("stats.active_crs")}
+            subtitle={tPm("stats.subtitle_active")}
             iconColor="#1890ff"
             iconBgColor="#e6f7ff"
           />
@@ -145,8 +144,8 @@ export const PMDashboardPage = () => {
           <StatCard
             icon={<CheckCircleOutlined />}
             value={isLoading ? "-" : stats.completed}
-            label={"Completed"}
-            subtitle={"Closed CRs"}
+            label={tPm("stats.completed")}
+            subtitle={tPm("stats.subtitle_completed")}
             iconColor="#52c41a"
             iconBgColor="#f6ffed"
           />
@@ -155,8 +154,8 @@ export const PMDashboardPage = () => {
           <StatCard
             icon={<ClockCircleOutlined />}
             value={isLoading ? "-" : stats.dueSoon}
-            label={"Ongoing"}
-            subtitle={"Currently in implementation"}
+            label={tPm("stats.ongoing")}
+            subtitle={tPm("stats.subtitle_ongoing")}
             iconColor="#fa8c16"
             iconBgColor="#fff7e6"
           />

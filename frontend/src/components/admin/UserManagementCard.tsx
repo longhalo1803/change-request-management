@@ -3,6 +3,7 @@
  * Displays user management statistics
  */
 
+import { useTranslation } from "react-i18next";
 import { UserManagementStats } from "@/lib/types/admin.types";
 
 interface UserManagementCardProps {
@@ -10,11 +11,13 @@ interface UserManagementCardProps {
 }
 
 export const UserManagementCard = ({ data }: UserManagementCardProps) => {
+  const { t } = useTranslation("admin");
+
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm h-full">
       {/* Header */}
       <h3 className="text-lg font-semibold text-gray-800 mb-6">
-        USER MANAGEMENT
+        {t("dashboard.user_management")}
       </h3>
 
       {/* Main Stats */}
@@ -24,7 +27,7 @@ export const UserManagementCard = ({ data }: UserManagementCardProps) => {
             {data.new30Days}
           </div>
           <div className="text-xs text-gray-500 uppercase tracking-wider">
-            New (30 days)
+            {t("dashboard.new_30_days")}
           </div>
         </div>
         <div className="text-right">
@@ -32,7 +35,7 @@ export const UserManagementCard = ({ data }: UserManagementCardProps) => {
             {data.activeRatio}%
           </div>
           <div className="text-xs text-gray-500 uppercase tracking-wider">
-            Active Ratio
+            {t("dashboard.active_ratio")}
           </div>
         </div>
       </div>
@@ -47,7 +50,7 @@ export const UserManagementCard = ({ data }: UserManagementCardProps) => {
             </span>
           </div>
           <span className="text-xs text-gray-400 uppercase tracking-wider">
-            CUSTOMER
+            {t("dashboard.customer")}
           </span>
         </div>
 
@@ -57,7 +60,7 @@ export const UserManagementCard = ({ data }: UserManagementCardProps) => {
             <span className="text-xs text-gray-600 font-medium">{data.pm}</span>
           </div>
           <span className="text-xs text-gray-400 uppercase tracking-wider">
-            PM
+            {t("dashboard.pm")}
           </span>
         </div>
 
@@ -69,7 +72,7 @@ export const UserManagementCard = ({ data }: UserManagementCardProps) => {
             </span>
           </div>
           <span className="text-xs text-gray-400 uppercase tracking-wider">
-            ADMIN
+            {t("dashboard.admin")}
           </span>
         </div>
       </div>

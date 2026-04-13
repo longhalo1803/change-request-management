@@ -28,8 +28,8 @@ export const CrFilter: React.FC<CrFilterProps> = ({
 }) => {
   const { t } = useTranslation("cr-list");
 
-  // PM actors cannot create CRs, so hide the create button
-  const showCreateButton = actorType === "customer" || actorType === "admin";
+  // Only customers can create CRs
+  const showCreateButton = actorType === "customer";
 
   return (
     <Card className="mb-6">

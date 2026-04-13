@@ -3,6 +3,7 @@
  * Displays horizontal bar chart of top 5 customers by CR count
  */
 
+import { useTranslation } from "react-i18next";
 import {
   BarChart,
   Bar,
@@ -20,7 +21,7 @@ interface Top5CustomersChartProps {
 }
 
 const CustomTooltip = (props: any) => {
-  const { active, payload } = props;
+  const { active, payload, t } = props;
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
@@ -31,7 +32,7 @@ const CustomTooltip = (props: any) => {
           style={{ color: payload[0].color }}
           className="text-sm font-semibold"
         >
-          {payload[0].value} CRs
+          {payload[0].value} {t("dashboard.crs")}
         </p>
       </div>
     );
@@ -40,6 +41,8 @@ const CustomTooltip = (props: any) => {
 };
 
 export const Top5CustomersChart = ({ data }: Top5CustomersChartProps) => {
+  const { t } = useTranslation("admin");
+
   // Get max value for scaling
   const maxValue = Math.max(...data.map((d) => d.crCount));
 
@@ -47,7 +50,7 @@ export const Top5CustomersChart = ({ data }: Top5CustomersChartProps) => {
     <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm">
       {/* Header */}
       <h3 className="text-lg font-semibold text-gray-800 mb-6">
-        Top 5 Customers
+        {t("dashboard.top_5_customers")}
       </h3>
 
       {/* Chart */}
@@ -77,14 +80,14 @@ export const Top5CustomersChart = ({ data }: Top5CustomersChartProps) => {
               axisLine={{ stroke: "#e0e0e0" }}
             />
             <Tooltip
-              content={<CustomTooltip />}
+              content={<CustomTooltip t={t} />}
               cursor={{ fill: "rgba(0,0,0,0.05)" }}
             />
             <Bar
               dataKey="crCount"
               fill="#1890FF"
               radius={[0, 4, 4, 0]}
-              name="CRs"
+              name={t("dashboard.crs")}
             >
               {data.map((_, index) => (
                 <Cell key={`cell-${index}`} fill="#1890FF" />
@@ -105,7 +108,9 @@ export const Top5CustomersChart = ({ data }: Top5CustomersChartProps) => {
               <div className="w-3 h-3 bg-blue-600 rounded"></div>
               <span className="text-gray-600 font-medium">{item.name}</span>
             </div>
-            <span className="text-gray-800 font-bold">{item.crCount} CRs</span>
+            <span className="text-gray-800 font-bold">
+              {item.crCount} {t("dashboard.crs")}
+            </span>
           </div>
         ))}
       </div>

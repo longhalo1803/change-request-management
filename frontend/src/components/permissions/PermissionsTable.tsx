@@ -164,7 +164,7 @@ export const PermissionsTable = ({
             onClick: () => {
               if (
                 window.confirm(
-                  `Are you sure you want to delete ${record.firstName} ${record.lastName}?`,
+                  `Are you sure you want to delete ${record.firstName} ${record.lastName}?`
                 )
               ) {
                 onDelete(record.id);
@@ -190,14 +190,14 @@ export const PermissionsTable = ({
     );
   }
 
-  if (!data || data.length === 0) {
+  if (!data || !Array.isArray(data) || data.length === 0) {
     return <Empty description="No users found" />;
   }
 
   return (
     <Table
       columns={columns}
-      dataSource={data}
+      dataSource={Array.isArray(data) ? data : []}
       rowKey="id"
       pagination={{
         pageSize: 10,

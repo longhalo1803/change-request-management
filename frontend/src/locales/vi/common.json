@@ -8,7 +8,9 @@
     "change_requests": "Yêu cầu Thay đổi",
     "users": "Người dùng",
     "sprints": "Sprint",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "profile": "Hồ sơ",
+    "permissions": "Phân quyền"
   },
   "auth": {
     "login": "Đăng nhập",
@@ -44,7 +46,8 @@
     "ongoing": "Đang thực hiện",
     "blocked": "Bị chặn",
     "rejected": "Từ chối",
-    "closed": "Đã đóng"
+    "closed": "Đã đóng",
+    "in_discussion": "In Discussion"
   },
   "priority": {
     "low": "Thấp",
@@ -67,6 +70,7 @@
     "export": "Xuất"
   },
   "messages": {
+    "coming_soon": "Coming soon",
     "loading": "Đang tải...",
     "no_data": "Không có dữ liệu",
     "confirm_delete": "Bạn có chắc chắn muốn xóa mục này?",

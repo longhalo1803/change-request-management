@@ -8,6 +8,8 @@
     "phone": "電話番号",
     "role": "役割",
     "department": "部門",
+    "first_name": "名",
+    "last_name": "姓",
     "gender": "性別",
     "date_of_birth": "生年月日",
     "joined_date": "参加日",

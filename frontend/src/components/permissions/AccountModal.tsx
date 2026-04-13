@@ -4,6 +4,7 @@
  */
 
 import { Modal, Form, Input, Select, Button, Space } from "antd";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   AdminUser,
   UserFormData,
@@ -41,6 +42,7 @@ export const AccountModal = ({
   onCancel,
   loading,
 }: AccountModalProps) => {
+  const { t } = useTranslation("admin");
   const [form] = Form.useForm();
   const isEditMode = !!user;
 
@@ -95,7 +97,7 @@ export const AccountModal = ({
         {/* Last Name */}
         <Form.Item
           name="lastName"
-          label="Last Name (Họ)"
+          label={t("permissions.columns.last_name")}
           rules={[
             { required: true, message: "Please enter last name" },
             { min: 2, message: "Last name must be at least 2 characters" },
@@ -107,7 +109,7 @@ export const AccountModal = ({
         {/* First Name */}
         <Form.Item
           name="firstName"
-          label="First Name (Tên)"
+          label={t("permissions.columns.first_name")}
           rules={[
             { required: true, message: "Please enter first name" },
             { min: 2, message: "First name must be at least 2 characters" },
@@ -119,7 +121,7 @@ export const AccountModal = ({
         {/* Email */}
         <Form.Item
           name="email"
-          label="Email"
+          label={t("permissions.columns.email")}
           rules={[
             { required: true, message: "Please enter email" },
             { type: "email", message: "Please enter valid email" },
@@ -131,7 +133,7 @@ export const AccountModal = ({
         {/* Phone */}
         <Form.Item
           name="phone"
-          label="Phone (Số điện thoại)"
+          label={t("permissions.columns.phone")}
           rules={[
             {
               pattern: /^[0-9\s\-+()]*$/,
@@ -145,7 +147,7 @@ export const AccountModal = ({
         {/* Role */}
         <Form.Item
           name="role"
-          label="Role (Nhóm quyền)"
+          label={t("permissions.columns.role")}
           rules={[{ required: true, message: "Please select role" }]}
         >
           <Select placeholder="Select role" options={roleOptions} />
@@ -155,7 +157,7 @@ export const AccountModal = ({
         {!isEditMode && (
           <Form.Item
             name="password"
-            label="Password"
+            label={t("permissions.columns.password")}
             rules={[
               { required: true, message: "Please enter password" },
               { min: 8, message: "Password must be at least 8 characters" },

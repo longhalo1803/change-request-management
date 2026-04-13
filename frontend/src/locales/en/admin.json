@@ -18,7 +18,35 @@
     },
     "recent_activity": "Recent Activity",
     "quick_stats": "Quick Stats",
-    "no_data": "No data available"
+    "no_data": "No data available",
+    "process_efficiency": "PROCESS EFFICIENCY",
+    "rejected_rate": "Rejected rate",
+    "overdue_ongoing": "Overdue Ongoing",
+    "customer_cancellation": "Customer cancellation",
+    "tasks": "Tasks",
+    "status_overview": "Status overview",
+    "active_sprint": "Active Sprint",
+    "total_crs": "Total CRs",
+    "view_full_breakdown": "View Full Breakdown →",
+    "cr_volume_trends": "CR Volume Trends by Priority",
+    "annual_projection": "📊 Annual Projection",
+    "annual_growth": "+{{percentage}}% ANNUAL GROWTH",
+    "critical": "CRITICAL",
+    "high": "HIGH",
+    "medium": "MEDIUM",
+    "low": "LOW",
+    "total": "Total",
+    "top_5_customers": "Top 5 Customers",
+    "crs": "CRs",
+    "user_management": "USER MANAGEMENT",
+    "new_30_days": "New (30 days)",
+    "active_ratio": "Active Ratio",
+    "customer": "CUSTOMER",
+    "pm": "PM",
+    "admin": "ADMIN",
+    "growth_metrics": "GROWTH METRICS",
+    "priority_alert": "PRIORITY ALERT",
+    "health_index": "HEALTH INDEX"
   },
   "users": {
     "title": "User Management",
@@ -53,5 +81,60 @@
     "system_settings": "System Settings",
     "notifications": "Notifications",
     "security": "Security"
+  },
+  "cr_list": {
+    "title": "All Change Requests",
+    "subtitle": "Monitor all Change Requests across the system",
+    "table_view": "Table View",
+    "kanban_board": "Kanban Board",
+    "no_crs": "No Change Requests found",
+    "showing": "Showing {{count}} Change Request",
+    "showing_plural": "Showing {{count}} Change Requests"
+  },
+  "permissions": {
+    "title": "Permissions Management",
+    "subtitle": "Manage user accounts and permission groups",
+    "accounts_tab": "Accounts",
+    "groups_tab": "Permission Groups",
+    "search_placeholder": "Search by name or email",
+    "create_user": "Create New User",
+    "delete_confirm": "Are you sure you want to delete {{name}}?",
+    "user_deleted": "User deleted successfully",
+    "user_deleted_fail": "Failed to delete user",
+    "user_updated": "User updated successfully",
+    "user_created": "User created successfully",
+    "user_status_active": "User activated successfully",
+    "user_status_inactive": "User deactivated successfully",
+    "status_update_fail": "Failed to update user status",
+    "failed_to_load": "Failed to load users, using fallback data",
+    "columns": {
+      "name": "Name",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "phone": "Phone",
+      "password": "Password",
+      "email": "Email",
+      "role": "Role",
+      "created_date": "Created Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "pm": "Project Manager",
+      "customer": "Customer"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "delete": "Delete"
+    },
+    "total_users": "Total {{total}} users",
+    "no_users": "No users found"
   }
 }

@@ -32,6 +32,9 @@ import viAdmin from "@/locales/vi/admin.json";
 import enValidation from "@/locales/en/validation.json";
 import jaValidation from "@/locales/ja/validation.json";
 import viValidation from "@/locales/vi/validation.json";
+import enPm from "@/locales/en/pm.json";
+import jaPm from "@/locales/ja/pm.json";
+import viPm from "@/locales/vi/pm.json";
 
 export const resources = {
   en: {
@@ -43,6 +46,7 @@ export const resources = {
     quotation: enQuotation,
     admin: enAdmin,
     validation: enValidation,
+    pm: enPm,
   },
   ja: {
     common: jaCommon,
@@ -53,6 +57,7 @@ export const resources = {
     quotation: jaQuotation,
     admin: jaAdmin,
     validation: jaValidation,
+    pm: jaPm,
   },
   vi: {
     common: viCommon,
@@ -63,6 +68,7 @@ export const resources = {
     quotation: viQuotation,
     admin: viAdmin,
     validation: viValidation,
+    pm: viPm,
   },
 } as const;
 

@@ -3,6 +3,7 @@
  * Displays growth metrics, priority alerts, and health index
  */
 
+import { useTranslation } from "react-i18next";
 import {
   GrowthMetrics,
   PriorityAlert,
@@ -20,6 +21,8 @@ export const MetricsFooter = ({
   priorityAlert,
   healthIndex,
 }: MetricsFooterProps) => {
+  const { t } = useTranslation("admin");
+
   return (
     <div className="grid grid-cols-3 gap-6">
       {/* Growth Metrics Card */}
@@ -29,7 +32,7 @@ export const MetricsFooter = ({
             <span className="text-lg">📊</span>
           </div>
           <h4 className="font-semibold text-gray-800 text-sm uppercase">
-            GROWTH METRICS
+            {t("dashboard.growth_metrics")}
           </h4>
         </div>
         <p className="text-gray-600 text-sm mb-2">{growthMetrics.comparison}</p>
@@ -45,7 +48,7 @@ export const MetricsFooter = ({
             <span className="text-lg">⚠️</span>
           </div>
           <h4 className="font-semibold text-gray-800 text-sm uppercase">
-            PRIORITY ALERT
+            {t("dashboard.priority_alert")}
           </h4>
         </div>
         <p className="text-gray-600 text-sm mb-2">
@@ -61,7 +64,7 @@ export const MetricsFooter = ({
             <span className="text-lg">💚</span>
           </div>
           <h4 className="font-semibold text-gray-800 text-sm uppercase">
-            HEALTH INDEX
+            {t("dashboard.health_index")}
           </h4>
         </div>
         <p className="text-gray-600 text-sm mb-2">{healthIndex.description}</p>

@@ -1,0 +1,31 @@
+{
+  "title": "PMダッシュボード",
+  "subtitle": "プロジェクトの概要と最近の活動",
+  "stats": {
+    "total_crs": "総CR数",
+    "active_crs": "アクティブなCR",
+    "completed": "完了",
+    "ongoing": "進行中",
+    "subtitle_total": "受信したすべてのCR",
+    "subtitle_active": "現在処理中",
+    "subtitle_completed": "クローズされたCR",
+    "subtitle_ongoing": "現在実装中"
+  },
+  "cr_list": {
+    "title": "変更要求",
+    "subtitle": "顧客の変更要求を管理・解決する",
+    "no_data": "変更要求が見つかりません",
+    "showing_count_zero": "0件の変更要求を表示中",
+    "showing_count_one": "1件の変更要求を表示中",
+    "showing_count_other": "{{count}}件の変更要求を表示中"
+  },
+  "header": {
+    "profile": "プロフィール"
+  },
+  "sidebar": {
+    "dashboard": "ダッシュボード",
+    "cr_list": "CRリスト",
+    "pm_user": "PMユーザー",
+    "project_manager": "プロジェクトマネージャー"
+  }
+}

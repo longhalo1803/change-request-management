@@ -3,6 +3,7 @@
  * Displays a donut chart showing the status breakdown of change requests
  */
 
+import { useTranslation } from "react-i18next";
 import {
   PieChart,
   Pie,
@@ -50,17 +51,19 @@ export const StatusOverviewCard = ({
   total,
   onViewBreakdown,
 }: StatusOverviewCardProps) => {
+  const { t } = useTranslation("admin");
+
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-gray-800">
-            Status overview
+            {t("dashboard.status_overview")}
           </h3>
         </div>
         <div className="bg-blue-100 text-blue-600 text-xs font-medium px-3 py-1 rounded-full">
-          Active Sprint: Y
+          {t("dashboard.active_sprint")}: Y
         </div>
       </div>
 
@@ -83,7 +86,7 @@ export const StatusOverviewCard = ({
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: any) => `${value} CRs`}
+              formatter={(value: any) => `${value} ${t("dashboard.crs")}`}
               contentStyle={{
                 backgroundColor: "#fff",
                 border: "1px solid #ddd",
@@ -97,7 +100,7 @@ export const StatusOverviewCard = ({
         <div className="text-center -mt-24">
           <div className="text-4xl font-bold text-gray-800">{total}</div>
           <div className="text-sm text-gray-500 uppercase tracking-wider">
-            Total CRs
+            {t("dashboard.total_crs")}
           </div>
         </div>
       </div>
@@ -112,7 +115,7 @@ export const StatusOverviewCard = ({
                 style={{ backgroundColor: item.color }}
               ></div>
               <span className="text-xs font-medium text-gray-600 uppercase">
-                {item.status}
+                {t(`permissions.status.${item.status}`, item.status)}
               </span>
             </div>
             <span className="text-sm font-bold text-gray-800 ml-auto">
@@ -127,7 +130,7 @@ export const StatusOverviewCard = ({
         onClick={onViewBreakdown}
         className="w-full mt-6 py-3 text-center text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors border-t border-gray-100"
       >
-        View Full Breakdown →
+        {t("dashboard.view_full_breakdown")}
       </button>
     </div>
   );

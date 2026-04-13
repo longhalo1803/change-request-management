@@ -3,6 +3,7 @@
  * Displays process efficiency metrics with progress bars
  */
 
+import { useTranslation } from "react-i18next";
 import { ProcessEfficiencyMetrics } from "@/lib/types/admin.types";
 
 interface ProcessEfficiencyCardProps {
@@ -10,11 +11,13 @@ interface ProcessEfficiencyCardProps {
 }
 
 export const ProcessEfficiencyCard = ({ data }: ProcessEfficiencyCardProps) => {
+  const { t } = useTranslation("admin");
+
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm h-full">
       {/* Header */}
       <h3 className="text-lg font-semibold text-gray-800 mb-6">
-        PROCESS EFFICIENCY
+        {t("dashboard.process_efficiency")}
       </h3>
 
       {/* Metrics */}
@@ -23,7 +26,7 @@ export const ProcessEfficiencyCard = ({ data }: ProcessEfficiencyCardProps) => {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-600">
-              Rejected rate
+              {t("dashboard.rejected_rate")}
             </span>
             <span className="text-lg font-bold text-red-500">
               {data.rejectedRate}%
@@ -41,10 +44,10 @@ export const ProcessEfficiencyCard = ({ data }: ProcessEfficiencyCardProps) => {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-600">
-              Overdue Ongoing
+              {t("dashboard.overdue_ongoing")}
             </span>
             <span className="text-lg font-bold text-red-500">
-              {data.overdueOngoing} Tasks
+              {data.overdueOngoing} {t("dashboard.tasks")}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -59,7 +62,7 @@ export const ProcessEfficiencyCard = ({ data }: ProcessEfficiencyCardProps) => {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-600">
-              Customer cancellation
+              {t("dashboard.customer_cancellation")}
             </span>
             <span className="text-lg font-bold text-red-500">
               {data.customerCancellation}%

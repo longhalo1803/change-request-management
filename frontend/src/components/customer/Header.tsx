@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = () => {
   const userMenuItems: MenuProps["items"] = [
     {
       key: "profile",
-      label: "Profile",
+      label: t("nav.profile"),
     },
     // {
     //   key: 'settings',
@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = () => {
           menu={{ items: userMenuItems, onClick: handleMenuClick }}
           placement="bottomRight"
         >
-          <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors">
+          <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors">
             <div className="text-right">
               <div className="text-sm font-medium text-gray-900">
                 {user?.fullName || "User"}

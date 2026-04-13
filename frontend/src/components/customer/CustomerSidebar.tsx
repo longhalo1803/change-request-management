@@ -2,7 +2,6 @@ import { Layout, Menu } from "antd";
 import {
   DashboardOutlined,
   FileTextOutlined,
-  DollarOutlined,
   QuestionCircleOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -35,12 +34,6 @@ export const CustomerSidebar: React.FC = () => {
       icon: <FileTextOutlined />,
       label: t("sidebar.cr_management"),
       path: "/change-requests",
-    },
-    {
-      key: "quotation",
-      icon: <DollarOutlined />,
-      label: t("sidebar.quotation"),
-      path: "/quotations",
     },
   ];
 

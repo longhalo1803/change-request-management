@@ -8,6 +8,8 @@
     "phone": "Số điện thoại",
     "role": "Vai trò",
     "department": "Phòng ban",
+    "first_name": "Tên",
+    "last_name": "Họ",
     "gender": "Giới tính",
     "date_of_birth": "Ngày sinh",
     "joined_date": "Ngày tham gia",

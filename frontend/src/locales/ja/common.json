@@ -8,7 +8,9 @@
     "change_requests": "変更依頼",
     "users": "ユーザー",
     "sprints": "スプリント",
-    "settings": "設定"
+    "settings": "設定",
+    "profile": "プロフィール",
+    "permissions": "権限"
   },
   "auth": {
     "login": "ログイン",
@@ -44,7 +46,8 @@
     "ongoing": "進行中",
     "blocked": "ブロック",
     "rejected": "却下",
-    "closed": "完了"
+    "closed": "完了",
+    "in_discussion": "In Discussion"
   },
   "priority": {
     "low": "低",
@@ -67,6 +70,7 @@
     "export": "エクスポート"
   },
   "messages": {
+    "coming_soon": "Coming soon",
     "loading": "読み込み中...",
     "no_data": "データがありません",
     "confirm_delete": "このアイテムを削除してもよろしいですか？",

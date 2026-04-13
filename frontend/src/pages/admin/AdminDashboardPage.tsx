@@ -32,6 +32,7 @@ import { adminService } from "@/services/admin.service";
  */
 const AdminDashboardPage = () => {
   const { t } = useTranslation("admin");
+  const { t: tCommon } = useTranslation("common");
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [dashboardData, setDashboardData] = useState<DashboardStats | null>(
@@ -156,7 +157,11 @@ const AdminDashboardPage = () => {
                       item.status.slice(1).replace(/_/g, " "),
                   }))}
                 totalCrs={dashboardData.totalCRs}
-                onViewDetails={() => message.info("View details - Coming soon")}
+                onViewDetails={() =>
+                  message.info(
+                    `View details - ${tCommon("messages.coming_soon")}`
+                  )
+                }
               />
             </div>
             <ProcessEfficiencyCard data={dashboardData.processEfficiency} />
@@ -174,7 +179,9 @@ const AdminDashboardPage = () => {
           <CRVolumeChart
             data={dashboardData.crVolumeTrends}
             onAnnualProjection={() =>
-              message.info("Annual Projection - Coming soon")
+              message.info(
+                `Annual Projection - ${tCommon("messages.coming_soon")}`
+              )
             }
             growthPercentage={dashboardData.growthMetrics.percentage}
           />

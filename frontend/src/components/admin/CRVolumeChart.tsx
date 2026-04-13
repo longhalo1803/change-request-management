@@ -3,6 +3,7 @@
  * Displays stacked bar chart of CR volume trends by priority
  */
 
+import { useTranslation } from "react-i18next";
 import {
   BarChart,
   Bar,
@@ -30,7 +31,7 @@ const COLORS = {
 };
 
 const CustomTooltip = (props: any) => {
-  const { active, payload } = props;
+  const { active, payload, t } = props;
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
@@ -38,11 +39,12 @@ const CustomTooltip = (props: any) => {
         <p className="text-sm font-semibold text-gray-800">{data.month}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} style={{ color: entry.color }} className="text-xs">
-            {entry.name}: {entry.value}
+            {t(`dashboard.${entry.name.toLowerCase()}`, entry.name)}:{" "}
+            {entry.value}
           </p>
         ))}
         <p className="text-sm font-semibold text-gray-800 mt-1 border-t border-gray-200 pt-1">
-          Total: {data.total}
+          {t("dashboard.total")}: {data.total}
         </p>
       </div>
     );
@@ -55,22 +57,24 @@ export const CRVolumeChart = ({
   onAnnualProjection,
   growthPercentage = 14,
 }: CRVolumeChartProps) => {
+  const { t } = useTranslation("admin");
+
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-800">
-          CR Volume Trends by Priority
+          {t("dashboard.cr_volume_trends")}
         </h3>
         <div className="flex items-center gap-2">
           <button
             onClick={onAnnualProjection}
             className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
           >
-            📊 Annual Projection
+            {t("dashboard.annual_projection")}
           </button>
-          <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
-            +{growthPercentage}% ANNUAL GROWTH
+          <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full uppercase">
+            {t("dashboard.annual_growth", { percentage: growthPercentage })}
           </span>
         </div>
       </div>
@@ -97,10 +101,16 @@ export const CRVolumeChart = ({
               axisLine={{ stroke: "#e0e0e0" }}
             />
             <Tooltip
-              content={<CustomTooltip />}
+              content={<CustomTooltip t={t} />}
               cursor={{ fill: "rgba(0,0,0,0.05)" }}
             />
-            <Legend wrapperStyle={{ paddingTop: "20px" }} iconType="square" />
+            <Legend
+              wrapperStyle={{ paddingTop: "20px" }}
+              iconType="square"
+              formatter={(value) =>
+                t(`dashboard.${value.toLowerCase()}`, value)
+              }
+            />
             <Bar
               dataKey="critical"
               stackId="priority"

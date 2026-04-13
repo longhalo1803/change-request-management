@@ -68,5 +68,14 @@
     "attachments_label": "添付ファイル",
     "attachments_hint": "ファイルをここにドラッグするか、参照してください",
     "success_message": "変更リクエストが正常に作成されました！"
+  },
+  "cr_list": {
+    "customer_title": "私の変更リクエスト",
+    "no_crs": "変更リクエストが見つかりません",
+    "customer_subtitle": "変更リクエストの表示と管理",
+    "total": "合計",
+    "showing": "表示中",
+    "change_request": "変更リクエスト",
+    "change_requests": "変更リクエスト"
   }
 }
