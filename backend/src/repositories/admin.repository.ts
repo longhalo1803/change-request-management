@@ -21,10 +21,12 @@ export class AdminRepository {
       crRepo.count(),
       crRepo
         .createQueryBuilder("cr")
-        .leftJoinAndSelect("cr.status", "status")
+        .leftJoin("cr.status", "status")
         .groupBy("cr.statusId")
         .addGroupBy("status.name")
+        .addGroupBy("status.color")
         .select("status.name", "statusName")
+        .addSelect("status.color", "color")
         .addSelect("COUNT(cr.id)", "count")
         .getRawMany(),
     ]);
@@ -132,7 +134,7 @@ export class AdminRepository {
 
     return crRepo
       .createQueryBuilder("cr")
-      .leftJoinAndSelect("cr.assignee", "assignee")
+      .leftJoin("cr.assignee", "assignee")
       .where("cr.assignedTo IS NOT NULL")
       .groupBy("cr.assignedTo")
       .addGroupBy("assignee.id")

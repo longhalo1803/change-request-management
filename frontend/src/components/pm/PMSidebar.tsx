@@ -1,9 +1,5 @@
 import { Layout, Menu, Avatar } from "antd";
-import {
-  DashboardOutlined,
-  FileTextOutlined,
-  TeamOutlined,
-} from "@ant-design/icons";
+import { DashboardOutlined, FileTextOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/auth.store";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,8 +28,8 @@ export const PMSidebar = () => {
 
   const getSelectedKey = () => {
     if (location.pathname.includes("dashboard")) return "dashboard";
-    if (location.pathname.includes("projects")) return "projects";
-    if (location.pathname.includes("team")) return "team";
+    if (location.pathname.includes("crlist")) return "cr-list";
+    if (location.pathname.includes("update-profile")) return "profile";
     return "dashboard";
   };
 
@@ -45,16 +41,16 @@ export const PMSidebar = () => {
       onClick: () => navigate("/pm/dashboard"),
     },
     {
-      key: "projects",
+      key: "cr-list",
       icon: <FileTextOutlined />,
-      label: "Projects",
-      onClick: () => navigate("/pm/projects"),
+      label: "CR List",
+      onClick: () => navigate("/pm/crlist"),
     },
     {
-      key: "team",
-      icon: <TeamOutlined />,
-      label: "Team",
-      onClick: () => navigate("/pm/team"),
+      key: "profile",
+      icon: <UserOutlined />,
+      label: "Update Profile",
+      onClick: () => navigate("/pm/update-profile"),
     },
   ];
 

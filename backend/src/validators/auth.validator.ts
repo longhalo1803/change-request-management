@@ -17,7 +17,7 @@ export const loginSchema = z.object({
     .min(1, "validation.required"),
   password: z
     .string()
-    .min(8, "validation.min_length")
+    .min(1, "validation.required")
     .max(100, "validation.max_length"),
 });
 

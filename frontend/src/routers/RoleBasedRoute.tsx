@@ -27,8 +27,8 @@ export const RoleBasedRoute = ({ allowedRoles }: RoleBasedRouteProps) => {
     if (userRole === UserRole.PM) {
       return <Navigate to="/pm/dashboard" replace />;
     }
-    // Default to customer dashboard for customer or unknown roles
-    return <Navigate to="/dashboard" replace />;
+    // Default to login if user role is completely invalid
+    return <Navigate to="/login" replace />;
   }
 
   return <Outlet />;

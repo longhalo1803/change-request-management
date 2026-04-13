@@ -56,6 +56,11 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Do NOT intercept 401s for login endpoint (let the component handle and show error)
+    if (originalRequest.url?.includes("/auth/login")) {
+      return Promise.reject(error);
+    }
+
     // If already refreshing, queue this request
     if (isRefreshing) {
       return new Promise((resolve, reject) => {

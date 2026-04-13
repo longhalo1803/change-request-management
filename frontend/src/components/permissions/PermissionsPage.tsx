@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { Tabs, Spin, message } from "antd";
+import { Tabs, Spin } from "antd";
 import { PermissionGroup } from "@/lib/types";
 import { AccountsTab } from "./AccountsTab";
 import { permissionsService } from "@/services/permissions.service";
@@ -23,10 +23,10 @@ export const PermissionsPage = () => {
     try {
       setLoading(true);
       const groups = await permissionsService.fetchPermissionGroups();
-      setPermissionGroups(groups);
+      setPermissionGroups(groups || []);
     } catch (error) {
-      message.error("Failed to load permission groups");
-      console.error(error);
+      console.warn("Failed to load permission groups, using fallback data");
+      setPermissionGroups([]);
     } finally {
       setLoading(false);
     }

@@ -172,7 +172,7 @@ change-request-management/
 
    Default Accounts:
    - Admin: `admin@solashi.com` / `Admin@123`
-   - PM: `pm@solashi.com` / `PM@123`
+   - PM: `pm@solashi.com` / `Pm@123`
    - Customer: `customer@example.com` / `Customer@123`
 
 7. **Start Development Servers**

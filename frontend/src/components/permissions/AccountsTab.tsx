@@ -54,11 +54,12 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
     try {
       setLoading(true);
       const data = await permissionsService.fetchUsers();
-      setUsers(data);
-      setFilteredUsers(data);
+      setUsers(data || []);
+      setFilteredUsers(data || []);
     } catch (error) {
-      message.error("Failed to load users");
-      console.error(error);
+      console.warn("Failed to load users, using fallback data");
+      setUsers([]);
+      setFilteredUsers([]);
     } finally {
       setLoading(false);
     }

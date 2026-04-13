@@ -22,11 +22,15 @@ const USER_STORAGE_KEY = "cr_auth_user";
 
 const loadInitialState = (): Pick<AuthState, "accessToken" | "user"> => {
   try {
-    const token = localStorage.getItem(STORAGE_KEY);
-    const userJson = localStorage.getItem(USER_STORAGE_KEY);
+    // Clean up old localStorage data to prevent conflicts
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(USER_STORAGE_KEY);
+
+    const token = sessionStorage.getItem(STORAGE_KEY);
+    const userJson = sessionStorage.getItem(USER_STORAGE_KEY);
     const user = userJson ? JSON.parse(userJson) : null;
     return { accessToken: token, user };
-  } catch (error) {
+  } catch (_error) {
     return { accessToken: null, user: null };
   }
 };
@@ -41,7 +45,7 @@ export const useAuthStore = create<AuthStore>((set) => {
     isAuthenticated: !!(initialState.accessToken && initialState.user),
 
     setTokens: (accessToken: string, refreshToken: string) => {
-      localStorage.setItem(STORAGE_KEY, accessToken);
+      sessionStorage.setItem(STORAGE_KEY, accessToken);
       set({
         accessToken,
         refreshToken,
@@ -49,7 +53,7 @@ export const useAuthStore = create<AuthStore>((set) => {
     },
 
     setUser: (user: User) => {
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+      sessionStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
       set({
         user,
         isAuthenticated: true,
@@ -57,13 +61,13 @@ export const useAuthStore = create<AuthStore>((set) => {
     },
 
     updateAccessToken: (accessToken: string) => {
-      localStorage.setItem(STORAGE_KEY, accessToken);
+      sessionStorage.setItem(STORAGE_KEY, accessToken);
       set({ accessToken });
     },
 
     logout: () => {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(USER_STORAGE_KEY);
+      sessionStorage.removeItem(STORAGE_KEY);
+      sessionStorage.removeItem(USER_STORAGE_KEY);
       set({
         user: null,
         accessToken: null,
