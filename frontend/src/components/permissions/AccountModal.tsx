@@ -82,6 +82,7 @@ export const AccountModal = ({
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
+        autoComplete="off"
         initialValues={
           user
             ? {
@@ -127,7 +128,11 @@ export const AccountModal = ({
             { type: "email", message: "Please enter valid email" },
           ]}
         >
-          <Input placeholder="Enter email" type="email" />
+          <Input
+            placeholder="Enter email"
+            type="email"
+            autoComplete="new-email"
+          />
         </Form.Item>
 
         {/* Phone */}
@@ -163,7 +168,10 @@ export const AccountModal = ({
               { min: 8, message: "Password must be at least 8 characters" },
             ]}
           >
-            <Input.Password placeholder="Enter password (min 8 characters)" />
+            <Input.Password
+              placeholder="Enter password (min 8 characters)"
+              autoComplete="new-password"
+            />
           </Form.Item>
         )}
 
