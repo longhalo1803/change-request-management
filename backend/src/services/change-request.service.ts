@@ -5,6 +5,7 @@ import {
   ChangeRequestComment,
   ChangeRequestStatusHistory,
 } from "@/entities/change-request.entity";
+import { TaskStatus } from "@/entities/task-lookup.entity";
 import { AppDataSource } from "@/config/database";
 
 /**
@@ -52,13 +53,12 @@ export interface SearchCRInput {
   spaceId?: string;
   assignedTo?: string;
   parentId?: string;
-  sortBy?: "createdAt" | "priority" | "dueDate" | "title";
+  sortBy?: "createdAt" | "priority" | "status" | "dueDate" | "title";
   sortOrder?: "asc" | "desc";
 }
 
 export class ChangeRequestService {
   private crRepo: ChangeRequestRepository;
-  private statusRepo = AppDataSource.getRepository("TaskStatus");
 
   constructor() {
     this.crRepo = new ChangeRequestRepository();
@@ -75,28 +75,21 @@ export class ChangeRequestService {
    * Check if user can view this CR based on role and status
    */
   private canUserViewCR(cr: any, userId: string, userRole: string): boolean {
-    // Admin can see all
-    if (userRole === "admin") return true;
-
     // If CR is DRAFT, only creator and admin can view
-    if (cr.status?.name === "DRAFT" || cr.statusId?.name === "DRAFT") {
+    if (cr.status?.name === "DRAFT") {
+      if (userRole === "admin") return false; // Admin cannot view DRAFT
+      if (userRole === "pm") return false; // PM cannot view DRAFT
       return cr.createdBy === userId;
     }
 
-    // PM cannot see DRAFT, but can see all other statuses
-    if (userRole === "pm") {
-      return cr.status?.name !== "DRAFT";
-    }
+    // Admin can see all non-DRAFT
+    if (userRole === "admin") return true;
 
-    // Customer can see their own DRAFT + all non-DRAFT
-    if (userRole === "customer") {
-      const isDraft =
-        cr.status?.name === "DRAFT" || cr.statusId?.name === "DRAFT";
-      if (isDraft) {
-        return cr.createdBy === userId;
-      }
-      return true;
-    }
+    // PM can see all non-DRAFT
+    if (userRole === "pm") return true;
+
+    // Customer can see all non-DRAFT
+    if (userRole === "customer") return true;
 
     return false;
   }
@@ -146,22 +139,28 @@ export class ChangeRequestService {
     items: ChangeRequest[];
     total: number;
   }> {
-    // Get status ID for DRAFT to exclude
+    // Get status ID for DRAFT to exclude for PM and Admin
     let draftStatusId: string | undefined;
-    if (userRole === "pm") {
-      // PM cannot see DRAFT CRs
-      const draftStatus = await AppDataSource.getRepository(
-        "TaskStatus"
-      ).findOne({
-        where: { name: "DRAFT" },
-      });
+    let onlyUserDrafts: string | undefined;
+
+    if (userRole === "pm" || userRole === "admin") {
+      // PM and Admin cannot see DRAFT CRs
+      const draftStatus = await AppDataSource.getRepository(TaskStatus).findOne(
+        {
+          where: { name: "DRAFT" },
+        }
+      );
       draftStatusId = draftStatus?.id;
+    } else if (userRole === "customer") {
+      // Customer can only see their own DRAFTs, but can see all non-DRAFTs
+      onlyUserDrafts = userId;
     }
 
     // Map new field names to repository expected fields
     let sortBy: "created_at" | "priority" | "status" = "created_at";
     if (filters.sortBy === "createdAt") sortBy = "created_at";
     else if (filters.sortBy === "priority") sortBy = "priority";
+    else if (filters.sortBy === "status") sortBy = "status";
     else if (filters.sortBy === "dueDate" || filters.sortBy === "title")
       sortBy = "created_at"; // Fallback to created_at for unsupported fields
 
@@ -175,26 +174,13 @@ export class ChangeRequestService {
       priority: filters.priorityId,
       spaceId: filters.spaceId,
       assignedTo: filters.assignedTo,
-      excludeStatus:
-        draftStatusId && userRole === "pm" ? draftStatusId : undefined,
+      excludeStatus: draftStatusId,
+      onlyUserDrafts,
       sortBy,
       sortOrder,
-      skip: 0, // Load all
-      take: 10000, // Load all
+      skip: 0, // Should take skip from filters eventually
+      take: 10000, // Should take limit from filters eventually
     });
-
-    // For customer: additional filter - show own DRAFT + all non-DRAFT
-    if (userRole === "customer") {
-      result.data = result.data.filter((cr) => {
-        if (cr.status?.name === "DRAFT") {
-          return cr.createdBy === userId;
-        }
-        return true;
-      });
-
-      // Recalculate total for customer
-      result.total = result.data.length;
-    }
 
     return {
       items: result.data,
@@ -284,11 +270,9 @@ export class ChangeRequestService {
     }
 
     // Get DRAFT status ID
-    const draftStatus = await AppDataSource.getRepository("TaskStatus").findOne(
-      {
-        where: { name: "DRAFT" },
-      }
-    );
+    const draftStatus = await AppDataSource.getRepository(TaskStatus).findOne({
+      where: { name: "DRAFT" },
+    });
     if (!draftStatus) {
       throw new AppError("cr.status_not_found", 500);
     }
@@ -314,7 +298,7 @@ export class ChangeRequestService {
   }
 
   /**
-   * Update CR (CUSTOMER ONLY for DRAFT status)
+   * Update CR (CUSTOMER ONLY for DRAFT status, PM for management fields)
    */
   async updateCr(
     id: string,
@@ -322,60 +306,96 @@ export class ChangeRequestService {
     userId: string,
     userRole: string
   ): Promise<ChangeRequest> {
-    // Only CUSTOMER can edit CRs
-    if (userRole !== "customer") {
+    // Only CUSTOMER or PM can edit CRs
+    if (userRole !== "customer" && userRole !== "pm") {
       throw new AppError("cr.update_denied", 403);
     }
 
     // Verify CR exists and get current state
     const cr = await this.getCrById(id);
 
-    // Can only edit DRAFT CRs
-    if (cr.status?.name !== "DRAFT") {
-      throw new AppError("cr.cannot_edit_non_draft", 400);
-    }
-
-    // Can only edit own CRs
-    if (cr.createdBy !== userId) {
-      throw new AppError("cr.can_only_edit_own", 403);
-    }
-
     const updateData: Partial<ChangeRequest> = {};
-    if (input.title !== undefined) {
-      if (input.title.trim().length < 3) {
-        throw new AppError("cr.title_invalid", 400);
+
+    if (userRole === "customer") {
+      // Customer can only edit DRAFT CRs
+      if (cr.status?.name !== "DRAFT") {
+        throw new AppError("cr.cannot_edit_non_draft", 400);
       }
-      if (input.title.length > 255) {
-        throw new AppError("cr.title_too_long", 400);
+
+      // Customer can only edit own CRs
+      if (cr.createdBy !== userId) {
+        throw new AppError("cr.can_only_edit_own", 403);
       }
-      updateData.title = input.title;
+
+      if (input.title !== undefined) {
+        if (input.title.trim().length < 3) {
+          throw new AppError("cr.title_invalid", 400);
+        }
+        if (input.title.length > 255) {
+          throw new AppError("cr.title_too_long", 400);
+        }
+        updateData.title = input.title;
+      }
+
+      if (input.description !== undefined) {
+        updateData.description = input.description;
+      }
+
+      if (input.priorityId !== undefined) {
+        updateData.priorityId = input.priorityId;
+      }
+
+      if (input.worktypeId !== undefined) {
+        updateData.worktypeId = input.worktypeId;
+      }
+    } else if (userRole === "pm") {
+      // PM cannot edit DRAFT CRs
+      if (cr.status?.name === "DRAFT") {
+        throw new AppError("cr.pm_cannot_edit_draft", 403);
+      }
+
+      // PM specific fields
+      if (input.assignedTo !== undefined) {
+        updateData.assignedTo = input.assignedTo || null;
+      }
+
+      if (input.sprintId !== undefined) {
+        updateData.sprintId = input.sprintId || null;
+      }
+
+      if (input.estimatedHours !== undefined) {
+        updateData.estimatedHours = input.estimatedHours || null;
+      }
+
+      if (input.actualHours !== undefined) {
+        updateData.actualHours = input.actualHours || null;
+      }
+
+      if (input.dueDate !== undefined) {
+        updateData.dueDate = input.dueDate ? new Date(input.dueDate) : null;
+      }
+
+      // PMs can also update titles and descriptions if needed for refinement
+      if (input.title !== undefined) {
+        if (input.title.trim().length >= 3 && input.title.length <= 255) {
+          updateData.title = input.title;
+        }
+      }
+      if (input.description !== undefined) {
+        updateData.description = input.description;
+      }
+      if (input.priorityId !== undefined) {
+        updateData.priorityId = input.priorityId;
+      }
+      if (input.worktypeId !== undefined) {
+        updateData.worktypeId = input.worktypeId;
+      }
     }
 
-    if (input.description !== undefined) {
-      updateData.description = input.description;
+    if (Object.keys(updateData).length > 0) {
+      await this.crRepo.update(id, updateData);
     }
 
-    if (input.priorityId !== undefined) {
-      updateData.priorityId = input.priorityId;
-    }
-
-    if (input.worktypeId !== undefined) {
-      updateData.worktypeId = input.worktypeId;
-    }
-
-    if (input.sprintId !== undefined) {
-      updateData.sprintId = input.sprintId || null;
-    }
-
-    if (input.estimatedHours !== undefined) {
-      updateData.estimatedHours = input.estimatedHours || null;
-    }
-
-    if (input.dueDate !== undefined) {
-      updateData.dueDate = input.dueDate ? new Date(input.dueDate) : null;
-    }
-
-    await this.crRepo.update(id, updateData);
     return this.getCrById(id);
   }
 
@@ -427,7 +447,7 @@ export class ChangeRequestService {
 
     // Get SUBMITTED status
     const submittedStatus = await AppDataSource.getRepository(
-      "TaskStatus"
+      TaskStatus
     ).findOne({
       where: { name: "SUBMITTED" },
     });
@@ -562,7 +582,7 @@ export class ChangeRequestService {
     const cr = await this.getCrById(crId);
 
     // Get current status and new status
-    const statusRepo = AppDataSource.getRepository("TaskStatus");
+    const statusRepo = AppDataSource.getRepository(TaskStatus);
     const newStatus = await statusRepo.findOne({ where: { id: toStatusId } });
     if (!newStatus) {
       throw new AppError("cr.status_not_found", 404);

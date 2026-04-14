@@ -7,6 +7,7 @@ import {
   Index,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { User } from "./user.entity";
 
@@ -36,6 +37,7 @@ export class Project {
   ownerId: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: "owner_id" })
   owner: User;
 
   @Column({ name: "is_active", type: "boolean", default: true })
@@ -73,6 +75,7 @@ export class Space {
   projectId: string;
 
   @ManyToOne(() => Project, (project) => project.spaces)
+  @JoinColumn({ name: "project_id" })
   project: Project;
 
   @Column({ name: "is_active", type: "boolean", default: true })
@@ -107,12 +110,14 @@ export class SpaceAssignment {
   spaceId: string;
 
   @ManyToOne(() => Space, (space) => space.assignments)
+  @JoinColumn({ name: "space_id" })
   space: Space;
 
   @Column({ name: "user_id", type: "varchar" })
   userId: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: "user_id" })
   user: User;
 
   @Column({ name: "role", type: "varchar", length: 50 })
@@ -146,6 +151,7 @@ export class Sprint {
   spaceId: string;
 
   @ManyToOne(() => Space, (space) => space.sprints)
+  @JoinColumn({ name: "space_id" })
   space: Space;
 
   @Column({ name: "start_date", type: "date" })

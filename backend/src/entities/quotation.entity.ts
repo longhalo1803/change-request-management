@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   Index,
   ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { User } from "./user.entity";
 import { Project } from "./project.entity";
@@ -32,12 +33,14 @@ export class Quotation {
   projectId: string;
 
   @ManyToOne(() => Project, (project) => project.id)
+  @JoinColumn({ name: "project_id" })
   project: Project;
 
   @Column({ name: "quoted_by", type: "varchar" })
   quotedBy: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: "quoted_by" })
   quoter: User;
 
   @Column({ type: "decimal", precision: 12, scale: 2 })
@@ -72,6 +75,7 @@ export class Notification {
   userId: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: "user_id" })
   user: User;
 
   @Column({ type: "varchar", length: 255 })

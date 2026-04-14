@@ -36,9 +36,9 @@ export const CrKanbanBoard: React.FC<CrKanbanBoardProps> = ({
   const { t } = useTranslation("common");
 
   // Filter columns based on actor type
-  // PM actors don't see Draft columns (they can't see customer's draft CRs)
+  // PM and Admin actors don't see Draft columns
   const visibleColumns =
-    actorType === "pm"
+    actorType === "pm" || actorType === "admin"
       ? KANBAN_COLUMNS.filter((col) => col.status !== ChangeRequestStatus.DRAFT)
       : KANBAN_COLUMNS;
 

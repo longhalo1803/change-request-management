@@ -7,6 +7,7 @@ import {
   Index,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from "typeorm";
 import { User } from "./user.entity";
 import { Space } from "./project.entity";
@@ -39,51 +40,58 @@ export class ChangeRequest {
   spaceId: string;
 
   @ManyToOne(() => Space, (space) => space.id)
+  @JoinColumn({ name: "space_id" })
   space: Space;
 
   @Column({ name: "sprint_id", type: "varchar", nullable: true })
   sprintId: string | null;
 
   @ManyToOne(() => Sprint, (sprint) => sprint.id)
+  @JoinColumn({ name: "sprint_id" })
   sprint: Sprint | null;
 
   @Column({ name: "status_id", type: "varchar" })
   statusId: string;
 
   @ManyToOne(() => TaskStatus)
+  @JoinColumn({ name: "status_id" })
   status: TaskStatus;
 
   @Column({ name: "priority_id", type: "varchar" })
   priorityId: string;
 
   @ManyToOne(() => TaskPriority)
+  @JoinColumn({ name: "priority_id" })
   priority: TaskPriority;
 
   @Column({ name: "worktype_id", type: "varchar" })
   worktypeId: string;
 
   @ManyToOne(() => TaskWorktype)
+  @JoinColumn({ name: "worktype_id" })
   worktype: TaskWorktype;
 
   @Column({ name: "created_by", type: "varchar" })
   createdBy: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: "created_by" })
   creator: User;
 
   @Column({ name: "assigned_to", type: "varchar", nullable: true })
   assignedTo: string | null;
 
   @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: "assigned_to" })
   assignee: User | null;
 
   @Column({ name: "due_date", type: "date", nullable: true })
   dueDate: Date | null;
 
-  @Column({ type: "int", nullable: true })
+  @Column({ name: "estimated_hours", type: "int", nullable: true })
   estimatedHours: number | null;
 
-  @Column({ type: "int", nullable: true })
+  @Column({ name: "actual_hours", type: "int", nullable: true })
   actualHours: number | null;
 
   @CreateDateColumn({ name: "created_at" })
@@ -125,18 +133,21 @@ export class ChangeRequestStatusHistory {
   @ManyToOne(() => ChangeRequest, (cr) => cr.statusHistory, {
     onDelete: "CASCADE",
   })
+  @JoinColumn({ name: "change_request_id" })
   changeRequest: ChangeRequest;
 
   @Column({ name: "status_id", type: "varchar" })
   statusId: string;
 
   @ManyToOne(() => TaskStatus)
+  @JoinColumn({ name: "status_id" })
   status: TaskStatus;
 
   @Column({ name: "changed_by", type: "varchar" })
   changedBy: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: "changed_by" })
   changedByUser: User;
 
   @Column({ type: "text", nullable: true })
@@ -163,6 +174,7 @@ export class ChangeRequestAttachment {
   @ManyToOne(() => ChangeRequest, (cr) => cr.attachments, {
     onDelete: "CASCADE",
   })
+  @JoinColumn({ name: "change_request_id" })
   changeRequest: ChangeRequest;
 
   @Column({ name: "file_name", type: "varchar", length: 255 })
@@ -181,6 +193,7 @@ export class ChangeRequestAttachment {
   uploadedBy: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: "uploaded_by" })
   uploader: User;
 
   @CreateDateColumn({ name: "created_at" })
@@ -202,6 +215,7 @@ export class ChangeRequestComment {
   changeRequestId: string;
 
   @ManyToOne(() => ChangeRequest, (cr) => cr.comments, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "change_request_id" })
   changeRequest: ChangeRequest;
 
   @Column({ type: "text" })
@@ -211,6 +225,7 @@ export class ChangeRequestComment {
   commentedBy: string;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: "commented_by" })
   commenter: User;
 
   @CreateDateColumn({ name: "created_at" })

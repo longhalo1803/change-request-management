@@ -40,6 +40,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
   onApprove,
   onDelete,
   onSubmit,
+  actorType = "customer",
 }) => {
   const { t } = useTranslation("cr-list");
   if (!cr) return null;
@@ -269,28 +270,32 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-6 space-y-2">
-            {cr.statusId === ChangeRequestStatus.DRAFT && (
-              <>
-                <Button danger block onClick={onDelete}>
-                  Delete
-                </Button>
-                <Button type="primary" block onClick={onSubmit}>
-                  Submit
-                </Button>
-              </>
-            )}
-            {cr.statusId === ChangeRequestStatus.IN_DISCUSSION && (
-              <>
-                <Button danger block onClick={onReject}>
-                  {t("buttons.reject")}
-                </Button>
-                <Button type="primary" block onClick={onApprove}>
-                  {t("buttons.approve")}
-                </Button>
-              </>
-            )}
-          </div>
+          {actorType !== "admin" && (
+            <div className="mt-6 space-y-2">
+              {cr.statusId === ChangeRequestStatus.DRAFT &&
+                actorType === "customer" && (
+                  <>
+                    <Button danger block onClick={onDelete}>
+                      Delete
+                    </Button>
+                    <Button type="primary" block onClick={onSubmit}>
+                      Submit
+                    </Button>
+                  </>
+                )}
+              {cr.statusId === ChangeRequestStatus.IN_DISCUSSION &&
+                (actorType === "pm" || actorType === "customer") && (
+                  <>
+                    <Button danger block onClick={onReject}>
+                      {t("buttons.reject")}
+                    </Button>
+                    <Button type="primary" block onClick={onApprove}>
+                      {t("buttons.approve")}
+                    </Button>
+                  </>
+                )}
+            </div>
+          )}
         </div>
       </div>
     </Modal>

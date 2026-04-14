@@ -85,23 +85,20 @@ export class ChangeRequestController {
     try {
       const user = this.getUserFromRequest(req);
 
-      const filters: SearchCRInput = {
-        search: req.query.search as string,
-        id: req.query.id as string,
-        name: req.query.name as string,
-        statusId: req.query.statusId as string,
-        priorityId: req.query.priorityId as string,
-        spaceId: req.query.spaceId as string,
-        assignedTo: req.query.assignedTo as string,
-        parentId: req.query.parentId as string,
-        sortBy:
-          (req.query.sortBy as
-            | "createdAt"
-            | "priority"
-            | "dueDate"
-            | "title") || "createdAt",
-        sortOrder: (req.query.sortOrder as "asc" | "desc") || "desc",
-      };
+      const getQueryString = (param: any): string | undefined => { return !param ? undefined : Array.isArray(param) ? (param[0] as string) : (param as string); };
+
+        const filters: SearchCRInput = {
+          search: getQueryString(req.query.search),
+          id: getQueryString(req.query.id),
+          name: getQueryString(req.query.name),
+          statusId: getQueryString(req.query.statusId),
+          priorityId: getQueryString(req.query.priorityId),
+          spaceId: getQueryString(req.query.spaceId),
+          assignedTo: getQueryString(req.query.assignedTo),
+          parentId: getQueryString(req.query.parentId),
+          sortBy: (getQueryString(req.query.sortBy) as 'createdAt' | 'priority' | 'status' | 'dueDate' | 'title') || 'createdAt',
+          sortOrder: (getQueryString(req.query.sortOrder) as 'asc' | 'desc') || 'desc',
+        };
 
       const result = await this.crService.searchCRs(
         filters,
@@ -111,7 +108,7 @@ export class ChangeRequestController {
 
       this.sendSuccess(res, result, "Change requests retrieved successfully");
     } catch (error) {
-      this.sendError(res, error as Error);
+      console.error(error); this.sendError(res, error as Error);
     }
   }
 
@@ -353,7 +350,7 @@ export class ChangeRequestController {
         "Change requests for space retrieved successfully"
       );
     } catch (error) {
-      this.sendError(res, error as Error);
+      console.error(error); this.sendError(res, error as Error);
     }
   }
 
@@ -373,7 +370,7 @@ export class ChangeRequestController {
         "Assigned change requests retrieved successfully"
       );
     } catch (error) {
-      this.sendError(res, error as Error);
+      console.error(error); this.sendError(res, error as Error);
     }
   }
 

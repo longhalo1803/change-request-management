@@ -51,8 +51,12 @@ export class ChangeRequestRepository {
         "creator",
         "assignee",
         "comments",
+        "comments.commenter",
         "attachments",
+        "attachments.uploader",
         "statusHistory",
+        "statusHistory.changedByUser",
+        "statusHistory.status",
       ],
     });
   }
@@ -270,6 +274,7 @@ export class ChangeRequestRepository {
     assignedTo?: string;
     createdBy?: string;
     excludeStatus?: string; // For excluding DRAFT status
+    onlyUserDrafts?: string; // userId: If set, only return DRAFTs if createdBy matches this user
     sortBy?: "created_at" | "priority" | "status";
     sortOrder?: "ASC" | "DESC";
     skip?: number;
@@ -290,7 +295,7 @@ export class ChangeRequestRepository {
     // Search by crKey, title, or creator name
     if (filters.search) {
       query.andWhere(
-        `(cr.crKey LIKE :search OR cr.title LIKE :search OR creator.full_name LIKE :search)`,
+        `(cr.crKey LIKE :search OR cr.title LIKE :search OR creator.fullName LIKE :search)`,
         { search: `%${filters.search}%` }
       );
     }
@@ -300,8 +305,14 @@ export class ChangeRequestRepository {
       query.andWhere("status.id = :statusId", { statusId: filters.status });
     }
 
-    // Exclude status (for visibility)
-    if (filters.excludeStatus) {
+    // Role-based visibility
+    if (filters.onlyUserDrafts) {
+      // Customer: Only see DRAFTs if they created them. For non-DRAFTs, anyone can see them.
+      query.andWhere(
+        `(status.name != 'DRAFT' OR (status.name = 'DRAFT' AND cr.createdBy = :userId))`,
+        { userId: filters.onlyUserDrafts }
+      );
+    } else if (filters.excludeStatus) {
       query.andWhere("status.id != :excludeStatusId", {
         excludeStatusId: filters.excludeStatus,
       });
