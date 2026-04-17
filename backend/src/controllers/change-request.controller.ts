@@ -4,6 +4,10 @@ import {
   SearchCRInput,
 } from "@/services/change-request.service";
 import { AppError } from "@/utils/app-error";
+import { createChangeRequestSchema } from "@/validators/change-request.validator";
+import { ZodError } from "zod";
+import { logger } from "@/utils/logger";
+import { config } from "@/config/env";
 
 /**
  * ChangeRequest Controller
@@ -26,7 +30,7 @@ export class ChangeRequestController {
    * Helper to extract user info from request
    */
   private getUserFromRequest(req: Request) {
-    const user = (req as any).user;
+    const user = req.user;
     if (!user || !user.id) {
       throw new AppError("auth.unauthorized", 401);
     }
@@ -85,20 +89,33 @@ export class ChangeRequestController {
     try {
       const user = this.getUserFromRequest(req);
 
-      const getQueryString = (param: any): string | undefined => { return !param ? undefined : Array.isArray(param) ? (param[0] as string) : (param as string); };
+      const getQueryString = (param: any): string | undefined => {
+        return !param
+          ? undefined
+          : Array.isArray(param)
+            ? (param[0] as string)
+            : (param as string);
+      };
 
-        const filters: SearchCRInput = {
-          search: getQueryString(req.query.search),
-          id: getQueryString(req.query.id),
-          name: getQueryString(req.query.name),
-          statusId: getQueryString(req.query.statusId),
-          priorityId: getQueryString(req.query.priorityId),
-          spaceId: getQueryString(req.query.spaceId),
-          assignedTo: getQueryString(req.query.assignedTo),
-          parentId: getQueryString(req.query.parentId),
-          sortBy: (getQueryString(req.query.sortBy) as 'createdAt' | 'priority' | 'status' | 'dueDate' | 'title') || 'createdAt',
-          sortOrder: (getQueryString(req.query.sortOrder) as 'asc' | 'desc') || 'desc',
-        };
+      const filters: SearchCRInput = {
+        search: getQueryString(req.query.search),
+        id: getQueryString(req.query.id),
+        name: getQueryString(req.query.name),
+        statusId: getQueryString(req.query.statusId),
+        priorityId: getQueryString(req.query.priorityId),
+        spaceId: getQueryString(req.query.spaceId),
+        assignedTo: getQueryString(req.query.assignedTo),
+        parentId: getQueryString(req.query.parentId),
+        sortBy:
+          (getQueryString(req.query.sortBy) as
+            | "createdAt"
+            | "priority"
+            | "status"
+            | "dueDate"
+            | "title") || "createdAt",
+        sortOrder:
+          (getQueryString(req.query.sortOrder) as "asc" | "desc") || "desc",
+      };
 
       const result = await this.crService.searchCRs(
         filters,
@@ -108,7 +125,8 @@ export class ChangeRequestController {
 
       this.sendSuccess(res, result, "Change requests retrieved successfully");
     } catch (error) {
-      console.error(error); this.sendError(res, error as Error);
+      logger.error(error);
+      this.sendError(res, error as Error);
     }
   }
 
@@ -134,47 +152,93 @@ export class ChangeRequestController {
    * POST /api/change-requests
    * Create new CR (CUSTOMER ONLY)
    * Status: Always DRAFT
+   * Note: Attachments should be uploaded separately via POST /:id/attachments
+   * BUG FIX #6: Use Zod validator for input validation
    */
   async createChangeRequest(req: Request, res: Response): Promise<void> {
     try {
       const user = this.getUserFromRequest(req);
-      const {
-        title,
-        description,
-        spaceId,
-        priorityId,
-        worktypeId,
-        sprintId,
-        estimatedHours,
-        dueDate,
-      } = req.body;
 
-      // Validate required fields
-      if (!title || !spaceId || !priorityId || !worktypeId) {
-        this.sendError(
-          res,
-          new AppError("cr.missing_required_fields", 400),
-          400
-        );
-        return;
-      }
+      // BUG FIX #6: Use Zod validator
+      const validatedData = createChangeRequestSchema.parse(req.body);
 
       const cr = await this.crService.createCr(
         {
-          title,
-          description,
-          spaceId,
-          priorityId,
-          worktypeId,
+          ...validatedData,
           createdBy: user.id,
-          sprintId,
-          estimatedHours,
-          dueDate,
         },
         user.role
       );
 
       this.sendSuccess(res, cr, "Change request created successfully", 201);
+    } catch (error) {
+      // Handle Zod validation errors
+      if (error instanceof ZodError) {
+        const firstError = error.errors[0];
+        this.sendError(
+          res,
+          new AppError(firstError.message || "validation.failed", 400),
+          400
+        );
+        return;
+      }
+
+      const appError = error as AppError;
+      this.sendError(res, appError, appError.statusCode || 500);
+    }
+  }
+
+  /**
+   * POST /api/change-requests/:id/attachments
+   * Upload attachments to existing CR (CUSTOMER ONLY, DRAFT status only)
+   */
+  async uploadAttachments(req: Request, res: Response): Promise<void> {
+    try {
+      const user = this.getUserFromRequest(req);
+      const { id } = req.params;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const files = req.files as any[] | undefined;
+
+      if (!files || files.length === 0) {
+        this.sendError(res, new AppError("cr.no_files_provided", 400), 400);
+        return;
+      }
+
+      // Validate file count
+      const MAX_FILES = 5;
+      if (files.length > MAX_FILES) {
+        this.sendError(res, new AppError("cr.too_many_files", 400), 400);
+        return;
+      }
+
+      // Validate each file
+      const { maxFileSize, allowedTypes } = config.upload;
+      const validTypes = allowedTypes.filter((t: string) => t.trim().length > 0);
+      
+      for (const file of files) {
+        if (file.size > maxFileSize) {
+          this.sendError(res, new AppError("cr.file_too_large", 400), 400);
+          return;
+        }
+        if (validTypes.length > 0 && !validTypes.includes(file.mimetype)) {
+          this.sendError(res, new AppError("cr.file_type_not_allowed", 400), 400);
+          return;
+        }
+      }
+
+      const attachments = await this.crService.uploadAttachments(
+        id,
+        files,
+        user.id,
+        user.role
+      );
+
+      this.sendSuccess(
+        res,
+        attachments,
+        "Attachments uploaded successfully",
+        201
+      );
     } catch (error) {
       const appError = error as AppError;
       this.sendError(res, appError, appError.statusCode || 500);
@@ -350,7 +414,8 @@ export class ChangeRequestController {
         "Change requests for space retrieved successfully"
       );
     } catch (error) {
-      console.error(error); this.sendError(res, error as Error);
+      logger.error(error);
+      this.sendError(res, error as Error);
     }
   }
 
@@ -370,7 +435,8 @@ export class ChangeRequestController {
         "Assigned change requests retrieved successfully"
       );
     } catch (error) {
-      console.error(error); this.sendError(res, error as Error);
+      logger.error(error);
+      this.sendError(res, error as Error);
     }
   }
 
@@ -383,7 +449,8 @@ export class ChangeRequestController {
       const user = this.getUserFromRequest(req);
       const { id } = req.params;
       const { content } = req.body;
-      const files = (req as any).files as Express.Multer.File[] | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const files = req.files as any[] | undefined;
 
       if (!content) {
         this.sendError(

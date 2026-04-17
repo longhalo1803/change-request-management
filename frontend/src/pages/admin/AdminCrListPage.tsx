@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Empty, Spin } from "antd";
 import { CrKanbanBoard, CrFilter, CrDetailModal } from "@/components";
-import { ChangeRequest } from "@/lib/types";
+import { ChangeRequest, ChangeRequestStatus } from "@/lib/types";
 import { useChangeRequests } from "@/hooks";
 
 import { useTranslation } from "react-i18next";
@@ -22,9 +22,18 @@ export const AdminCrListPage = () => {
   const { t } = useTranslation("admin");
   const [selectedCr, setSelectedCr] = useState<ChangeRequest | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    ChangeRequestStatus | undefined
+  >();
+  const [priorityFilter, setPriorityFilter] = useState<string | undefined>();
 
   // Get all CRs
-  const { data: crResponse, isLoading } = useChangeRequests({});
+  const { data: crResponse, isLoading } = useChangeRequests({
+    search: searchText,
+    statusId: statusFilter,
+    priorityId: priorityFilter,
+  });
   const crData = crResponse?.items || [];
 
   const handleCrClick = (cr: ChangeRequest) => {
@@ -35,6 +44,12 @@ export const AdminCrListPage = () => {
   const handleDetailClose = () => {
     setDetailModalOpen(false);
     setSelectedCr(null);
+  };
+
+  const handleClearFilters = () => {
+    setSearchText("");
+    setStatusFilter(undefined);
+    setPriorityFilter(undefined);
   };
 
   return (
@@ -56,7 +71,16 @@ export const AdminCrListPage = () => {
         <>
           {/* Filter Bar */}
           <div className="mb-6">
-            <CrFilter actorType="admin" />
+            <CrFilter
+              searchText={searchText}
+              status={statusFilter}
+              priority={priorityFilter}
+              onSearchChange={setSearchText}
+              onStatusChange={setStatusFilter}
+              onPriorityChange={setPriorityFilter}
+              onClearFilters={handleClearFilters}
+              actorType="admin"
+            />
           </div>
 
           {/* Kanban Board */}

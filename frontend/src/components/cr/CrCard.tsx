@@ -17,11 +17,7 @@ interface CrCardProps {
   actorType?: ActorType;
 }
 
-export const CrCard: React.FC<CrCardProps> = ({
-  cr,
-  onClick,
-  actorType = "customer",
-}) => {
+export const CrCard: React.FC<CrCardProps> = ({ cr, onClick }) => {
   const priorityName = getCrPriority(cr);
   const creatorInfo = getCreatorInfo(cr);
   const creatorName = getUserDisplayName(creatorInfo);
@@ -62,13 +58,6 @@ export const CrCard: React.FC<CrCardProps> = ({
         </Avatar>
         <span className="text-xs text-gray-600">{creatorName}</span>
       </div>
-
-      {/* Role-Specific Indicators */}
-      {actorType === "pm" && (
-        <div className="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-500">
-          Status: {cr.status?.name || cr.statusId}
-        </div>
-      )}
     </div>
   );
 };

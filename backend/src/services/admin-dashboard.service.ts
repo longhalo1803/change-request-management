@@ -64,22 +64,46 @@ export class AdminDashboardService {
   }
 
   /**
+   * Get top customers
+   */
+  async getTopCustomers(limit: number = 5): Promise<any> {
+    return this.adminRepo.getTopCustomers(limit);
+  }
+
+  /**
+   * Get volume trends
+   */
+  async getVolumeTrends(): Promise<any> {
+    return this.adminRepo.getVolumeTrends();
+  }
+
+  /**
    * Get comprehensive admin stats
    */
   async getComprehensiveStats(): Promise<any> {
-    const [overview, recentActivity, topAssignees, overdueCRs] =
-      await Promise.all([
-        this.getDashboardOverview(),
-        this.getRecentActivity(10),
-        this.getTopAssignees(5),
-        this.getOverdueCRs(),
-      ]);
+    const [
+      overview,
+      recentActivity,
+      topAssignees,
+      overdueCRs,
+      topCustomers,
+      volumeTrends,
+    ] = await Promise.all([
+      this.getDashboardOverview(),
+      this.getRecentActivity(10),
+      this.getTopAssignees(5),
+      this.getOverdueCRs(),
+      this.getTopCustomers(5),
+      this.getVolumeTrends(),
+    ]);
 
     return {
       overview,
       recentActivity,
       topAssignees,
       overdueCRs,
+      topCustomers,
+      volumeTrends,
       timestamp: new Date().toISOString(),
     };
   }

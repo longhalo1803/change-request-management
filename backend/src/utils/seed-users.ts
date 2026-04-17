@@ -1,13 +1,14 @@
 import { AppDataSource } from "@/config/database";
 import { User, UserRole } from "@/entities/user.entity";
 import { PasswordUtil } from "@/utils/password";
+import { logger } from "@/utils/logger";
 
 async function seedUsers() {
   try {
     // Initialize database connection
-    console.log("Connecting to the database...");
+    logger.info("Connecting to the database...");
     await AppDataSource.initialize();
-    console.log("Database connection initialized.");
+    logger.info("Database connection initialized.");
 
     const userRepo = AppDataSource.getRepository(User);
 
@@ -26,7 +27,7 @@ async function seedUsers() {
         role: UserRole.PM,
       },
       {
-        email: "customer@example.com",
+        email: "customer@solashi.com",
         password: "Customer@123",
         fullName: "Demo Customer",
         role: UserRole.CUSTOMER,
@@ -46,7 +47,9 @@ async function seedUsers() {
         existingUser.role = userData.role;
         existingUser.isActive = true;
         await userRepo.save(existingUser);
-        console.log(`Updated existing user: ${userData.email}`);
+        if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
+          logger.debug(`Updated existing user: ${userData.email}`);
+        }
       } else {
         const newUser = userRepo.create({
           ...userData,
@@ -54,7 +57,9 @@ async function seedUsers() {
           isActive: true,
         });
         await userRepo.save(newUser);
-        console.log(`Created new user: ${userData.email}`);
+        if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
+          logger.debug(`Created new user: ${userData.email}`);
+        }
       }
     }
 
@@ -67,7 +72,7 @@ async function seedUsers() {
       oldAdmin.email = "old_admin_deprecated@example.com";
       oldAdmin.isActive = false;
       await userRepo.save(oldAdmin);
-      console.log("Deactivated old admin@example.com");
+      logger.info("Deactivated old admin@example.com");
     }
 
     const oldPm = await userRepo.findOne({
@@ -77,12 +82,22 @@ async function seedUsers() {
       oldPm.email = "old_pm_deprecated@example.com";
       oldPm.isActive = false;
       await userRepo.save(oldPm);
-      console.log("Deactivated old pm@example.com");
+      logger.info("Deactivated old pm@example.com");
     }
 
-    console.log("Seed completed successfully!");
+    const oldCustomer = await userRepo.findOne({
+      where: { email: "customer@example.com" },
+    });
+    if (oldCustomer) {
+      oldCustomer.email = "old_customer_deprecated@example.com";
+      oldCustomer.isActive = false;
+      await userRepo.save(oldCustomer);
+      logger.info("Deactivated old customer@example.com");
+    }
+
+    logger.info("Seed completed successfully!");
   } catch (error) {
-    console.error("Error seeding users:", error);
+    logger.error("Error seeding users:", error);
   } finally {
     if (AppDataSource.isInitialized) {
       await AppDataSource.destroy();

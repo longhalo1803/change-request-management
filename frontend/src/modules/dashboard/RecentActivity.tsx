@@ -1,9 +1,15 @@
-import { Card, Button, Avatar, Tag } from "antd";
+import { Card, Button, Avatar, Tag, Empty } from "antd";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export interface Activity {
   id: string;
-  type: "created" | "commented" | "status_change";
+  type:
+    | "cr_created"
+    | "comment"
+    | "status_change"
+    | "attachment"
+    | "created"
+    | "commented";
   user: {
     name: string;
     avatar?: string;
@@ -29,7 +35,6 @@ interface RecentActivityProps {
 
 export const RecentActivity: React.FC<RecentActivityProps> = ({
   activities,
-  onMarkAllRead,
   onLoadMore,
 }) => {
   const { t } = useTranslation("dashboard");
@@ -39,10 +44,11 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
 
     switch (type) {
       case "created":
+      case "cr_created":
         return (
           <>
             <span className="font-semibold">{user.name}</span>{" "}
-            {t("recent_activity.created")}{" "}
+            {t("recent_activity.created", { defaultValue: "vừa tạo yêu cầu" })}{" "}
             <a
               href={`/change-requests/${crId}`}
               className="text-blue-600 hover:underline"
@@ -52,10 +58,28 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
           </>
         );
       case "commented":
+      case "comment":
         return (
           <>
             <span className="font-semibold">{user.name}</span>{" "}
-            {t("recent_activity.commented_on")}{" "}
+            {t("recent_activity.commented_on", {
+              defaultValue: "vừa thêm bình luận vào",
+            })}{" "}
+            <a
+              href={`/change-requests/${crId}`}
+              className="text-blue-600 hover:underline"
+            >
+              [{crId}: {crTitle}]
+            </a>
+          </>
+        );
+      case "attachment":
+        return (
+          <>
+            <span className="font-semibold">{user.name}</span>{" "}
+            {t("recent_activity.attached_to", {
+              defaultValue: "vừa đính kèm tệp vào",
+            })}{" "}
             <a
               href={`/change-requests/${crId}`}
               className="text-blue-600 hover:underline"
@@ -68,7 +92,9 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
         return (
           <>
             <span className="font-semibold">{user.name}</span>{" "}
-            {t("recent_activity.updated_status")}{" "}
+            {t("recent_activity.updated_status", {
+              defaultValue: "vừa cập nhật trạng thái",
+            })}{" "}
             <a
               href={`/change-requests/${crId}`}
               className="text-blue-600 hover:underline"
@@ -79,15 +105,32 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
             <Tag color="green">{status}</Tag>
           </>
         );
+      default:
+        return (
+          <>
+            <span className="font-semibold">{user.name}</span> có hoạt động mới
+            trên
+            <a
+              href={`/change-requests/${crId}`}
+              className="text-blue-600 hover:underline"
+            >
+              [{crId}: {crTitle}]
+            </a>
+          </>
+        );
     }
   };
 
   const getStatusTagColor = (type: Activity["type"]) => {
     switch (type) {
       case "created":
+      case "cr_created":
         return "blue";
       case "commented":
+      case "comment":
         return "purple";
+      case "attachment":
+        return "orange";
       case "status_change":
         return "green";
       default:
@@ -98,13 +141,17 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   const getStatusTagLabel = (type: Activity["type"]) => {
     switch (type) {
       case "created":
-        return "SUBMITTED";
+      case "cr_created":
+        return "NEW CR";
       case "commented":
-        return "IN DISCUSSION";
+      case "comment":
+        return "COMMENT";
+      case "attachment":
+        return "ATTACHMENT";
       case "status_change":
-        return "STATUS_CHANGE";
+        return "STATUS UPDATE";
       default:
-        return "";
+        return "ACTIVITY";
     }
   };
 
@@ -113,59 +160,69 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
       title={
         <div className="flex items-center justify-between">
           <span className="text-lg font-semibold">
-            {t("recent_activity.title")}
+            {t("recent_activity.title", { defaultValue: "Hoạt động gần đây" })}
           </span>
-          <Button type="link" onClick={onMarkAllRead}>
-            {t("recent_activity.mark_all_read")}
-          </Button>
         </div>
       }
       className="h-full"
     >
-      <div className="space-y-6">
-        {activities.map((group) => (
-          <div key={group.date}>
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-              {group.label}
-            </div>
-
-            <div className="space-y-4">
-              {group.activities.map((activity) => (
-                <div key={activity.id} className="flex gap-3">
-                  <Avatar
-                    size={40}
-                    src={activity.user.avatar}
-                    className="flex-shrink-0"
-                  >
-                    {activity.user.name.charAt(0)}
-                  </Avatar>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-gray-700 mb-1">
-                      {getActivityText(activity)}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Tag
-                        color={getStatusTagColor(activity.type)}
-                        className="text-xs"
-                      >
-                        {getStatusTagLabel(activity.type)}
-                      </Tag>
-                      <span className="text-xs text-gray-400">
-                        {activity.timeAgo}
-                      </span>
-                    </div>
-                  </div>
+      {!activities || activities.length === 0 ? (
+        <Empty
+          description={t("recent_activity.no_data", {
+            defaultValue: "Không có hoạt động nào gần đây",
+          })}
+          className="my-10"
+        />
+      ) : (
+        <>
+          <div className="space-y-6">
+            {activities.map((group) => (
+              <div key={group.date}>
+                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
+                  {group.label}
                 </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
 
-      <Button type="text" onClick={onLoadMore} className="w-full mt-6">
-        {t("recent_activity.load_more")}
-      </Button>
+                <div className="space-y-4">
+                  {group.activities.map((activity) => (
+                    <div key={activity.id} className="flex gap-3">
+                      <Avatar
+                        size={40}
+                        src={activity.user.avatar}
+                        className="flex-shrink-0"
+                      >
+                        {activity.user.name.charAt(0).toUpperCase()}
+                      </Avatar>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-gray-700 mb-1">
+                          {getActivityText(activity)}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Tag
+                            color={getStatusTagColor(activity.type)}
+                            className="text-xs"
+                          >
+                            {getStatusTagLabel(activity.type)}
+                          </Tag>
+                          <span className="text-xs text-gray-400">
+                            {activity.timeAgo}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {onLoadMore && (
+            <Button type="text" onClick={onLoadMore} className="w-full mt-6">
+              {t("recent_activity.load_more", { defaultValue: "Tải thêm" })}
+            </Button>
+          )}
+        </>
+      )}
     </Card>
   );
 };

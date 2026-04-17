@@ -4,7 +4,6 @@ import {
   type SearchChangeRequestResponse,
   type ChangeRequest,
   type SearchChangeRequestInput,
-  type CreateChangeRequestInput,
   type UpdateChangeRequestInput,
   type StatusTransitionInput,
 } from "@/services";
@@ -45,8 +44,7 @@ export const useCreateChangeRequest = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateChangeRequestInput) =>
-      changeRequestService.create(input),
+    mutationFn: (input: FormData) => changeRequestService.create(input),
     onSuccess: (data) => {
       // Invalidate lists
       queryClient.invalidateQueries({

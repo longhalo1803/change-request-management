@@ -10,7 +10,6 @@ import { ChangeRequest } from "@/lib/types";
 import { useChangeRequests } from "@/hooks";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getCrPriority } from "@/lib/helpers/cr.helpers";
-import type { FilterOptions } from "@/components/cr/CrFilterBar";
 
 /**
  * Customer CR List Page
@@ -25,10 +24,11 @@ import type { FilterOptions } from "@/components/cr/CrFilterBar";
 const CrListPage = () => {
   const { t } = useTranslation("cr-list");
   const [searchText, setSearchText] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | undefined>();
+  const [priorityFilter, setPriorityFilter] = useState<string | undefined>();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedCr, setSelectedCr] = useState<ChangeRequest | null>(null);
-  const [activeFilters, setActiveFilters] = useState<FilterOptions>({});
 
   // Get all CRs for the current user (customer)
   const { data: crResponse, isLoading } = useChangeRequests({});
@@ -38,15 +38,20 @@ const CrListPage = () => {
   const filteredCRs = crData.filter((cr: ChangeRequest) => {
     const matchesSearch =
       !searchText ||
-      cr.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      cr.crKey?.toLowerCase().includes(searchText.toLowerCase()) ||
+      cr.title?.toLowerCase().includes(searchText.toLowerCase()) ||
       cr.description?.toLowerCase().includes(searchText.toLowerCase());
 
     const matchesPriorities =
-      !activeFilters.priorities ||
-      activeFilters.priorities.length === 0 ||
-      activeFilters.priorities.includes(getCrPriority(cr));
+      !priorityFilter ||
+      getCrPriority(cr).toLowerCase() === priorityFilter.toLowerCase();
 
-    return matchesSearch && matchesPriorities;
+    const matchesStatus =
+      !statusFilter ||
+      cr.statusId === statusFilter ||
+      cr.status?.name === statusFilter;
+
+    return matchesSearch && matchesPriorities && matchesStatus;
   });
 
   const handleCreateClick = () => {
@@ -73,8 +78,9 @@ const CrListPage = () => {
   };
 
   const handleClearFilters = () => {
-    setActiveFilters({});
     setSearchText("");
+    setStatusFilter(undefined);
+    setPriorityFilter(undefined);
   };
 
   return (
@@ -97,7 +103,12 @@ const CrListPage = () => {
           {/* Filter and Search */}
           <div className="mb-6">
             <CrFilter
+              searchText={searchText}
+              status={statusFilter as any}
+              priority={priorityFilter}
               onSearchChange={setSearchText}
+              onStatusChange={setStatusFilter}
+              onPriorityChange={setPriorityFilter}
               onClearFilters={handleClearFilters}
               onCreateClick={handleCreateClick}
               actorType="customer"

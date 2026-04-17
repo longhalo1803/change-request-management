@@ -73,8 +73,19 @@ router.get("/:id", (req, res) => controller.getChangeRequest(req, res));
  * POST /api/change-requests
  * Create new CR (CUSTOMER ONLY)
  * Status: Always DRAFT
+ * Note: Create CR first, then upload attachments separately
  */
 router.post("/", (req, res) => controller.createChangeRequest(req, res));
+
+/**
+ * POST /api/change-requests/:id/attachments
+ * Upload attachments to existing CR (CUSTOMER ONLY, DRAFT status only)
+ */
+router.post(
+  "/:id/attachments",
+  uploadFiles.array("attachments", 5),
+  (req, res) => controller.uploadAttachments(req, res)
+);
 
 /**
  * PUT /api/change-requests/:id

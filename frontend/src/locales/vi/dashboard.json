@@ -22,9 +22,10 @@
       "draft": "BẢN NHÁP",
       "in_discussion": "ĐANG THẢO LUẬN",
       "approved": "ĐÃ PHÊ DUYỆT",
-      "rejected": "BỊ TỪ CHỐI / CHẶN",
-      "ongoing": "ĐANG THỰC HIỆN",
-      "closed": "ĐÃ ĐÓNG"
+      "rejected": "BỊ TỪ CHỐI",
+      "on_going": "ĐANG THỰC HIỆN",
+      "closed": "ĐÃ ĐÓNG",
+      "submitted": "ĐÃ GỬI"
     }
   },
   "recent_activity": {

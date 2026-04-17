@@ -45,4 +45,15 @@ export const queryKeys = {
     spaceDetail: (id: string) =>
       [...queryKeys.projects.spaces(), "detail", id] as const,
   },
+
+  // Dashboard Keys
+  dashboard: {
+    all: ["dashboard"] as const,
+    stats: (filters?: any) =>
+      [...queryKeys.dashboard.all, "stats", filters] as const,
+    statusOverview: (filters?: any) =>
+      [...queryKeys.dashboard.all, "status-overview", filters] as const,
+    recentActivities: (filters?: any) =>
+      [...queryKeys.dashboard.all, "recent-activities", filters] as const,
+  },
 };

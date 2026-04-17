@@ -24,7 +24,7 @@ export class ProjectController {
    * Helper to extract user info from request
    */
   private getUserFromRequest(req: Request) {
-    const user = (req as any).user;
+    const user = req.user;
     if (!user || !user.id) {
       throw new AppError("auth.unauthorized", 401);
     }

@@ -1,13 +1,17 @@
 import axiosInstance from "@/lib/axios";
 import type { ApiResponse } from "@/lib/types";
-import type { DashboardStats } from "@/lib/types/admin.types";
+import type {
+  DashboardStats,
+  CustomerData,
+  MonthlyVolumeTrend,
+} from "@/lib/types/admin.types";
 
 export const adminService = {
-  async fetchDashboardStats(filters: {
+  async getComprehensiveStats(filters: {
     dateRange: string;
     customer: string;
     pm: string;
-  }): Promise<DashboardStats> {
+  }): Promise<Omit<DashboardStats, "top5Customers" | "crVolumeTrends">> {
     const response = await axiosInstance.get<ApiResponse<any>>(
       "/admin/dashboard/stats",
       { params: filters }
@@ -60,18 +64,6 @@ export const adminService = {
         pm: parseInt(pmCount),
         admin: parseInt(adminCount),
       },
-      top5Customers: [
-        { name: "Acme Corp", crCount: 15 },
-        { name: "Globex", crCount: 10 },
-        { name: "Initech", crCount: 8 },
-        { name: "Umbrella", crCount: 5 },
-        { name: "Massive Dynamic", crCount: 3 },
-      ],
-      crVolumeTrends: [
-        { month: "Jan", critical: 2, high: 5, medium: 10, low: 15, total: 32 },
-        { month: "Feb", critical: 1, high: 3, medium: 12, low: 18, total: 34 },
-        { month: "Mar", critical: 3, high: 6, medium: 15, low: 20, total: 44 },
-      ],
       growthMetrics: {
         comparison: "vs last month",
         percentage: 12,
@@ -85,6 +77,30 @@ export const adminService = {
         ratio: "92/100",
       },
     };
+  },
+
+  async getTopCustomers(filters: {
+    dateRange: string;
+    customer: string;
+    pm: string;
+  }): Promise<CustomerData[]> {
+    const response = await axiosInstance.get<ApiResponse<CustomerData[]>>(
+      "/admin/dashboard/top-customers",
+      { params: filters }
+    );
+    return response.data.data;
+  },
+
+  async getVolumeTrends(filters: {
+    dateRange: string;
+    customer: string;
+    pm: string;
+  }): Promise<MonthlyVolumeTrend[]> {
+    const response = await axiosInstance.get<ApiResponse<MonthlyVolumeTrend[]>>(
+      "/admin/dashboard/volume-trends",
+      { params: filters }
+    );
+    return response.data.data;
   },
 
   async exportDashboardAsPDF(): Promise<Blob> {

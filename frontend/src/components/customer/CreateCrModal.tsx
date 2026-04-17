@@ -12,6 +12,7 @@ import { CloudUploadOutlined, CloseOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import type { UploadFile } from "antd/es/upload/interface";
 import { useTranslation } from "react-i18next";
+import { useCreateChangeRequest } from "@/hooks/changeRequest/useChangeRequest";
 
 interface CreateCrModalProps {
   open: boolean;
@@ -31,11 +32,28 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [summaryLength, setSummaryLength] = useState(0);
+  const { mutateAsync: createCr, isPending: isLoading } =
+    useCreateChangeRequest();
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      console.log("Form values:", values);
+      const formData = new FormData();
+      formData.append("spaceId", values.project);
+      formData.append("worktypeId", values.issueType);
+      formData.append("title", values.summary);
+      if (values.description)
+        formData.append("description", values.description);
+      if (values.priority) formData.append("priorityId", values.priority);
+      if (values.startDate)
+        formData.append("startDate", values.startDate.format("YYYY-MM-DD"));
+      if (values.dueDate)
+        formData.append("dueDate", values.dueDate.format("YYYY-MM-DD"));
+      fileList.forEach((f) =>
+        formData.append("attachments", f.originFileObj as File)
+      );
+
+      await createCr(formData);
       message.success(t("create_modal.success_message"));
       form.resetFields();
       setFileList([]);
@@ -78,6 +96,7 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
       }
       open={open}
       onCancel={handleCancel}
+      confirmLoading={isLoading}
       width={800}
       footer={[
         <div key="footer" className="flex items-center justify-between">
@@ -89,7 +108,12 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
             <Button key="cancel" onClick={handleCancel}>
               {t("buttons.cancel")}
             </Button>
-            <Button key="submit" type="primary" onClick={handleSubmit}>
+            <Button
+              key="submit"
+              type="primary"
+              onClick={handleSubmit}
+              loading={isLoading}
+            >
               {t("create_modal.title")} →
             </Button>
           </div>

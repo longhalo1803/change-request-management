@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { message, Spin } from "antd";
+import { useState } from "react";
+import { message, Spin, Alert } from "antd";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useTranslation } from "@/hooks/useTranslation";
 import { StatusOverview } from "@/modules/dashboard/StatusOverview";
@@ -11,8 +11,13 @@ import {
   CRVolumeChart,
   MetricsFooter,
 } from "@/components/admin";
-import { DashboardStats, DateRangeOption } from "@/lib/types/admin.types";
+import { DashboardFilters, DateRangeOption } from "@/lib/types/admin.types";
 import { adminService } from "@/services/admin.service";
+import {
+  useComprehensiveStats,
+  useTopCustomers,
+  useVolumeTrends,
+} from "@/hooks/useAdmin";
 
 /**
  * Admin Dashboard Page
@@ -33,55 +38,33 @@ import { adminService } from "@/services/admin.service";
 const AdminDashboardPage = () => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
-  const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
-  const [dashboardData, setDashboardData] = useState<DashboardStats | null>(
-    null
-  );
-  const [filters, setFilters] = useState({
-    dateRange: "last_30_days" as DateRangeOption,
+  const [filters, setFilters] = useState<DashboardFilters>({
+    dateRange: "last_30_days",
     customer: "all",
     pm: "all",
   });
 
-  // Fetch dashboard data
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const data = await adminService.fetchDashboardStats(filters);
-        setDashboardData(data);
-      } catch (error) {
-        console.warn("Failed to load dashboard data, using fallback data");
-        // Mock data if API fails to prevent white screen
-        setDashboardData({
-          totalCRs: 0,
-          statusBreakdown: [],
-          processEfficiency: {
-            rejectedRate: 0,
-            overdueOngoing: 0,
-            customerCancellation: 0,
-          },
-          userManagement: {
-            new30Days: 0,
-            activeRatio: 0,
-            customers: 0,
-            pm: 0,
-            admin: 0,
-          },
-          top5Customers: [],
-          crVolumeTrends: [],
-          growthMetrics: { comparison: "vs last month", percentage: 0 },
-          priorityAlert: { description: "No critical CRs", value: "0" },
-          healthIndex: { description: "System health OK", ratio: "100/100" },
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+  const {
+    data: dashboardData,
+    isLoading: isStatsLoading,
+    isError: isStatsError,
+  } = useComprehensiveStats(filters);
 
-    loadData();
-  }, [filters]);
+  const {
+    data: topCustomers,
+    isLoading: isCustomersLoading,
+    isError: isCustomersError,
+  } = useTopCustomers(filters);
+
+  const {
+    data: volumeTrends,
+    isLoading: isTrendsLoading,
+    isError: isTrendsError,
+  } = useVolumeTrends(filters);
+
+  const loading = isStatsLoading || isCustomersLoading || isTrendsLoading;
+  const isError = isStatsError || isCustomersError || isTrendsError;
 
   // Handle filter changes
   const handleDateRangeChange = (range: DateRangeOption) => {
@@ -109,13 +92,28 @@ const AdminDashboardPage = () => {
     }
   };
 
-  if (loading || !dashboardData) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Spin size="large" />
       </div>
     );
   }
+
+  if (isError) {
+    return (
+      <div className="p-6">
+        <Alert
+          message="Error"
+          description="Failed to load dashboard data. Please try again later."
+          type="error"
+          showIcon
+        />
+      </div>
+    );
+  }
+
+  if (!dashboardData) return null;
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -173,11 +171,11 @@ const AdminDashboardPage = () => {
           </div>
 
           {/* Top 5 Customers */}
-          <Top5CustomersChart data={dashboardData.top5Customers} />
+          <Top5CustomersChart data={topCustomers || []} />
 
           {/* CR Volume Trends */}
           <CRVolumeChart
-            data={dashboardData.crVolumeTrends}
+            data={volumeTrends || []}
             onAnnualProjection={() =>
               message.info(
                 `Annual Projection - ${tCommon("messages.coming_soon")}`

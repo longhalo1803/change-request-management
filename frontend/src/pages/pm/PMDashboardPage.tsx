@@ -10,103 +10,57 @@ import { StatCard } from "@/components/shared/StatCard";
 import { StatusOverview } from "@/modules/dashboard/StatusOverview";
 import { RecentActivity } from "@/modules/dashboard/RecentActivity";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useChangeRequests } from "@/hooks";
+import {
+  useDashboardStats,
+  useDashboardStatusOverview,
+  useDashboardRecentActivities,
+} from "@/hooks/useDashboard";
+import { Spin, Alert } from "antd";
 
 export const PMDashboardPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation("dashboard");
   const { t: tPm } = useTranslation("pm");
 
-  // Fetch CR data to get real stats
-  const { data: crResponse, isLoading } = useChangeRequests({});
-  const crData = crResponse?.items || [];
+  const {
+    data: statsData,
+    isLoading: isStatsLoading,
+    error: statsError,
+  } = useDashboardStats();
 
-  // Calculate stats from real data if available
-  const activeCount = crData.filter((cr) => {
-    const statusName = cr.status?.name?.toUpperCase() || "";
-    return (
-      statusName === "IN_DISCUSSION" ||
-      statusName === "APPROVED" ||
-      statusName === "ON_GOING"
-    );
-  }).length;
+  const {
+    data: statusDataOverview,
+    isLoading: isStatusLoading,
+    error: statusError,
+  } = useDashboardStatusOverview();
 
-  const completedCount = crData.filter(
-    (cr) => (cr.status?.name?.toUpperCase() || "") === "CLOSED"
-  ).length;
+  const {
+    data: recentActivitiesData,
+    isLoading: isActivitiesLoading,
+    error: activitiesError,
+  } = useDashboardRecentActivities();
 
-  const dueSoonCount = crData.filter(
-    (cr) => (cr.status?.name?.toUpperCase() || "") === "ON_GOING" // In a real app we'd check dates
-  ).length;
+  const isLoading = isStatsLoading || isStatusLoading || isActivitiesLoading;
+  const error = statsError || statusError || activitiesError;
 
-  const stats = {
-    total: crData.length || 0,
-    active: activeCount || 0,
-    completed: completedCount || 0,
-    dueSoon: dueSoonCount || 0,
+  const stats = statsData || {
+    total: 0,
+    active: 0,
+    completed: 0,
+    dueSoon: 0,
   };
 
-  const statusCounts = crData.reduce(
-    (acc, cr) => {
-      const status = cr.status?.name?.toLowerCase() || "unknown";
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const statusData = (statusDataOverview || []).map((item: any) => ({
+    ...item,
+    label: t(`status_overview.statuses.${item.status.toLowerCase()}` as any, {
+      defaultValue: item.status,
+    }),
+  }));
 
-  const statusData = [
-    {
-      status: "in_discussion",
-      count: statusCounts["in_discussion"] || 0,
-      color: "#1890ff",
-      label: t("status_overview.statuses.in_discussion") || "In Discussion",
-    },
-    {
-      status: "approved",
-      count: statusCounts["approved"] || 0,
-      color: "#52c41a",
-      label: t("status_overview.statuses.approved") || "Approved",
-    },
-    {
-      status: "rejected",
-      count: statusCounts["rejected"] || 0,
-      color: "#ff4d4f",
-      label: t("status_overview.statuses.rejected") || "Rejected",
-    },
-    {
-      status: "ongoing",
-      count: statusCounts["ongoing"] || 0,
-      color: "#13c2c2",
-      label: t("status_overview.statuses.ongoing") || "Ongoing",
-    },
-    {
-      status: "closed",
-      count: statusCounts["closed"] || 0,
-      color: "#722ed1",
-      label: t("status_overview.statuses.closed") || "Closed",
-    },
-  ];
-
-  // Mock recent activities (In a real app, this would come from an API)
-  const recentActivities = [
-    {
-      date: "today",
-      label: t("recent_activity.today") || "Today",
-      activities: [
-        {
-          id: "1",
-          type: "status_change" as const,
-          user: { name: "System", avatar: "" },
-          crId: "CR-005",
-          crTitle: "Payment Integration",
-          status: "In Discussion",
-          timestamp: new Date().toISOString(),
-          timeAgo: "28m ago",
-        },
-      ],
-    },
-  ];
+  const recentActivities = (recentActivitiesData || []).map((group: any) => ({
+    ...group,
+    label: t(`recent_activity.${group.date}` as any),
+  }));
 
   const handleViewBreakdown = () => {
     navigate("/pm/crlist");
@@ -119,66 +73,81 @@ export const PMDashboardPage = () => {
         <p className="text-gray-600 mt-2">{tPm("subtitle")}</p>
       </div>
 
-      <Row gutter={[16, 16]} className="mb-6">
-        <Col xs={24} sm={12} lg={6}>
-          <StatCard
-            icon={<FileTextOutlined />}
-            value={isLoading ? "-" : stats.total}
-            label={tPm("stats.total_crs")}
-            subtitle={tPm("stats.subtitle_total")}
-            iconColor="#722ed1"
-            iconBgColor="#f9f0ff"
-          />
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <StatCard
-            icon={<EditOutlined />}
-            value={isLoading ? "-" : stats.active}
-            label={tPm("stats.active_crs")}
-            subtitle={tPm("stats.subtitle_active")}
-            iconColor="#1890ff"
-            iconBgColor="#e6f7ff"
-          />
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <StatCard
-            icon={<CheckCircleOutlined />}
-            value={isLoading ? "-" : stats.completed}
-            label={tPm("stats.completed")}
-            subtitle={tPm("stats.subtitle_completed")}
-            iconColor="#52c41a"
-            iconBgColor="#f6ffed"
-          />
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <StatCard
-            icon={<ClockCircleOutlined />}
-            value={isLoading ? "-" : stats.dueSoon}
-            label={tPm("stats.ongoing")}
-            subtitle={tPm("stats.subtitle_ongoing")}
-            iconColor="#fa8c16"
-            iconBgColor="#fff7e6"
-          />
-        </Col>
-      </Row>
+      {error ? (
+        <Alert
+          message="Error loading dashboard data"
+          type="error"
+          showIcon
+          className="mb-6"
+        />
+      ) : isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <>
+          <Row gutter={[16, 16]} className="mb-6">
+            <Col xs={24} sm={12} lg={6}>
+              <StatCard
+                icon={<FileTextOutlined />}
+                value={stats.total}
+                label={tPm("stats.total_crs")}
+                subtitle={tPm("stats.subtitle_total")}
+                iconColor="#722ed1"
+                iconBgColor="#f9f0ff"
+              />
+            </Col>
+            <Col xs={24} sm={12} lg={6}>
+              <StatCard
+                icon={<EditOutlined />}
+                value={stats.active}
+                label={tPm("stats.active_crs")}
+                subtitle={tPm("stats.subtitle_active")}
+                iconColor="#1890ff"
+                iconBgColor="#e6f7ff"
+              />
+            </Col>
+            <Col xs={24} sm={12} lg={6}>
+              <StatCard
+                icon={<CheckCircleOutlined />}
+                value={stats.completed}
+                label={tPm("stats.completed")}
+                subtitle={tPm("stats.subtitle_completed")}
+                iconColor="#52c41a"
+                iconBgColor="#f6ffed"
+              />
+            </Col>
+            <Col xs={24} sm={12} lg={6}>
+              <StatCard
+                icon={<ClockCircleOutlined />}
+                value={stats.dueSoon}
+                label={tPm("stats.ongoing")}
+                subtitle={tPm("stats.subtitle_ongoing")}
+                iconColor="#fa8c16"
+                iconBgColor="#fff7e6"
+              />
+            </Col>
+          </Row>
 
-      <Row gutter={[16, 16]}>
-        <Col xs={24} lg={12}>
-          <StatusOverview
-            data={statusData}
-            activeSprint="Y"
-            totalCrs={stats.total}
-            onViewDetails={handleViewBreakdown}
-          />
-        </Col>
-        <Col xs={24} lg={12}>
-          <RecentActivity
-            activities={recentActivities}
-            onMarkAllRead={() => console.log("Mark all read")}
-            onLoadMore={() => console.log("Load more")}
-          />
-        </Col>
-      </Row>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} lg={12}>
+              <StatusOverview
+                data={statusData}
+                activeSprint="Y"
+                totalCrs={stats.total}
+                onViewDetails={handleViewBreakdown}
+              />
+            </Col>
+            <Col xs={24} lg={12}>
+              <RecentActivity
+                activities={recentActivities}
+                onMarkAllRead={() => console.log("Mark all read")}
+                onLoadMore={() => console.log("Load more")}
+              />
+            </Col>
+          </Row>
+        </>
+      )}
     </div>
   );
 };

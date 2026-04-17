@@ -1,10 +1,12 @@
-import { Button, Badge, Dropdown, Avatar } from "antd";
-import { BellOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Dropdown } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/hooks/useTranslation";
+
+import { NotificationBell } from "@/components/shared/NotificationBell";
 
 interface HeaderProps {
   onFilterClick?: () => void;
@@ -50,13 +52,7 @@ export const Header: React.FC<HeaderProps> = () => {
       </div>
 
       <div className="flex items-center gap-4">
-        <Badge count={5} size="small">
-          <Button
-            type="text"
-            icon={<BellOutlined style={{ fontSize: 20 }} />}
-            size="large"
-          />
-        </Badge>
+        <NotificationBell />
 
         <LanguageSwitcher />
 

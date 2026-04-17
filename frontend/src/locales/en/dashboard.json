@@ -23,8 +23,9 @@
       "in_discussion": "IN DISCUSSION",
       "approved": "APPROVED",
       "rejected": "REJECTED",
-      "ongoing": "ONGOING",
-      "closed": "CLOSED"
+      "on_going": "ON GOING",
+      "closed": "CLOSED",
+      "submitted": "SUBMITTED"
     }
   },
   "recent_activity": {

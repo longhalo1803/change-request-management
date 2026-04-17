@@ -9,3 +9,4 @@ export * from "./sprint.types";
 export * from "./task.types";
 export * from "./admin.types";
 export * from "./permission.types";
+export * from "./notification.types";

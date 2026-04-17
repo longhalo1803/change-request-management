@@ -7,14 +7,23 @@ export const errorMiddleware = (
   err: Error | AppError,
   req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction
 ) => {
   let statusCode = 500;
   let message = "Internal Server Error";
 
   if (err instanceof AppError) {
     statusCode = err.statusCode;
-    message = err.message;
+
+    // Transform dot notation (auth.invalid_credentials) to namespace notation (auth:invalid_credentials)
+    // for i18next translation
+    let i18nKey = err.message;
+    if (i18nKey.includes(".")) {
+      i18nKey = i18nKey.replace(".", ":");
+    }
+
+    // Use type assertion to bypass strict type checking for dynamic translation keys
+    message = req.t ? req.t(i18nKey as any) : err.message;
   }
 
   // Log error

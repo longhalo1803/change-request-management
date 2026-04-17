@@ -4,6 +4,8 @@ import changeRequestRoutes from "./change-request.routes";
 import projectRoutes from "./project.routes";
 import userRoutes from "./user.routes";
 import adminRoutes from "./admin.routes";
+import notificationRoutes from "./notification.route";
+import dashboardRoutes from "./dashboard.routes";
 
 const router = Router();
 
@@ -13,5 +15,7 @@ router.use("/change-requests", changeRequestRoutes);
 router.use("/projects", projectRoutes);
 router.use("/users", userRoutes);
 router.use("/admin", adminRoutes);
+router.use("/notifications", notificationRoutes);
+router.use("/dashboard", dashboardRoutes);
 
 export default router;

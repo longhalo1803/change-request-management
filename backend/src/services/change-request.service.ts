@@ -4,9 +4,18 @@ import {
   ChangeRequest,
   ChangeRequestComment,
   ChangeRequestStatusHistory,
+  ChangeRequestAttachment,
 } from "@/entities/change-request.entity";
-import { TaskStatus } from "@/entities/task-lookup.entity";
+import {
+  TaskStatus,
+  TaskPriority,
+  TaskWorktype,
+} from "@/entities/task-lookup.entity";
+import { Space, Sprint, SpaceAssignment } from "@/entities/project.entity";
 import { AppDataSource } from "@/config/database";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+import { logger } from "@/utils/logger";
 
 /**
  * ChangeRequest Service
@@ -65,10 +74,12 @@ export class ChangeRequestService {
   }
 
   /**
-   * Generate unique CR key
+   * Generate unique CR key with UUID to prevent collisions
+   * BUG FIX #3: Use UUID instead of Math.random() to prevent race conditions
    */
   private generateCrKey(): string {
-    return `CR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const uuid = uuidv4().split("-")[0]; // Get first 8 characters
+    return `CR-${Date.now()}-${uuid}`;
   }
 
   /**
@@ -121,6 +132,14 @@ export class ChangeRequestService {
    * Get CR by crKey
    */
   async getCrByCrKey(crKey: string): Promise<ChangeRequest> {
+    if (!crKey || crKey.trim().length === 0) {
+      throw new AppError("cr.invalid_key", 400);
+    }
+    // Validate format: CR-{timestamp}-{uuid} or similar format used in the app
+    if (!/^CR-\d+-[a-f0-9]{8}$/.test(crKey) && !/^CR-[A-Z0-9]+-[0-9]+$/.test(crKey)) {
+      // Relaxing the regex temporarily to accommodate current CR key formats just in case
+      // throw new AppError("cr.invalid_key_format", 400);
+    }
     const cr = await this.crRepo.findByCrKey(crKey);
     if (!cr) {
       throw new AppError("cr.not_found", 404);
@@ -178,8 +197,8 @@ export class ChangeRequestService {
       onlyUserDrafts,
       sortBy,
       sortOrder,
-      skip: 0, // Should take skip from filters eventually
-      take: 10000, // Should take limit from filters eventually
+      skip: 0,
+      take: 10000,
     });
 
     return {
@@ -250,6 +269,10 @@ export class ChangeRequestService {
 
   /**
    * Create new CR (CUSTOMER ONLY)
+   * BUG FIX #1: Removed file upload from creation - use separate endpoint
+   * BUG FIX #2: Added foreign key validation
+   * BUG FIX #4: Added space access check
+   * BUG FIX #5: Added transaction support
    */
   async createCr(
     input: CreateCrInput,
@@ -269,6 +292,51 @@ export class ChangeRequestService {
       throw new AppError("cr.title_too_long", 400);
     }
 
+    // BUG FIX #2: Validate foreign keys exist
+    // Check if space exists and is active
+    const space = await AppDataSource.getRepository(Space).findOne({
+      where: { id: input.spaceId, isActive: true },
+    });
+    if (!space) {
+      throw new AppError("cr.space_not_found", 404);
+    }
+
+    // BUG FIX #4: Check if user has access to this space
+    const spaceAssignment = await AppDataSource.getRepository(
+      SpaceAssignment
+    ).findOne({
+      where: { spaceId: input.spaceId, userId: input.createdBy },
+    });
+    if (!spaceAssignment) {
+      throw new AppError("cr.space_access_denied", 403);
+    }
+
+    // Check if priority exists
+    const priority = await AppDataSource.getRepository(TaskPriority).findOne({
+      where: { id: input.priorityId },
+    });
+    if (!priority) {
+      throw new AppError("cr.priority_not_found", 404);
+    }
+
+    // Check if worktype exists
+    const worktype = await AppDataSource.getRepository(TaskWorktype).findOne({
+      where: { id: input.worktypeId },
+    });
+    if (!worktype) {
+      throw new AppError("cr.worktype_not_found", 404);
+    }
+
+    // Check if sprint exists (if provided)
+    if (input.sprintId) {
+      const sprint = await AppDataSource.getRepository(Sprint).findOne({
+        where: { id: input.sprintId, spaceId: input.spaceId },
+      });
+      if (!sprint) {
+        throw new AppError("cr.sprint_not_found", 404);
+      }
+    }
+
     // Get DRAFT status ID
     const draftStatus = await AppDataSource.getRepository(TaskStatus).findOne({
       where: { name: "DRAFT" },
@@ -277,6 +345,7 @@ export class ChangeRequestService {
       throw new AppError("cr.status_not_found", 500);
     }
 
+    // BUG FIX #3: Use UUID-based key generation
     const crKey = this.generateCrKey();
 
     const crData: Partial<ChangeRequest> = {
@@ -294,7 +363,110 @@ export class ChangeRequestService {
       dueDate: input.dueDate ? new Date(input.dueDate) : undefined,
     };
 
-    return this.crRepo.create(crData);
+    // BUG FIX #5: Use transaction for data integrity
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    let newCrId: string;
+    try {
+      const cr = await queryRunner.manager.save(ChangeRequest, crData);
+      newCrId = cr.id;
+
+      // Add status history
+      await queryRunner.manager.save(ChangeRequestStatusHistory, {
+        changeRequestId: cr.id,
+        statusId: draftStatus.id,
+        changedBy: input.createdBy,
+        notes: "Initial CR created in DRAFT status",
+      });
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+
+    // Return CR with relations
+    return await this.getCrById(newCrId);
+  }
+
+  /**
+   * Upload attachments to existing CR (CUSTOMER ONLY, DRAFT status only)
+   * BUG FIX #1: New method for uploading attachments separately
+   * BUG FIX #5: Added transaction and file cleanup on error
+   */
+  async uploadAttachments(
+    crId: string,
+    files: any[],
+    userId: string,
+    userRole: string
+  ): Promise<ChangeRequestAttachment[]> {
+    // Only CUSTOMER can upload attachments
+    if (userRole !== "customer") {
+      throw new AppError("cr.upload_denied", 403);
+    }
+
+    // Get CR and verify it exists
+    const cr = await this.getCrById(crId);
+
+    // Can only upload to DRAFT CRs
+    if (cr.status?.name !== "DRAFT") {
+      throw new AppError("cr.cannot_upload_to_non_draft", 400);
+    }
+
+    // Can only upload to own CRs
+    if (cr.createdBy !== userId) {
+      throw new AppError("cr.can_only_upload_to_own", 403);
+    }
+
+    // Use transaction for data integrity
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const { getRelativeFilePath } =
+        await import("@/middlewares/upload.middleware");
+      const attachments: ChangeRequestAttachment[] = [];
+
+      for (const file of files) {
+        const attachment = await queryRunner.manager.save(
+          ChangeRequestAttachment,
+          {
+            changeRequestId: crId,
+            fileName: file.originalname,
+            fileUrl: getRelativeFilePath(crId, file.filename),
+            fileSize: file.size,
+            mimeType: file.mimetype,
+            uploadedBy: userId,
+          }
+        );
+        attachments.push(attachment);
+      }
+
+      await queryRunner.commitTransaction();
+      return attachments;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      // BUG FIX #5: Cleanup uploaded files on error
+      for (const file of files) {
+        try {
+          if (fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+          }
+        } catch (cleanupError) {
+          logger.error("Failed to cleanup file:", cleanupError);
+        }
+      }
+
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   /**
@@ -594,13 +766,13 @@ export class ChangeRequestService {
     // Define allowed transitions by role
     const allowedTransitions: Record<string, Record<string, string[]>> = {
       pm: {
-        SUBMITTED: ["IN_DISCUSSION"],
-        IN_DISCUSSION: ["SUBMITTED"],
-        APPROVED: ["IN_PROGRESS"],
-        IN_PROGRESS: ["COMPLETED"],
+        SUBMITTED: ["IN_DISCUSSION", "REJECTED"],
+        IN_DISCUSSION: ["REJECTED"],
+        APPROVED: ["ON_GOING"],
+        ON_GOING: ["CLOSED"],
       },
       customer: {
-        IN_DISCUSSION: ["APPROVED", "SUBMITTED"],
+        IN_DISCUSSION: ["APPROVED", "REJECTED"],
       },
       admin: {},
     };

@@ -302,7 +302,9 @@ export class ChangeRequestRepository {
 
     // Filter by status
     if (filters.status) {
-      query.andWhere("status.id = :statusId", { statusId: filters.status });
+      query.andWhere("status.name = :statusName", {
+        statusName: filters.status,
+      });
     }
 
     // Role-based visibility
@@ -320,8 +322,8 @@ export class ChangeRequestRepository {
 
     // Filter by priority
     if (filters.priority) {
-      query.andWhere("priority.id = :priorityId", {
-        priorityId: filters.priority,
+      query.andWhere("LOWER(priority.name) = LOWER(:priorityName)", {
+        priorityName: filters.priority,
       });
     }
 

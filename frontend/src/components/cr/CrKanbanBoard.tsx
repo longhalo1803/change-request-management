@@ -1,6 +1,7 @@
 import { ChangeRequest, ChangeRequestStatus } from "@/lib/types";
 import { CrKanbanColumn } from "./CrKanbanColumn";
 import { useTranslation } from "react-i18next";
+import { getCrStatus } from "@/lib/helpers/cr.helpers";
 
 type ActorType = "customer" | "pm" | "admin";
 
@@ -46,7 +47,7 @@ export const CrKanbanBoard: React.FC<CrKanbanBoardProps> = ({
   const groupedByStatus = visibleColumns.map((column) => ({
     ...column,
     title: t(column.labelKey as any) as string,
-    crs: data.filter((cr) => cr.statusId === column.status),
+    crs: data.filter((cr) => getCrStatus(cr) === column.status),
   }));
 
   return (

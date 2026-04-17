@@ -148,6 +148,82 @@ export class AdminRepository {
   }
 
   /**
+   * Get top 5 customers by CR count
+   */
+  async getTopCustomers(limit: number = 5): Promise<any> {
+    const crRepo = AppDataSource.getRepository(ChangeRequest);
+    return crRepo
+      .createQueryBuilder("cr")
+      .leftJoin("cr.creator", "creator")
+      .where("creator.role = 'customer'")
+      .select("creator.fullName", "name")
+      .addSelect("COUNT(cr.id)", "crCount")
+      .groupBy("creator.id")
+      .addGroupBy("creator.fullName")
+      .orderBy("crCount", "DESC")
+      .limit(limit)
+      .getRawMany()
+      .then((res) =>
+        res.map((r) => ({
+          name: r.name || "Unknown",
+          crCount: parseInt(r.crCount, 10),
+        }))
+      );
+  }
+
+  /**
+   * Get volume trends (last 3 months)
+   */
+  async getVolumeTrends(): Promise<any> {
+    const crRepo = AppDataSource.getRepository(ChangeRequest);
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    // Group by month and priority
+    const rawData = await crRepo
+      .createQueryBuilder("cr")
+      .leftJoin("cr.priority", "priority")
+      .where("cr.createdAt >= :date", { date: threeMonthsAgo })
+      .select("DATE_FORMAT(cr.createdAt, '%Y-%m')", "month")
+      .addSelect("LOWER(priority.name)", "priorityLevel")
+      .addSelect("COUNT(cr.id)", "count")
+      .groupBy("month")
+      .addGroupBy("priorityLevel")
+      .orderBy("month", "ASC")
+      .getRawMany();
+
+    // Format data into an array of { month: string, critical: number, high: number, medium: number, low: number, total: number }
+    const trendsMap: Record<string, any> = {};
+
+    rawData.forEach((row) => {
+      const month = row.month; // e.g., '2023-10'
+      const level = row.priorityLevel || "medium";
+      const count = parseInt(row.count, 10);
+
+      if (!trendsMap[month]) {
+        // Convert '2023-10' to 'Oct'
+        const dateObj = new Date(month + "-01");
+        const monthName = dateObj.toLocaleString("en-US", { month: "short" });
+        trendsMap[month] = {
+          month: monthName,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+          total: 0,
+        };
+      }
+
+      if (["critical", "high", "medium", "low"].includes(level)) {
+        trendsMap[month][level] = count;
+      }
+      trendsMap[month].total += count;
+    });
+
+    return Object.values(trendsMap);
+  }
+
+  /**
    * Get overdue CRs
    */
   async getOverdueCRs(): Promise<any> {

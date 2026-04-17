@@ -2,7 +2,6 @@ import axiosInstance from "@/lib/axios";
 import type { ApiResponse } from "@/lib/types";
 import {
   type ChangeRequest,
-  type CreateChangeRequestInput,
   type UpdateChangeRequestInput,
   type StatusTransitionInput,
   type SearchChangeRequestInput,
@@ -51,10 +50,15 @@ export const changeRequestService = {
   /**
    * Create new change request (CUSTOMER only)
    */
-  async create(input: CreateChangeRequestInput): Promise<ChangeRequest> {
+  async create(input: FormData): Promise<ChangeRequest> {
     const response = await axiosInstance.post<ApiResponse<ChangeRequest>>(
       "/change-requests",
-      input
+      input,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data.data;
   },

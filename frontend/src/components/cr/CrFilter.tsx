@@ -6,6 +6,9 @@ import { useTranslation } from "react-i18next";
 type ActorType = "customer" | "pm" | "admin";
 
 interface CrFilterProps {
+  searchText?: string;
+  status?: ChangeRequestStatus;
+  priority?: string;
   onSearchChange?: (value: string) => void;
   onStatusChange?: (status: ChangeRequestStatus | undefined) => void;
   onPriorityChange?: (priority: string | undefined) => void;
@@ -19,6 +22,9 @@ interface CrFilterProps {
  * Used by Customer, PM, and Admin actors with role-specific button visibility
  */
 export const CrFilter: React.FC<CrFilterProps> = ({
+  searchText,
+  status,
+  priority,
   onSearchChange,
   onStatusChange,
   onPriorityChange,
@@ -36,6 +42,7 @@ export const CrFilter: React.FC<CrFilterProps> = ({
       <div className="flex gap-4 items-end justify-between">
         <div className="flex gap-4 flex-1">
           <Input
+            value={searchText}
             placeholder={t("filters.search_placeholder")}
             prefix={<SearchOutlined />}
             onChange={(e) => onSearchChange?.(e.target.value)}
@@ -43,17 +50,19 @@ export const CrFilter: React.FC<CrFilterProps> = ({
           />
 
           <Select
+            value={status}
             placeholder={t("filters.status_placeholder")}
             onChange={onStatusChange}
             allowClear
             style={{ width: 150 }}
-            options={Object.values(ChangeRequestStatus).map((status) => ({
-              label: status.toUpperCase(),
-              value: status,
+            options={Object.values(ChangeRequestStatus).map((s) => ({
+              label: s.toUpperCase(),
+              value: s,
             }))}
           />
 
           <Select
+            value={priority}
             placeholder={t("filters.priority_placeholder")}
             onChange={onPriorityChange}
             allowClear

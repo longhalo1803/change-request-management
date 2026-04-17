@@ -5,7 +5,7 @@ import typescriptParser from "@typescript-eslint/parser";
 
 export default [
   {
-    ignores: ["dist", "node_modules", ".env*.local", "coverage", "migrations"],
+    ignores: ["dist", "node_modules", ".env*.local", "migrations"],
   },
   {
     files: ["src/**/*.ts"],
@@ -14,7 +14,6 @@ export default [
       sourceType: "module",
       globals: {
         ...globals.node,
-        ...globals.jest,
       },
       parser: typescriptParser,
     },

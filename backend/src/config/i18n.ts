@@ -27,7 +27,7 @@ export const initializeI18n = async (): Promise<void> => {
       fallbackLng: FALLBACK_LANGUAGE,
       supportedLngs: [...SUPPORTED_LANGUAGES],
       defaultNS: "common",
-      ns: ["common", "errors", "validation"],
+      ns: ["common", "errors", "validation", "auth"],
 
       backend: {
         loadPath: path.join(__dirname, "../locales/{{lng}}/{{ns}}.json"),
