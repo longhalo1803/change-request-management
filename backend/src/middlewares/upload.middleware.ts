@@ -1,7 +1,7 @@
 import multer, { StorageEngine } from "multer";
 import path from "path";
 import fs from "fs";
-import { Request } from "express";
+import { Request, Express } from "express";
 
 /**
  * File Upload Middleware
