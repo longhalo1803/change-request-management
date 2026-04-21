@@ -16,15 +16,57 @@ import { User, UserRole } from "@/entities/user.entity";
 export interface CreateUserInput {
   email: string;
   password: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   role: UserRole;
+  phone?: string;
 }
 
 export interface UpdateUserInput {
   email?: string;
-  fullName?: string;
+  firstName?: string;
+  lastName?: string;
   role?: UserRole;
+  phone?: string;
   isActive?: boolean;
+}
+
+export interface UpdateMyProfileInput {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+}
+
+/**
+ * Safe user object without password
+ */
+export interface SafeUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  phone: string | null;
+  role: UserRole;
+  isActive: boolean;
+  lastLoginAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * AdminUser shape expected by the frontend
+ */
+export interface AdminUserResponse {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  role: UserRole;
+  status: "active" | "inactive";
+  createdDate: Date;
+  avatar: string;
 }
 
 export class UserService {
@@ -35,25 +77,71 @@ export class UserService {
   }
 
   /**
+   * Strip password from User entity and include computed fullName
+   */
+  private toSafeUser(user: User): SafeUser {
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      fullName: user.fullName, // from getter
+      phone: user.phone,
+      role: user.role,
+      isActive: user.isActive,
+      lastLoginAt: user.lastLoginAt,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
+
+  /**
+   * Transform User entity to AdminUser response format
+   */
+  private toAdminUserResponse(user: User): AdminUserResponse {
+    return {
+      id: user.id,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      email: user.email,
+      phone: user.phone || null,
+      role: user.role,
+      status: user.isActive ? "active" : "inactive",
+      createdDate: user.createdAt,
+      avatar:
+        `${(user.firstName || "?")[0]}${(user.lastName || "?")[0]}`.toUpperCase(),
+    };
+  }
+
+  /**
    * Get user by ID
    */
-  async getUserById(id: string): Promise<Omit<User, "password">> {
+  async getUserById(id: string): Promise<SafeUser> {
     const user = await this.userRepo.findById(id);
     if (!user) {
       throw new AppError("user.not_found", 404);
     }
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return this.toSafeUser(user);
   }
 
   /**
-   * Get all users (admin)
+   * Get all users (admin) - excludes the requesting admin
+   */
+  async getAllUsersExcludingSelf(
+    currentUserId: string
+  ): Promise<AdminUserResponse[]> {
+    const { data } = await this.userRepo.findAllExcluding(currentUserId);
+    return data.map((user) => this.toAdminUserResponse(user));
+  }
+
+  /**
+   * Get all users (admin) - includes pagination
    */
   async getAllUsers(
     page: number = 1,
     limit: number = 20
   ): Promise<{
-    data: Omit<User, "password">[];
+    data: SafeUser[];
     total: number;
     page: number;
     limit: number;
@@ -61,10 +149,8 @@ export class UserService {
     const skip = (page - 1) * limit;
     const { data, total } = await this.userRepo.findAll({ skip, take: limit });
 
-    const usersWithoutPassword = data.map(({ password: _, ...user }) => user);
-
     return {
-      data: usersWithoutPassword,
+      data: data.map((user) => this.toSafeUser(user)),
       total,
       page,
       limit,
@@ -74,15 +160,15 @@ export class UserService {
   /**
    * Get users by role
    */
-  async getUsersByRole(role: UserRole): Promise<Omit<User, "password">[]> {
+  async getUsersByRole(role: UserRole): Promise<SafeUser[]> {
     const users = await this.userRepo.findByRole(role);
-    return users.map(({ password: _, ...user }) => user);
+    return users.map((user) => this.toSafeUser(user));
   }
 
   /**
    * Create new user
    */
-  async createUser(input: CreateUserInput): Promise<Omit<User, "password">> {
+  async createUser(input: CreateUserInput): Promise<AdminUserResponse> {
     // Check if email exists
     const emailExists = await this.userRepo.emailExists(input.email);
     if (emailExists) {
@@ -95,12 +181,13 @@ export class UserService {
     const user = await this.userRepo.create({
       email: input.email,
       password: hashedPassword,
-      fullName: input.fullName,
+      firstName: input.firstName,
+      lastName: input.lastName,
       role: input.role,
+      phone: input.phone || null,
     });
 
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return this.toAdminUserResponse(user);
   }
 
   /**
@@ -109,7 +196,7 @@ export class UserService {
   async updateUser(
     id: string,
     input: UpdateUserInput
-  ): Promise<Omit<User, "password">> {
+  ): Promise<AdminUserResponse> {
     // Verify user exists
     const user = await this.userRepo.findById(id);
     if (!user) {
@@ -124,10 +211,12 @@ export class UserService {
       }
     }
 
-    const updateData: Partial<User> = {};
+    const updateData: Record<string, any> = {};
     if (input.email !== undefined) updateData.email = input.email;
-    if (input.fullName !== undefined) updateData.fullName = input.fullName;
+    if (input.firstName !== undefined) updateData.firstName = input.firstName;
+    if (input.lastName !== undefined) updateData.lastName = input.lastName;
     if (input.role !== undefined) updateData.role = input.role;
+    if (input.phone !== undefined) updateData.phone = input.phone || null;
     if (input.isActive !== undefined) updateData.isActive = input.isActive;
 
     await this.userRepo.update(id, updateData);
@@ -135,21 +224,28 @@ export class UserService {
     const updatedUser = await this.userRepo.findById(id);
     if (!updatedUser) throw new AppError("user.not_found", 404);
 
-    const { password: _, ...userWithoutPassword } = updatedUser;
-    return userWithoutPassword;
+    return this.toAdminUserResponse(updatedUser);
   }
 
   /**
-   * Delete user
+   * Update user status (activate/deactivate)
    */
-  async deleteUser(id: string): Promise<void> {
-    // Verify user exists
+  async updateUserStatus(
+    id: string,
+    status: "active" | "inactive"
+  ): Promise<AdminUserResponse> {
     const user = await this.userRepo.findById(id);
     if (!user) {
       throw new AppError("user.not_found", 404);
     }
 
-    await this.userRepo.delete(id);
+    const isActive = status === "active";
+    await this.userRepo.update(id, { isActive });
+
+    const updatedUser = await this.userRepo.findById(id);
+    if (!updatedUser) throw new AppError("user.not_found", 404);
+
+    return this.toAdminUserResponse(updatedUser);
   }
 
   /**
@@ -201,5 +297,46 @@ export class UserService {
     // Hash new password
     const hashedPassword = await PasswordUtil.hash(newPassword);
     await this.userRepo.update(id, { password: hashedPassword });
+  }
+
+  /**
+   * Update own profile (self-service for customer/PM)
+   * Only allows safe fields: firstName, lastName, phone
+   */
+  async updateMyProfile(
+    id: string,
+    input: UpdateMyProfileInput
+  ): Promise<SafeUser> {
+    const user = await this.userRepo.findById(id);
+    if (!user) {
+      throw new AppError("user.not_found", 404);
+    }
+
+    const updateData: Record<string, any> = {};
+    if (input.firstName !== undefined) updateData.firstName = input.firstName;
+    if (input.lastName !== undefined) updateData.lastName = input.lastName;
+    if (input.phone !== undefined) updateData.phone = input.phone || null;
+
+    if (Object.keys(updateData).length > 0) {
+      await this.userRepo.update(id, updateData);
+    }
+
+    const updatedUser = await this.userRepo.findById(id);
+    if (!updatedUser) throw new AppError("user.not_found", 404);
+
+    return this.toSafeUser(updatedUser);
+  }
+
+  /**
+   * Self-deactivate account (used when customer/PM "deletes" their profile)
+   * Actually just sets isActive = false
+   */
+  async selfDeactivate(id: string): Promise<void> {
+    const user = await this.userRepo.findById(id);
+    if (!user) {
+      throw new AppError("user.not_found", 404);
+    }
+
+    await this.userRepo.update(id, { isActive: false });
   }
 }

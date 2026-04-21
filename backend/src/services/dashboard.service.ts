@@ -5,6 +5,7 @@ import {
   ChangeRequestStatusHistory,
   ChangeRequestAttachment,
 } from "../entities/change-request.entity";
+import { TaskStatus } from "../entities/task-lookup.entity";
 
 interface ActivityItem {
   id: string;
@@ -26,6 +27,7 @@ interface ActivityGroup {
 
 export class DashboardService {
   private crRepo = AppDataSource.getRepository(ChangeRequest);
+  private statusRepo = AppDataSource.getRepository(TaskStatus);
   private statusHistoryRepo = AppDataSource.getRepository(
     ChangeRequestStatusHistory
   );
@@ -94,8 +96,11 @@ export class DashboardService {
   }
 
   async getStatusOverview(userId: string, role: string) {
-    const query = this.buildBaseQuery(userId, role);
+    // 1. Get ALL statuses from DB (ensures REJECTED etc. always appear)
+    const allStatuses = await this.statusRepo.find({ order: { order: "ASC" } });
 
+    // 2. Get counts per status based on role visibility
+    const query = this.buildBaseQuery(userId, role);
     const result = await query
       .select("status.name", "name")
       .addSelect("status.color", "color")
@@ -104,11 +109,16 @@ export class DashboardService {
       .addGroupBy("status.color")
       .getRawMany();
 
-    return result.map((item) => ({
-      status: item.name || "Unknown",
-      count: parseInt(item.count, 10),
-      color: item.color || "#ccc",
-      label: item.name || "Unknown",
+    // 3. Merge: ensure all statuses appear, even with count = 0
+    const countMap = new Map(
+      result.map((r: any) => [r.name, parseInt(r.count, 10)])
+    );
+
+    return allStatuses.map((status) => ({
+      status: status.name,
+      count: countMap.get(status.name) || 0,
+      color: status.color || "#ccc",
+      label: status.name,
     }));
   }
 

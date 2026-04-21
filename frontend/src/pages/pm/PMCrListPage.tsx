@@ -116,6 +116,7 @@ export const PMCrListPage = () => {
         open={detailModalOpen}
         cr={selectedCr}
         onCancel={handleDetailClose}
+        onStatusChange={handleDetailClose}
         actorType="pm"
       />
     </div>

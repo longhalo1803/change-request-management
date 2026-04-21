@@ -1,5 +1,6 @@
 import { AppDataSource } from "@/config/database";
 import { User, UserRole } from "@/entities/user.entity";
+import { UserRoleEntity } from "@/entities/user-role.entity";
 import { PasswordUtil } from "@/utils/password";
 import { logger } from "@/utils/logger";
 
@@ -11,26 +12,40 @@ async function seedUsers() {
     logger.info("Database connection initialized.");
 
     const userRepo = AppDataSource.getRepository(User);
+    const roleRepo = AppDataSource.getRepository(UserRoleEntity);
+
+    // Pre-fetch role entities
+    const adminRole = await roleRepo.findOne({ where: { code: UserRole.ADMIN } });
+    const pmRole = await roleRepo.findOne({ where: { code: UserRole.PM } });
+    const customerRole = await roleRepo.findOne({ where: { code: UserRole.CUSTOMER } });
+
+    if (!adminRole || !pmRole || !customerRole) {
+      logger.error("Missing role records in user_roles table. Run migrations first.");
+      return;
+    }
 
     // Prepare users to seed
     const usersToSeed = [
       {
         email: "admin@solashi.com",
         password: "Admin@123",
-        fullName: "System Admin",
-        role: UserRole.ADMIN,
+        firstName: "System",
+        lastName: "Admin",
+        roleId: adminRole.id,
       },
       {
         email: "pm@solashi.com",
         password: "Pm@123",
-        fullName: "Project Manager",
-        role: UserRole.PM,
+        firstName: "Project",
+        lastName: "Manager",
+        roleId: pmRole.id,
       },
       {
         email: "customer@solashi.com",
         password: "Customer@123",
-        fullName: "Demo Customer",
-        role: UserRole.CUSTOMER,
+        firstName: "Demo",
+        lastName: "Customer",
+        roleId: customerRole.id,
       },
     ];
 
@@ -43,8 +58,9 @@ async function seedUsers() {
 
       if (existingUser) {
         existingUser.password = hashedPassword;
-        existingUser.fullName = userData.fullName;
-        existingUser.role = userData.role;
+        existingUser.firstName = userData.firstName;
+        existingUser.lastName = userData.lastName;
+        existingUser.roleId = userData.roleId;
         existingUser.isActive = true;
         await userRepo.save(existingUser);
         if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {

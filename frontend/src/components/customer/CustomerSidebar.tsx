@@ -32,7 +32,7 @@ export const CustomerSidebar: React.FC = () => {
     {
       key: "cr-management",
       icon: <FileTextOutlined />,
-      label: t("sidebar.cr_management"),
+      label: t("sidebar.cr_list"),
       path: "/change-requests",
     },
   ];

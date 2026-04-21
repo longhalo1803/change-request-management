@@ -24,9 +24,10 @@ export const createChangeRequestSchema = z.object({
   priorityId: z.string().uuid("validation.invalid_uuid"),
   worktypeId: z.string().uuid("validation.invalid_uuid"),
   sprintId: z.string().uuid("validation.invalid_uuid").optional(),
-  estimatedHours: z.number().positive("validation.must_be_positive").optional(),
-  dueDate: z.string().datetime("validation.invalid_date").optional(),
-});
+
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "validation.invalid_date_format").optional(),
+  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "validation.invalid_date_format").optional(),
+}).strict();
 
 // Update CR Schema - For Customer updating DRAFT CR
 export const updateChangeRequestSchema = z.object({
@@ -42,15 +43,16 @@ export const updateChangeRequestSchema = z.object({
   priorityId: z.string().uuid("validation.invalid_uuid").optional(),
   worktypeId: z.string().uuid("validation.invalid_uuid").optional(),
   sprintId: z.string().uuid("validation.invalid_uuid").optional(),
-  estimatedHours: z.number().positive("validation.must_be_positive").optional(),
-  dueDate: z.string().datetime("validation.invalid_date").optional(),
-});
+
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "validation.invalid_date_format").optional(),
+  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "validation.invalid_date_format").optional(),
+}).strict();
 
 // Status Transition Schema - For PM/Customer transitioning status
 export const statusTransitionSchema = z.object({
   toStatusId: z.string().uuid("validation.invalid_uuid"),
   notes: z.string().max(1000, "validation.notes_too_long").optional(),
-});
+}).strict();
 
 // Comment Schema - For adding comments
 export const createCommentSchema = z.object({
@@ -58,7 +60,7 @@ export const createCommentSchema = z.object({
     .string()
     .min(1, "validation.comment_required")
     .max(5000, "validation.comment_too_long"),
-});
+}).strict();
 
 // Search/Filter Schema - For searching CRs
 export const searchChangeRequestSchema = z.object({
@@ -68,7 +70,7 @@ export const searchChangeRequestSchema = z.object({
   statusId: z.string().uuid("validation.invalid_uuid").optional(),
   priorityId: z.string().uuid("validation.invalid_uuid").optional(),
   spaceId: z.string().uuid("validation.invalid_uuid").optional(),
-  assignedTo: z.string().uuid("validation.invalid_uuid").optional(),
+
   parentId: z.string().uuid("validation.invalid_uuid").optional(), // Filter by parent task
   sortBy: z.enum(["createdAt", "priority", "dueDate", "title"]).optional(),
   sortOrder: z.enum(["asc", "desc"]).optional(),

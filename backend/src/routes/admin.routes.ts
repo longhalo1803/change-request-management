@@ -27,9 +27,7 @@ router.get("/dashboard/overview", (req, res) =>
 router.get("/dashboard/recent-activity", (req, res) =>
   controller.getRecentActivity(req, res)
 );
-router.get("/dashboard/top-assignees", (req, res) =>
-  controller.getTopAssignees(req, res)
-);
+
 router.get("/dashboard/overdue-crs", (req, res) =>
   controller.getOverdueCRs(req, res)
 );

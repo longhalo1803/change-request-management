@@ -45,8 +45,6 @@
   },
   "create_modal": {
     "title": "要件を作成",
-    "subtitle": "SOLASHI Connect • Project Alpha",
-    "draft_info": "ドラフトは自動的に保存されます",
     "project_label": "プロジェクト / スペース",
     "project_error": "プロジェクトを選択してください",
     "issue_type_label": "問題のタイプ",

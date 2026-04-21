@@ -16,8 +16,8 @@ export const queryKeys = {
       [...queryKeys.changeRequests.details(), id] as const,
     bySpace: (spaceId: string) =>
       [...queryKeys.changeRequests.all, "by-space", spaceId] as const,
-    assignedToMe: () =>
-      [...queryKeys.changeRequests.all, "assigned-to-me"] as const,
+    lookups: () => [...queryKeys.changeRequests.all, "lookups"] as const,
+
     statusHistory: (id: string) =>
       [...queryKeys.changeRequests.all, "status-history", id] as const,
   },

@@ -2,10 +2,12 @@ import axiosInstance from "@/lib/axios";
 import type { ApiResponse } from "@/lib/types";
 import {
   type ChangeRequest,
+  type CreateChangeRequestInput,
   type UpdateChangeRequestInput,
   type StatusTransitionInput,
   type SearchChangeRequestInput,
   type SearchChangeRequestResponse,
+  type ChangeRequestLookupData,
 } from "@/lib/types/changeRequest.types";
 
 /**
@@ -15,6 +17,16 @@ import {
 
 export const changeRequestService = {
   /**
+   * Get lookups (priorities, worktypes, statuses)
+   */
+  async getLookups(): Promise<ChangeRequestLookupData> {
+    const response = await axiosInstance.get<ApiResponse<ChangeRequestLookupData>>(
+      "/change-requests/lookups"
+    );
+    return response.data.data;
+  },
+
+  /**
    * List change requests with search/filter - loads all items (no pagination)
    */
   async list(
@@ -23,7 +35,7 @@ export const changeRequestService = {
     const params = new URLSearchParams();
     if (filters.spaceId) params.append("spaceId", filters.spaceId);
     if (filters.statusId) params.append("statusId", filters.statusId);
-    if (filters.assignedTo) params.append("assignedTo", filters.assignedTo);
+
     if (filters.search) params.append("search", filters.search);
     if (filters.id) params.append("id", filters.id);
     if (filters.name) params.append("name", filters.name);
@@ -50,10 +62,24 @@ export const changeRequestService = {
   /**
    * Create new change request (CUSTOMER only)
    */
-  async create(input: FormData): Promise<ChangeRequest> {
+  async create(input: CreateChangeRequestInput): Promise<ChangeRequest> {
     const response = await axiosInstance.post<ApiResponse<ChangeRequest>>(
       "/change-requests",
-      input,
+      input
+    );
+    if (!response.data?.data) {
+      throw new Error("Invalid response from server");
+    }
+    return response.data.data;
+  },
+
+  /**
+   * Upload attachments for a CR
+   */
+  async uploadAttachments(crId: string, formData: FormData): Promise<any> {
+    const response = await axiosInstance.post<ApiResponse<any>>(
+      `/change-requests/${crId}/attachments`,
+      formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -118,15 +144,7 @@ export const changeRequestService = {
     return response.data.data;
   },
 
-  /**
-   * Get change requests assigned to current user (all items)
-   */
-  async getAssignedToMe(): Promise<SearchChangeRequestResponse> {
-    const response = await axiosInstance.get<
-      ApiResponse<SearchChangeRequestResponse>
-    >(`/change-requests/assigned/to-me`);
-    return response.data.data;
-  },
+
 
   /**
    * Get status history for a change request

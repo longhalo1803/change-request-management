@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { UserService } from "@/services/user.service";
 import { AppError } from "@/utils/app-error";
 import { UserRole } from "@/entities/user.entity";
+import { logger } from "@/utils/logger";
 
 /**
  * User Controller
@@ -21,40 +22,70 @@ export class UserController {
   }
 
   /**
+   * Helper to send success response
+   */
+  private sendSuccess(
+    res: Response,
+    data: any,
+    message: string = "Success",
+    statusCode: number = 200
+  ): void {
+    res.status(statusCode).json({
+      success: true,
+      data,
+      message,
+    });
+  }
+
+  /**
+   * Helper to send error response
+   */
+  private sendError(
+    res: Response,
+    error: Error | AppError,
+    statusCode: number = 500
+  ): void {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        data: null,
+        message: error.message,
+      });
+    } else {
+      logger.error(error);
+      res.status(statusCode).json({
+        success: false,
+        data: null,
+        message: error.message || "Internal server error",
+      });
+    }
+  }
+
+  /**
    * GET /users/:id
    */
   async getUserById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const user = await this.userService.getUserById(id);
-      res.json({ status: "success", data: user });
+      this.sendSuccess(res, user);
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      this.sendError(res, error as Error);
     }
   }
 
   /**
    * GET /users
+   * Returns all users excluding the requesting admin
    */
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
-
-      const result = await this.userService.getAllUsers(page, limit);
-      res.json({ status: "success", data: result });
+      const currentUserId = req.user!.id;
+      const users =
+        await this.userService.getAllUsersExcludingSelf(currentUserId);
+      this.sendSuccess(res, users, "Users retrieved successfully");
     } catch (error) {
-      res
-        .status(500)
-        .json({ status: "error", message: "Internal server error" });
+      this.sendError(res, error as Error);
     }
   }
 
@@ -67,125 +98,137 @@ export class UserController {
 
       // Validate role
       if (!Object.values(UserRole).includes(role as UserRole)) {
-        res.status(400).json({ status: "error", message: "Invalid role" });
+        res.status(400).json({
+          success: false,
+          data: null,
+          message: "Invalid role",
+        });
         return;
       }
 
       const users = await this.userService.getUsersByRole(role as UserRole);
-      res.json({ status: "success", data: users });
+      this.sendSuccess(res, users);
     } catch (error) {
-      res
-        .status(500)
-        .json({ status: "error", message: "Internal server error" });
+      this.sendError(res, error as Error);
     }
   }
 
   /**
    * POST /users
+   * Create a new user (admin only)
    */
   async createUser(req: Request, res: Response): Promise<void> {
     try {
-      const { email, password, fullName, role } = req.body;
+      const { email, password, firstName, lastName, role, phone } = req.body;
 
       // Validate required fields
-      if (!email || !password || !fullName || !role) {
-        res
-          .status(400)
-          .json({ status: "error", message: "Missing required fields" });
+      if (!email || !password || !firstName || !lastName || !role) {
+        this.sendError(
+          res,
+          new AppError(
+            "Missing required fields: email, password, firstName, lastName, role",
+            400
+          )
+        );
         return;
       }
 
       // Validate role
       if (!Object.values(UserRole).includes(role)) {
-        res.status(400).json({ status: "error", message: "Invalid role" });
+        this.sendError(res, new AppError("Invalid role", 400));
         return;
       }
 
       // Validate password strength (at least 8 characters)
       if (password.length < 8) {
-        res
-          .status(400)
-          .json({
-            status: "error",
-            message: "Password must be at least 8 characters",
-          });
+        this.sendError(
+          res,
+          new AppError("Password must be at least 8 characters", 400)
+        );
         return;
       }
 
       const user = await this.userService.createUser({
         email,
         password,
-        fullName,
+        firstName,
+        lastName,
         role,
+        phone,
       });
 
-      res.status(201).json({ status: "success", data: user });
+      this.sendSuccess(res, user, "User created successfully", 201);
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      this.sendError(res, error as Error);
     }
   }
 
   /**
    * PUT /users/:id
+   * Update user information (admin only)
    */
   async updateUser(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const { email, fullName, role, isActive } = req.body;
+      const { email, firstName, lastName, role, phone } = req.body;
 
       // Validate role if provided
       if (role && !Object.values(UserRole).includes(role)) {
-        res.status(400).json({ status: "error", message: "Invalid role" });
+        this.sendError(res, new AppError("Invalid role", 400));
         return;
       }
 
       const user = await this.userService.updateUser(id, {
         email,
-        fullName,
+        firstName,
+        lastName,
         role,
-        isActive,
+        phone,
       });
 
-      res.json({ status: "success", data: user });
+      this.sendSuccess(res, user, "User updated successfully");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      this.sendError(res, error as Error);
     }
   }
 
   /**
-   * DELETE /users/:id
+   * PATCH /users/:id/status
+   * Update user status (activate/deactivate) - admin only
+   * Admin cannot deactivate themselves
    */
-  async deleteUser(req: Request, res: Response): Promise<void> {
+  async updateUserStatus(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      await this.userService.deleteUser(id);
-      res.json({ status: "success", message: "User deleted" });
-    } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
+      const { status } = req.body;
+      const currentUserId = req.user!.id;
+
+      // Prevent admin from deactivating themselves
+      if (id === currentUserId && status === "inactive") {
+        this.sendError(
+          res,
+          new AppError("Cannot deactivate your own account", 400)
+        );
+        return;
       }
+
+      // Validate status
+      if (!["active", "inactive"].includes(status)) {
+        this.sendError(
+          res,
+          new AppError("Invalid status. Must be 'active' or 'inactive'", 400)
+        );
+        return;
+      }
+
+      const user = await this.userService.updateUserStatus(id, status);
+      this.sendSuccess(
+        res,
+        user,
+        `User ${status === "active" ? "activated" : "deactivated"} successfully`
+      );
+    } catch (error) {
+      this.sendError(res, error as Error);
     }
   }
 
@@ -196,17 +239,9 @@ export class UserController {
     try {
       const { id } = req.params;
       await this.userService.activateUser(id);
-      res.json({ status: "success", message: "User activated" });
+      this.sendSuccess(res, null, "User activated");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      this.sendError(res, error as Error);
     }
   }
 
@@ -217,17 +252,9 @@ export class UserController {
     try {
       const { id } = req.params;
       await this.userService.deactivateUser(id);
-      res.json({ status: "success", message: "User deactivated" });
+      this.sendSuccess(res, null, "User deactivated");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      this.sendError(res, error as Error);
     }
   }
 
@@ -240,34 +267,22 @@ export class UserController {
       const { oldPassword, newPassword } = req.body;
 
       if (!oldPassword || !newPassword) {
-        res
-          .status(400)
-          .json({ status: "error", message: "Missing required fields" });
+        this.sendError(res, new AppError("Missing required fields", 400));
         return;
       }
 
       if (newPassword.length < 8) {
-        res
-          .status(400)
-          .json({
-            status: "error",
-            message: "Password must be at least 8 characters",
-          });
+        this.sendError(
+          res,
+          new AppError("Password must be at least 8 characters", 400)
+        );
         return;
       }
 
       await this.userService.changePassword(id, oldPassword, newPassword);
-      res.json({ status: "success", message: "Password changed" });
+      this.sendSuccess(res, null, "Password changed");
     } catch (error) {
-      if (error instanceof AppError) {
-        res
-          .status(error.statusCode)
-          .json({ status: "error", message: error.message });
-      } else {
-        res
-          .status(500)
-          .json({ status: "error", message: "Internal server error" });
-      }
+      this.sendError(res, error as Error);
     }
   }
 }

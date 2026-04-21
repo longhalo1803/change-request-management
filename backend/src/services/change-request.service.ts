@@ -11,7 +11,7 @@ import {
   TaskPriority,
   TaskWorktype,
 } from "@/entities/task-lookup.entity";
-import { Space, Sprint, SpaceAssignment } from "@/entities/project.entity";
+import { Space, Sprint } from "@/entities/project.entity";
 import { AppDataSource } from "@/config/database";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
@@ -35,9 +35,7 @@ export interface CreateCrInput {
   priorityId: string;
   worktypeId: string;
   createdBy: string;
-  assignedTo?: string;
   sprintId?: string;
-  estimatedHours?: number;
   dueDate?: string;
 }
 
@@ -46,10 +44,7 @@ export interface UpdateCrInput {
   description?: string;
   priorityId?: string;
   worktypeId?: string;
-  assignedTo?: string;
   sprintId?: string;
-  estimatedHours?: number;
-  actualHours?: number;
   dueDate?: string;
 }
 
@@ -60,7 +55,7 @@ export interface SearchCRInput {
   statusId?: string;
   priorityId?: string;
   spaceId?: string;
-  assignedTo?: string;
+
   parentId?: string;
   sortBy?: "createdAt" | "priority" | "status" | "dueDate" | "title";
   sortOrder?: "asc" | "desc";
@@ -71,6 +66,31 @@ export class ChangeRequestService {
 
   constructor() {
     this.crRepo = new ChangeRequestRepository();
+  }
+
+  /**
+   * Get all CR lookups (priorities, worktypes, statuses)
+   */
+  async getLookups(): Promise<{
+    priorities: TaskPriority[];
+    worktypes: TaskWorktype[];
+    statuses: TaskStatus[];
+  }> {
+    const priorities = await AppDataSource.getRepository(TaskPriority).find({
+      order: { level: "ASC" },
+    });
+    const worktypes = await AppDataSource.getRepository(TaskWorktype).find({
+      order: { name: "ASC" },
+    });
+    const statuses = await AppDataSource.getRepository(TaskStatus).find({
+      order: { order: "ASC" },
+    });
+
+    return {
+      priorities,
+      worktypes,
+      statuses,
+    };
   }
 
   /**
@@ -86,10 +106,8 @@ export class ChangeRequestService {
    * Check if user can view this CR based on role and status
    */
   private canUserViewCR(cr: any, userId: string, userRole: string): boolean {
-    // If CR is DRAFT, only creator and admin can view
+    // If CR is DRAFT, only creator can view
     if (cr.status?.name === "DRAFT") {
-      if (userRole === "admin") return false; // Admin cannot view DRAFT
-      if (userRole === "pm") return false; // PM cannot view DRAFT
       return cr.createdBy === userId;
     }
 
@@ -158,18 +176,18 @@ export class ChangeRequestService {
     items: ChangeRequest[];
     total: number;
   }> {
-    // Get status ID for DRAFT to exclude for PM and Admin
-    let draftStatusId: string | undefined;
+    // Get status ID for DRAFT to manage visibility
+    const draftStatus = await AppDataSource.getRepository(TaskStatus).findOne({
+      where: { name: "DRAFT" },
+    });
+    const draftStatusId = draftStatus?.id;
+
+    let excludeStatusId: string | undefined;
     let onlyUserDrafts: string | undefined;
 
     if (userRole === "pm" || userRole === "admin") {
       // PM and Admin cannot see DRAFT CRs
-      const draftStatus = await AppDataSource.getRepository(TaskStatus).findOne(
-        {
-          where: { name: "DRAFT" },
-        }
-      );
-      draftStatusId = draftStatus?.id;
+      excludeStatusId = draftStatusId;
     } else if (userRole === "customer") {
       // Customer can only see their own DRAFTs, but can see all non-DRAFTs
       onlyUserDrafts = userId;
@@ -192,8 +210,8 @@ export class ChangeRequestService {
       status: filters.statusId,
       priority: filters.priorityId,
       spaceId: filters.spaceId,
-      assignedTo: filters.assignedTo,
-      excludeStatus: draftStatusId,
+      excludeStatus: excludeStatusId,
+      draftStatusId, // Add this new property to pass draftStatusId
       onlyUserDrafts,
       sortBy,
       sortOrder,
@@ -232,19 +250,7 @@ export class ChangeRequestService {
     };
   }
 
-  /**
-   * Get all CRs assigned to user
-   */
-  async getCrsAssignedToUser(userId: string): Promise<{
-    items: ChangeRequest[];
-    total: number;
-  }> {
-    const { data, total } = await this.crRepo.findByAssigneeId(userId, {
-      skip: 0,
-      take: 10000, // Load all
-    });
-    return { items: data, total };
-  }
+
 
   /**
    * Get all CRs created by user
@@ -301,15 +307,6 @@ export class ChangeRequestService {
       throw new AppError("cr.space_not_found", 404);
     }
 
-    // BUG FIX #4: Check if user has access to this space
-    const spaceAssignment = await AppDataSource.getRepository(
-      SpaceAssignment
-    ).findOne({
-      where: { spaceId: input.spaceId, userId: input.createdBy },
-    });
-    if (!spaceAssignment) {
-      throw new AppError("cr.space_access_denied", 403);
-    }
 
     // Check if priority exists
     const priority = await AppDataSource.getRepository(TaskPriority).findOne({
@@ -357,10 +354,8 @@ export class ChangeRequestService {
       priorityId: input.priorityId,
       worktypeId: input.worktypeId,
       createdBy: input.createdBy,
-      assignedTo: undefined, // Cannot assign at creation
       sprintId: input.sprintId,
-      estimatedHours: input.estimatedHours,
-      dueDate: input.dueDate ? new Date(input.dueDate) : undefined,
+      dueDate: input.dueDate ? (input.dueDate as any) : undefined,
     };
 
     // BUG FIX #5: Use transaction for data integrity
@@ -527,24 +522,12 @@ export class ChangeRequestService {
       }
 
       // PM specific fields
-      if (input.assignedTo !== undefined) {
-        updateData.assignedTo = input.assignedTo || null;
-      }
-
       if (input.sprintId !== undefined) {
         updateData.sprintId = input.sprintId || null;
       }
 
-      if (input.estimatedHours !== undefined) {
-        updateData.estimatedHours = input.estimatedHours || null;
-      }
-
-      if (input.actualHours !== undefined) {
-        updateData.actualHours = input.actualHours || null;
-      }
-
       if (input.dueDate !== undefined) {
-        updateData.dueDate = input.dueDate ? new Date(input.dueDate) : null;
+        updateData.dueDate = input.dueDate ? (input.dueDate as any) : null;
       }
 
       // PMs can also update titles and descriptions if needed for refinement
@@ -766,7 +749,7 @@ export class ChangeRequestService {
     // Define allowed transitions by role
     const allowedTransitions: Record<string, Record<string, string[]>> = {
       pm: {
-        SUBMITTED: ["IN_DISCUSSION", "REJECTED"],
+        SUBMITTED: ["IN_DISCUSSION"],
         IN_DISCUSSION: ["REJECTED"],
         APPROVED: ["ON_GOING"],
         ON_GOING: ["CLOSED"],

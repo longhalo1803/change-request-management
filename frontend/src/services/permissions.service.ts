@@ -58,9 +58,8 @@ export const permissionsService = {
     return response.data.data;
   },
 
-  async deleteUser(id: string): Promise<void> {
-    await axiosInstance.delete(`/users/${id}`);
-  },
+
+
 
   async updateUserStatus(id: string, status: UserStatus): Promise<AdminUser> {
     const response = await axiosInstance.patch<ApiResponse<AdminUser>>(

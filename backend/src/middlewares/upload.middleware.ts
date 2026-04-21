@@ -48,27 +48,51 @@ const fileFilter = (
   cb: multer.FileFilterCallback
 ) => {
   const allowedTypes = [
+    // Documents
     "application/pdf",
+    "text/plain",
+    "text/csv",
     "application/msword",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    // Images
     "image/png",
     "image/jpeg",
     "image/jpg",
+    "image/gif",
+    "image/webp",
+    "image/svg+xml",
+    // Archives
     "application/zip",
+    "application/x-rar-compressed",
+    "application/x-7z-compressed",
   ];
 
   const allowedExtensions = [
+    // Documents
     ".pdf",
+    ".txt",
+    ".csv",
     ".doc",
     ".docx",
     ".xls",
     ".xlsx",
+    ".ppt",
+    ".pptx",
+    // Images
     ".png",
     ".jpg",
     ".jpeg",
+    ".gif",
+    ".webp",
+    ".svg",
+    // Archives
     ".zip",
+    ".rar",
+    ".7z",
   ];
 
   const fileExt = path.extname(file.originalname).toLowerCase();
@@ -79,7 +103,11 @@ const fileFilter = (
   ) {
     cb(null, true);
   } else {
-    cb(new Error(`Invalid file type: ${file.mimetype}`));
+    cb(
+      new Error(
+        `File type not allowed: ${file.originalname} (${file.mimetype}). Allowed: ${allowedExtensions.join(", ")}`
+      )
+    );
   }
 };
 

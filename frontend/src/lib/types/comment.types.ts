@@ -9,6 +9,12 @@ export interface ChangeRequestComment {
   content: string;
   commentedBy: string;
   commenterName?: string;
+  commenter?: {
+    id: string;
+    fullName: string;
+    email: string;
+    role: string;
+  };
   createdAt: string;
   updatedAt: string;
   attachments?: ChangeRequestAttachment[];

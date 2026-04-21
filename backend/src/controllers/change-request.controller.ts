@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   ChangeRequestService,
   SearchCRInput,
@@ -7,7 +7,6 @@ import { AppError } from "@/utils/app-error";
 import { createChangeRequestSchema } from "@/validators/change-request.validator";
 import { ZodError } from "zod";
 import { logger } from "@/utils/logger";
-import { config } from "@/config/env";
 
 /**
  * ChangeRequest Controller
@@ -24,6 +23,23 @@ export class ChangeRequestController {
 
   constructor() {
     this.crService = new ChangeRequestService();
+  }
+
+  /**
+   * GET /api/change-requests/lookups
+   * Get master data for CRs
+   */
+  public async getLookups(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const data = await this.crService.getLookups();
+      this.sendSuccess(res, data, "Lookups retrieved successfully");
+    } catch (error) {
+      next(error);
+    }
   }
 
   /**
@@ -104,7 +120,6 @@ export class ChangeRequestController {
         statusId: getQueryString(req.query.statusId),
         priorityId: getQueryString(req.query.priorityId),
         spaceId: getQueryString(req.query.spaceId),
-        assignedTo: getQueryString(req.query.assignedTo),
         parentId: getQueryString(req.query.parentId),
         sortBy:
           (getQueryString(req.query.sortBy) as
@@ -191,6 +206,8 @@ export class ChangeRequestController {
   /**
    * POST /api/change-requests/:id/attachments
    * Upload attachments to existing CR (CUSTOMER ONLY, DRAFT status only)
+   * Note: File type and size validation is handled by multer middleware.
+   * Multer errors are caught in the route handler wrapper.
    */
   async uploadAttachments(req: Request, res: Response): Promise<void> {
     try {
@@ -202,28 +219,6 @@ export class ChangeRequestController {
       if (!files || files.length === 0) {
         this.sendError(res, new AppError("cr.no_files_provided", 400), 400);
         return;
-      }
-
-      // Validate file count
-      const MAX_FILES = 5;
-      if (files.length > MAX_FILES) {
-        this.sendError(res, new AppError("cr.too_many_files", 400), 400);
-        return;
-      }
-
-      // Validate each file
-      const { maxFileSize, allowedTypes } = config.upload;
-      const validTypes = allowedTypes.filter((t: string) => t.trim().length > 0);
-      
-      for (const file of files) {
-        if (file.size > maxFileSize) {
-          this.sendError(res, new AppError("cr.file_too_large", 400), 400);
-          return;
-        }
-        if (validTypes.length > 0 && !validTypes.includes(file.mimetype)) {
-          this.sendError(res, new AppError("cr.file_type_not_allowed", 400), 400);
-          return;
-        }
       }
 
       const attachments = await this.crService.uploadAttachments(
@@ -259,7 +254,6 @@ export class ChangeRequestController {
         priorityId,
         worktypeId,
         sprintId,
-        estimatedHours,
         dueDate,
       } = req.body;
 
@@ -271,7 +265,6 @@ export class ChangeRequestController {
           priorityId,
           worktypeId,
           sprintId,
-          estimatedHours,
           dueDate,
         },
         user.id,
@@ -419,26 +412,7 @@ export class ChangeRequestController {
     }
   }
 
-  /**
-   * GET /api/change-requests/assigned/to-me
-   * Get CRs assigned to current user
-   */
-  async getAssignedToMe(req: Request, res: Response): Promise<void> {
-    try {
-      const user = this.getUserFromRequest(req);
 
-      const result = await this.crService.getCrsAssignedToUser(user.id);
-
-      this.sendSuccess(
-        res,
-        result,
-        "Assigned change requests retrieved successfully"
-      );
-    } catch (error) {
-      logger.error(error);
-      this.sendError(res, error as Error);
-    }
-  }
 
   /**
    * POST /api/change-requests/:id/comments

@@ -4,8 +4,10 @@ import {
   type SearchChangeRequestResponse,
   type ChangeRequest,
   type SearchChangeRequestInput,
+  type CreateChangeRequestInput,
   type UpdateChangeRequestInput,
   type StatusTransitionInput,
+  type ChangeRequestLookupData,
 } from "@/services";
 import { queryKeys } from "@/hooks/queryKeys";
 
@@ -44,7 +46,7 @@ export const useCreateChangeRequest = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: FormData) => changeRequestService.create(input),
+    mutationFn: (input: CreateChangeRequestInput) => changeRequestService.create(input),
     onSuccess: (data) => {
       // Invalidate lists
       queryClient.invalidateQueries({
@@ -54,6 +56,28 @@ export const useCreateChangeRequest = () => {
         queryKey: queryKeys.changeRequests.bySpace(data.spaceId),
       });
     },
+  });
+};
+
+/**
+ * Hook: Upload attachments
+ */
+export const useUploadAttachments = () => {
+  return useMutation({
+    mutationFn: ({ crId, formData }: { crId: string; formData: FormData }) =>
+      changeRequestService.uploadAttachments(crId, formData),
+  });
+};
+
+/**
+ * Hook: Get change request lookups
+ */
+export const useChangeRequestLookups = () => {
+  return useQuery<ChangeRequestLookupData>({
+    queryKey: queryKeys.changeRequests.lookups(),
+    queryFn: () => changeRequestService.getLookups(),
+    staleTime: 60 * 60 * 1000, // 1 hour (lookups rarely change)
+    gcTime: 24 * 60 * 60 * 1000, // 24 hours
   });
 };
 
@@ -153,17 +177,7 @@ export const useChangeRequestsBySpace = (spaceId: string) => {
   });
 };
 
-/**
- * Hook: Get change requests assigned to current user (loads all items)
- */
-export const useChangeRequestsAssignedToMe = () => {
-  return useQuery<SearchChangeRequestResponse>({
-    queryKey: queryKeys.changeRequests.assignedToMe(),
-    queryFn: () => changeRequestService.getAssignedToMe(),
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-  });
-};
+
 
 /**
  * Hook: Get status history for a change request

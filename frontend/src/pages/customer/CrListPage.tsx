@@ -156,6 +156,7 @@ const CrListPage = () => {
         open={isDetailModalOpen}
         cr={selectedCr}
         onCancel={handleDetailClose}
+        onStatusChange={handleDetailClose}
         actorType="customer"
       />
     </div>

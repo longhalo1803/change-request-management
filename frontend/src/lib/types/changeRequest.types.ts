@@ -41,10 +41,8 @@ export interface ChangeRequest {
   worktype?: TaskWorktype;
   createdBy: string;
   creator?: UserInfo;
-  assignedTo?: string | null;
-  assignee?: UserInfo | null;
   sprintId?: string;
-  estimatedHours?: number;
+  startDate?: string;
   dueDate?: string;
   createdAt: string;
   updatedAt: string;
@@ -57,7 +55,7 @@ export interface CreateChangeRequestInput {
   priorityId?: string;
   worktypeId?: string;
   sprintId?: string;
-  estimatedHours?: number;
+  startDate?: string;
   dueDate?: string;
 }
 
@@ -67,7 +65,7 @@ export interface UpdateChangeRequestInput {
   priorityId?: string;
   worktypeId?: string;
   sprintId?: string;
-  estimatedHours?: number;
+  startDate?: string;
   dueDate?: string;
 }
 
@@ -79,7 +77,6 @@ export interface StatusTransitionInput {
 export interface SearchChangeRequestInput {
   spaceId?: string;
   statusId?: string;
-  assignedTo?: string;
   search?: string; // Search by title, description, crKey
   id?: string; // Search by exact ID
   name?: string; // Search by title/name
@@ -91,6 +88,12 @@ export interface SearchChangeRequestInput {
 export interface SearchChangeRequestResponse {
   items: ChangeRequest[];
   total: number;
+}
+
+export interface ChangeRequestLookupData {
+  priorities: TaskPriority[];
+  worktypes: TaskWorktype[];
+  statuses: TaskStatus[];
 }
 
 export enum ChangeRequestStatus {

@@ -117,6 +117,7 @@ export const AdminCrListPage = () => {
         open={detailModalOpen}
         cr={selectedCr}
         onCancel={handleDetailClose}
+        onStatusChange={handleDetailClose}
         actorType="admin"
       />
     </div>

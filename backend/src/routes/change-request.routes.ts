@@ -31,6 +31,12 @@ router.use(requireAuth);
 // ===== List & Search =====
 
 /**
+ * GET /api/change-requests/lookups
+ * Get master data for CRs
+ */
+router.get("/lookups", (req, res, next) => controller.getLookups(req, res, next));
+
+/**
  * GET /api/change-requests
  * Get all CRs with search/filter/pagination
  * Query: search, status, priority, spaceId, assignedTo, page, limit, sortBy, sortOrder
@@ -43,22 +49,6 @@ router.get("/", (req, res) => controller.getChangeRequests(req, res));
  */
 router.get("/by-space/:spaceId", (req, res) =>
   controller.getCRsBySpace(req, res)
-);
-
-/**
- * GET /api/change-requests/assigned/to-me
- * Get CRs assigned to current user
- */
-router.get("/assigned/to-me", (req, res) =>
-  controller.getAssignedToMe(req, res)
-);
-
-/**
- * GET /api/change-requests/assigned/to-me
- * Get CRs assigned to current user
- */
-router.get("/assigned/to-me", (req, res) =>
-  controller.getAssignedToMe(req, res)
 );
 
 // ===== Single CR Operations =====
@@ -83,7 +73,25 @@ router.post("/", (req, res) => controller.createChangeRequest(req, res));
  */
 router.post(
   "/:id/attachments",
-  uploadFiles.array("attachments", 5),
+  (req, res, next) => {
+    uploadFiles.array("attachments", 5)(req, res, (err: any) => {
+      if (err) {
+        // Handle multer errors with a proper 400 JSON response
+        const message =
+          err.code === "LIMIT_FILE_SIZE"
+            ? "File too large. Maximum size is 10MB."
+            : err.code === "LIMIT_FILE_COUNT"
+              ? "Too many files. Maximum is 5 files."
+              : err.message || "File upload failed";
+        return res.status(400).json({
+          success: false,
+          message,
+          data: null,
+        });
+      }
+      next();
+    });
+  },
   (req, res) => controller.uploadAttachments(req, res)
 );
 

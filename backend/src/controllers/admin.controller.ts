@@ -98,18 +98,7 @@ export class AdminController {
     }
   }
 
-  /**
-   * GET /admin/dashboard/top-assignees
-   */
-  async getTopAssignees(req: Request, res: Response): Promise<void> {
-    try {
-      const limit = this.validateLimit(req.query.limit as string, 10, 50);
-      const data = await this.adminService.getTopAssignees(limit);
-      this.sendSuccess(res, data, "Top assignees retrieved successfully");
-    } catch (error) {
-      this.sendError(res, error as Error);
-    }
-  }
+
 
   /**
    * GET /admin/dashboard/overdue-crs

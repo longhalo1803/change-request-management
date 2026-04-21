@@ -19,6 +19,7 @@ export type {
   SearchChangeRequestResponse,
   ChangeRequestStatus,
   ChangeRequestPriority,
+  ChangeRequestLookupData,
 } from "@/lib/types/changeRequest.types";
 
 export type {

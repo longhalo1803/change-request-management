@@ -60,23 +60,6 @@ export const getCreatorInfo = (cr: ChangeRequest): UserInfo | null => {
 };
 
 /**
- * Get assignee info from ChangeRequest
- * Handles both string IDs and UserInfo objects
- */
-export const getAssigneeInfo = (cr: ChangeRequest): UserInfo | null => {
-  // If assignee object exists with fullName, return it
-  if (
-    cr.assignee &&
-    typeof cr.assignee === "object" &&
-    "fullName" in cr.assignee
-  ) {
-    return cr.assignee as UserInfo;
-  }
-
-  return null;
-};
-
-/**
  * Get user display name
  */
 export const getUserDisplayName = (

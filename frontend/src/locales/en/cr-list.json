@@ -45,8 +45,6 @@
   },
   "create_modal": {
     "title": "Create Requirement",
-    "subtitle": "SOLASHI Connect • Project Alpha",
-    "draft_info": "Draft will be saved automatically",
     "project_label": "Project / Space",
     "project_error": "Please select project",
     "issue_type_label": "Issue Type",

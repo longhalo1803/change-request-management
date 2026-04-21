@@ -3,14 +3,13 @@ import { AppDataSource } from "@/config/database";
 import {
   Project,
   Space,
-  SpaceAssignment,
   Sprint,
 } from "@/entities/project.entity";
 
 /**
  * Project Repository
  *
- * Data access layer for Project, Space, SpaceAssignment entities
+ * Data access layer for Project, Space, Sprint entities
  *
  * SOLID Principles:
  * - Single Responsibility: Only handles project data access
@@ -20,13 +19,11 @@ import {
 export class ProjectRepository {
   private projectRepo: Repository<Project>;
   private spaceRepo: Repository<Space>;
-  private spaceAssignmentRepo: Repository<SpaceAssignment>;
   private sprintRepo: Repository<Sprint>;
 
   constructor() {
     this.projectRepo = AppDataSource.getRepository(Project);
     this.spaceRepo = AppDataSource.getRepository(Space);
-    this.spaceAssignmentRepo = AppDataSource.getRepository(SpaceAssignment);
     this.sprintRepo = AppDataSource.getRepository(Sprint);
   }
 
@@ -187,58 +184,6 @@ export class ProjectRepository {
       .getRawMany();
   }
 
-  // ===== Space Assignment CRUD =====
-
-  /**
-   * Get assignments for a space
-   */
-  async findSpaceAssignments(spaceId: string): Promise<SpaceAssignment[]> {
-    return this.spaceAssignmentRepo.find({
-      where: { spaceId },
-      relations: ["user"],
-      order: { createdAt: "DESC" },
-    });
-  }
-
-  /**
-   * Create space assignment
-   */
-  async createSpaceAssignment(
-    assignmentData: Partial<SpaceAssignment>
-  ): Promise<SpaceAssignment> {
-    const assignment = this.spaceAssignmentRepo.create(assignmentData);
-    return this.spaceAssignmentRepo.save(assignment);
-  }
-
-  /**
-   * Update space assignment
-   */
-  async updateSpaceAssignment(
-    id: string,
-    assignmentData: Partial<SpaceAssignment>
-  ): Promise<void> {
-    await this.spaceAssignmentRepo.update(id, assignmentData);
-  }
-
-  /**
-   * Delete space assignment
-   */
-  async deleteSpaceAssignment(id: string): Promise<void> {
-    await this.spaceAssignmentRepo.delete(id);
-  }
-
-  /**
-   * Check if user is assigned to space
-   */
-  async isUserAssignedToSpace(
-    spaceId: string,
-    userId: string
-  ): Promise<boolean> {
-    const assignment = await this.spaceAssignmentRepo.findOne({
-      where: { spaceId, userId },
-    });
-    return !!assignment;
-  }
 
   // ===== Sprint CRUD =====
 

@@ -73,19 +73,7 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
     setModalVisible(true);
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      setLoading(true);
-      await permissionsService.deleteUser(id);
-      message.success("User deleted successfully");
-      await loadUsers();
-    } catch (error) {
-      message.error("Failed to delete user");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const handleStatusChange = async (id: string, status: UserStatus) => {
     try {
@@ -157,7 +145,6 @@ export const AccountsTab = ({ permissionGroups }: AccountsTabProps) => {
         data={Array.isArray(filteredUsers) ? filteredUsers : []}
         loading={loading}
         onEdit={handleEdit}
-        onDelete={handleDelete}
         onStatusChange={handleStatusChange}
       />
 

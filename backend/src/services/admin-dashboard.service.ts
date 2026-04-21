@@ -49,12 +49,7 @@ export class AdminDashboardService {
     return this.adminRepo.getRecentActivity(limit);
   }
 
-  /**
-   * Get top assignees
-   */
-  async getTopAssignees(limit: number = 10): Promise<any> {
-    return this.adminRepo.getTopAssignees(limit);
-  }
+
 
   /**
    * Get overdue CRs
@@ -84,14 +79,12 @@ export class AdminDashboardService {
     const [
       overview,
       recentActivity,
-      topAssignees,
       overdueCRs,
       topCustomers,
       volumeTrends,
     ] = await Promise.all([
       this.getDashboardOverview(),
       this.getRecentActivity(10),
-      this.getTopAssignees(5),
       this.getOverdueCRs(),
       this.getTopCustomers(5),
       this.getVolumeTrends(),
@@ -100,7 +93,6 @@ export class AdminDashboardService {
     return {
       overview,
       recentActivity,
-      topAssignees,
       overdueCRs,
       topCustomers,
       volumeTrends,

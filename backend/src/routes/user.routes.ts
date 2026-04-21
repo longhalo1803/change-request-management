@@ -15,7 +15,7 @@ const controller = new UserController();
 // Apply auth middleware to all routes
 router.use(requireAuth);
 
-// Public user endpoints
+// Public user endpoints (authenticated users)
 router.get("/:id", (req, res) => controller.getUserById(req, res));
 router.post("/:id/change-password", (req, res) =>
   controller.changePassword(req, res)
@@ -34,8 +34,8 @@ router.post("/", requireRole([UserRole.ADMIN]), (req, res) =>
 router.put("/:id", requireRole([UserRole.ADMIN]), (req, res) =>
   controller.updateUser(req, res)
 );
-router.delete("/:id", requireRole([UserRole.ADMIN]), (req, res) =>
-  controller.deleteUser(req, res)
+router.patch("/:id/status", requireRole([UserRole.ADMIN]), (req, res) =>
+  controller.updateUserStatus(req, res)
 );
 router.post("/:id/activate", requireRole([UserRole.ADMIN]), (req, res) =>
   controller.activateUser(req, res)

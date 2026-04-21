@@ -3,6 +3,7 @@ import { ChangeRequest } from "@/entities/change-request.entity";
 import { User } from "@/entities/user.entity";
 import { Quotation } from "@/entities/quotation.entity";
 import { Project } from "@/entities/project.entity";
+import { TaskStatus } from "@/entities/task-lookup.entity";
 
 /**
  * Admin Repository
@@ -16,8 +17,9 @@ export class AdminRepository {
    */
   async getCrStats(): Promise<any> {
     const crRepo = AppDataSource.getRepository(ChangeRequest);
+    const statusRepo = AppDataSource.getRepository(TaskStatus);
 
-    const [total, statusBreakdown] = await Promise.all([
+    const [total, statusBreakdown, allStatuses] = await Promise.all([
       crRepo.count(),
       crRepo
         .createQueryBuilder("cr")
@@ -29,11 +31,23 @@ export class AdminRepository {
         .addSelect("status.color", "color")
         .addSelect("COUNT(cr.id)", "count")
         .getRawMany(),
+      statusRepo.find({ order: { order: "ASC" } }),
     ]);
+
+    // Merge: ensure all statuses appear, even with count = 0
+    const countMap = new Map(
+      statusBreakdown.map((r: any) => [r.statusName, { count: parseInt(r.count, 10), color: r.color }])
+    );
+
+    const byStatus = allStatuses.map((status) => ({
+      statusName: status.name,
+      color: status.color,
+      count: countMap.get(status.name)?.count || 0,
+    }));
 
     return {
       total,
-      byStatus: statusBreakdown,
+      byStatus,
     };
   }
 
@@ -48,8 +62,9 @@ export class AdminRepository {
       userRepo.count({ where: { isActive: true } }),
       userRepo
         .createQueryBuilder("u")
-        .groupBy("u.role")
-        .select("u.role", "role")
+        .leftJoin("u.roleEntity", "role")
+        .groupBy("role.code")
+        .select("role.code", "role")
         .addSelect("COUNT(u.id)", "count")
         .getRawMany(),
     ]);
@@ -126,26 +141,7 @@ export class AdminRepository {
     });
   }
 
-  /**
-   * Get top assignees
-   */
-  async getTopAssignees(limit: number = 10): Promise<any> {
-    const crRepo = AppDataSource.getRepository(ChangeRequest);
 
-    return crRepo
-      .createQueryBuilder("cr")
-      .leftJoin("cr.assignee", "assignee")
-      .where("cr.assignedTo IS NOT NULL")
-      .groupBy("cr.assignedTo")
-      .addGroupBy("assignee.id")
-      .addGroupBy("assignee.fullName")
-      .select("assignee.id", "id")
-      .addSelect("assignee.fullName", "fullName")
-      .addSelect("COUNT(cr.id)", "crCount")
-      .orderBy("crCount", "DESC")
-      .limit(limit)
-      .getRawMany();
-  }
 
   /**
    * Get top 5 customers by CR count
@@ -155,11 +151,13 @@ export class AdminRepository {
     return crRepo
       .createQueryBuilder("cr")
       .leftJoin("cr.creator", "creator")
-      .where("creator.role = 'customer'")
-      .select("creator.fullName", "name")
+      .leftJoin("creator.roleEntity", "creatorRole")
+      .where("creatorRole.code = 'customer'")
+      .select("CONCAT(creator.firstName, ' ', creator.lastName)", "name")
       .addSelect("COUNT(cr.id)", "crCount")
       .groupBy("creator.id")
-      .addGroupBy("creator.fullName")
+      .addGroupBy("creator.firstName")
+      .addGroupBy("creator.lastName")
       .orderBy("crCount", "DESC")
       .limit(limit)
       .getRawMany()
@@ -232,7 +230,6 @@ export class AdminRepository {
 
     return crRepo
       .createQueryBuilder("cr")
-      .leftJoinAndSelect("cr.assignee", "assignee")
       .leftJoinAndSelect("cr.space", "space")
       .leftJoinAndSelect("cr.status", "status")
       .where("cr.dueDate < :now", { now })

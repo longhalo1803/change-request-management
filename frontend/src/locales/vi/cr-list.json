@@ -45,8 +45,6 @@
   },
   "create_modal": {
     "title": "Tạo yêu cầu",
-    "subtitle": "SOLASHI Connect • Project Alpha",
-    "draft_info": "Bản nháp sẽ được lưu tự động",
     "project_label": "Dự án / Không gian",
     "project_error": "Vui lòng chọn dự án",
     "issue_type_label": "Loại vấn đề",

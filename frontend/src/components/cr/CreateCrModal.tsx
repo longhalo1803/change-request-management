@@ -9,9 +9,19 @@ import {
   message,
 } from "antd";
 import { CloudUploadOutlined, CloseOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { UploadFile } from "antd/es/upload/interface";
 import { useTranslation } from "react-i18next";
+import {
+  useCreateChangeRequest,
+  useChangeRequestLookups,
+  useUploadAttachments,
+  useProjects,
+  useSpaces,
+} from "@/hooks";
+import type { CreateChangeRequestInput } from "@/services";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 type ActorType = "customer" | "pm" | "admin";
 
@@ -22,7 +32,6 @@ interface CreateCrModalProps {
   actorType?: ActorType;
 }
 
-const { TextArea } = Input;
 const { Dragger } = Upload;
 
 /**
@@ -35,28 +44,103 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
   onSuccess,
   actorType = "customer",
 }) => {
+  const { t } = useTranslation("cr-list");
+  const [form] = Form.useForm();
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [summaryLength, setSummaryLength] = useState(0);
+  const [description, setDescription] = useState("");
+
+  const { mutateAsync: createCr, isPending: isCreating } = useCreateChangeRequest();
+  const { mutateAsync: uploadAttachments, isPending: isUploading } = useUploadAttachments();
+  
+  const { data: lookups, isLoading: isLoadingLookups } = useChangeRequestLookups();
+  
+  // We need to fetch projects to select a project, then spaces for that project
+  const { data: projects, isLoading: isLoadingProjects } = useProjects();
+  const selectedProjectId = Form.useWatch("projectId", form);
+  const { data: spaces, isLoading: isLoadingSpaces } = useSpaces(selectedProjectId || "");
+
+  const isLoading = isCreating || isUploading;
+
+  // Configure ReactQuill modules with toolbar options
+  const quillModules = useMemo(
+    () => ({
+      toolbar: [
+        ["bold", "italic", "underline"], // Bold, Italic, Underline
+        [{ list: "ordered" }, { list: "bullet" }], // Lists
+        ["link", "image"], // Link and Image
+        ["code-block"], // Code block
+        ["clean"], // Remove formatting
+      ],
+    }),
+    []
+  );
+
+  const quillFormats = [
+    "bold",
+    "italic",
+    "underline",
+    "list",
+    "bullet",
+    "link",
+    "image",
+    "code-block",
+  ];
+
   // PM actors cannot create CRs
   if (actorType === "pm") {
     return null;
   }
 
-  const { t } = useTranslation("cr-list");
-  const [form] = Form.useForm();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [summaryLength, setSummaryLength] = useState(0);
-
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      console.log("Form values:", values);
+      
+      const jsonPayload: CreateChangeRequestInput = {
+        spaceId: values.spaceId,
+        worktypeId: values.issueType,
+        title: values.summary,
+      };
+
+      if (description) {
+        jsonPayload.description = description;
+      }
+      if (values.priority) {
+        jsonPayload.priorityId = values.priority;
+      }
+      if (values.startDate) {
+        jsonPayload.startDate = values.startDate.format("YYYY-MM-DD");
+      }
+      if (values.dueDate) {
+        jsonPayload.dueDate = values.dueDate.format("YYYY-MM-DD");
+      }
+
+      // Step 1: Create CR
+      const cr = await createCr(jsonPayload);
+
+      // Step 2: Upload Attachments if any
+      if (fileList.length > 0) {
+        const formData = new FormData();
+        fileList.forEach((f) =>
+          formData.append("attachments", f.originFileObj as File)
+        );
+        await uploadAttachments({ crId: cr.id, formData });
+      }
+
       message.success(t("create_modal.success_message"));
       form.resetFields();
       setFileList([]);
       setSummaryLength(0);
+      setDescription("");
       onSuccess?.();
       onCancel();
-    } catch (error) {
-      console.error("Validation failed:", error);
+    } catch (error: any) {
+      if (error.errorFields) {
+        // Validation failed naturally
+        return;
+      }
+      console.error("Submission failed:", error);
+      message.error(error?.response?.data?.message || error.message || "Failed to create Change Request");
     }
   };
 
@@ -64,13 +148,20 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
     form.resetFields();
     setFileList([]);
     setSummaryLength(0);
+    setDescription("");
     onCancel();
   };
 
   const uploadProps = {
     fileList,
     beforeUpload: (file: File) => {
-      setFileList([...fileList, file as any]);
+      const uploadFile: UploadFile = {
+        uid: `${Date.now()}-${file.name}`,
+        name: file.name,
+        status: "done",
+        originFileObj: file as any,
+      };
+      setFileList([...fileList, uploadFile]);
       return false; // Prevent auto upload
     },
     onRemove: (file: UploadFile) => {
@@ -84,25 +175,25 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
       title={
         <div>
           <div className="text-lg font-semibold">{t("create_modal.title")}</div>
-          <div className="text-sm text-gray-500 font-normal">
-            {t("create_modal.subtitle")}
-          </div>
         </div>
       }
       open={open}
       onCancel={handleCancel}
+      confirmLoading={isLoading}
       width={800}
       footer={[
         <div key="footer" className="flex items-center justify-between">
-          <div className="text-sm text-gray-500">
-            <span className="text-orange-500">●</span>{" "}
-            {t("create_modal.draft_info")}
-          </div>
+          <div className="text-sm text-gray-500"> </div>
           <div className="flex gap-2">
             <Button key="cancel" onClick={handleCancel}>
               {t("buttons.cancel")}
             </Button>
-            <Button key="submit" type="primary" onClick={handleSubmit}>
+            <Button
+              key="submit"
+              type="primary"
+              onClick={handleSubmit}
+              loading={isLoading}
+            >
               {t("create_modal.title")} →
             </Button>
           </div>
@@ -113,31 +204,43 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
       <Form
         form={form}
         layout="vertical"
-        initialValues={{
-          project: "Project Alpha - CMS",
-          issueType: "Change Request",
-          status: "Draft",
-          priority: "Medium",
-        }}
       >
         <div className="grid grid-cols-4 gap-4 mb-4">
           <Form.Item
+            label="Project"
+            name="projectId"
+            rules={[
+              { required: true, message: "Please select project" },
+            ]}
+          >
+            <Select
+              placeholder="Select project"
+              suffixIcon={<span className="text-gray-400">▼</span>}
+              options={projects?.map((p) => ({
+                label: p.name,
+                value: p.id,
+              }))}
+              loading={isLoadingProjects}
+              onChange={() => form.setFieldValue("spaceId", undefined)}
+            />
+          </Form.Item>
+
+          <Form.Item
             label={t("create_modal.project_label")}
-            name="project"
+            name="spaceId"
             rules={[
               { required: true, message: t("create_modal.project_error") },
             ]}
           >
             <Select
+              placeholder="Select space"
               suffixIcon={<span className="text-gray-400">▼</span>}
-              options={[
-                { label: "Project Alpha - CMS", value: "Project Alpha - CMS" },
-                {
-                  label: "Project Beta - Mobile",
-                  value: "Project Beta - Mobile",
-                },
-                { label: "Project Gamma - Web", value: "Project Gamma - Web" },
-              ]}
+              options={spaces?.map((s) => ({
+                label: s.name,
+                value: s.id,
+              }))}
+              loading={isLoadingSpaces}
+              disabled={!selectedProjectId}
             />
           </Form.Item>
 
@@ -149,12 +252,13 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
             ]}
           >
             <Select
+              placeholder="Select issue type"
               suffixIcon={<span className="text-gray-400">▼</span>}
-              options={[
-                { label: "📋 Change Request", value: "Change Request" },
-                { label: "🐛 Bug", value: "Bug" },
-                { label: "✨ Feature", value: "Feature" },
-              ]}
+              options={lookups?.worktypes?.map((w) => ({
+                label: w.name,
+                value: w.id,
+              }))}
+              loading={isLoadingLookups}
             />
           </Form.Item>
 
@@ -165,18 +269,6 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
             <Input
               placeholder={t("create_modal.parent_task_placeholder")}
               suffix={<span className="text-gray-400 cursor-pointer">🔍</span>}
-            />
-          </Form.Item>
-
-          <Form.Item label={t("create_modal.status_label")} name="status">
-            <Select
-              suffixIcon={<span className="text-gray-400">▼</span>}
-              options={[
-                { label: "📄 Draft", value: "Draft" },
-                { label: "📤 Submitted", value: "Submitted" },
-                { label: "💬 In Discussion", value: "In Discussion" },
-                { label: "✅ Approved", value: "Approved" },
-              ]}
             />
           </Form.Item>
         </div>
@@ -200,44 +292,20 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
           />
         </Form.Item>
 
-        {/* Description */}
+        {/* Description with Rich Text Editor */}
         <Form.Item
           label={t("create_modal.description_label")}
           name="description"
         >
-          <div className="border border-gray-300 rounded">
-            {/* Toolbar */}
-            <div className="flex gap-2 p-2 border-b border-gray-300 bg-gray-50">
-              <Button size="small" type="text" className="font-bold">
-                B
-              </Button>
-              <Button size="small" type="text" className="italic">
-                I
-              </Button>
-              <Button size="small" type="text">
-                ≡
-              </Button>
-              <Button size="small" type="text">
-                ⊙
-              </Button>
-              <Button size="small" type="text">
-                🔗
-              </Button>
-              <Button size="small" type="text">
-                📷
-              </Button>
-              <Button size="small" type="text">
-                &lt;/&gt;
-              </Button>
-            </div>
-            {/* Text Area */}
-            <TextArea
-              placeholder={t("create_modal.description_placeholder")}
-              bordered={false}
-              rows={6}
-              style={{ resize: "none" }}
-            />
-          </div>
+          <ReactQuill
+            theme="snow"
+            value={description}
+            onChange={setDescription}
+            modules={quillModules}
+            formats={quillFormats}
+            placeholder={t("create_modal.description_placeholder")}
+            style={{ height: "200px", marginBottom: "50px" }}
+          />
         </Form.Item>
 
         {/* Priority and Dates */}
@@ -250,13 +318,13 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
             ]}
           >
             <Select
+              placeholder="Select priority"
               suffixIcon={<span className="text-gray-400">▼</span>}
-              options={[
-                { label: "🔵 Low", value: "Low" },
-                { label: "🟠 Medium", value: "Medium" },
-                { label: "🔴 High", value: "High" },
-                { label: "🟣 Critical", value: "Critical" },
-              ]}
+              options={lookups?.priorities?.map((p) => ({
+                label: p.name,
+                value: p.id,
+              }))}
+              loading={isLoadingLookups}
             />
           </Form.Item>
 
@@ -266,8 +334,8 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
           >
             <DatePicker
               className="w-full"
-              format="MM/DD/YYYY"
-              placeholder="mm/dd/yyyy"
+              format="YYYY-MM-DD"
+              placeholder="yyyy-mm-dd"
               suffixIcon={<span className="text-gray-400">📅</span>}
             />
           </Form.Item>
@@ -275,8 +343,8 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
           <Form.Item label={t("create_modal.due_date_label")} name="dueDate">
             <DatePicker
               className="w-full"
-              format="MM/DD/YYYY"
-              placeholder="mm/dd/yyyy"
+              format="YYYY-MM-DD"
+              placeholder="yyyy-mm-dd"
               suffixIcon={<span className="text-gray-400">📅</span>}
             />
           </Form.Item>

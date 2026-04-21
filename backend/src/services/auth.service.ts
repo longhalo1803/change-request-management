@@ -2,7 +2,7 @@ import { UserRepository } from "@/repositories/user.repository";
 import { TokenService, TokenPair } from "./token.service";
 import { PasswordUtil } from "@/utils/password";
 import { AppError } from "@/utils/app-error";
-import { User } from "@/entities/user.entity";
+import { User, UserRole } from "@/entities/user.entity";
 
 /**
  * Auth Service
@@ -21,7 +21,19 @@ export interface LoginCredentials {
 }
 
 export interface LoginResponse {
-  user: Omit<User, "password">;
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    phone: string | null;
+    role: UserRole;
+    isActive: boolean;
+    lastLoginAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+  };
   tokens: TokenPair;
 }
 
@@ -67,11 +79,23 @@ export class AuthService {
       role: user.role,
     });
 
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
+    // Build user response without password, including computed fullName
+    const userResponse = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      fullName: user.fullName,
+      phone: user.phone,
+      role: user.role,
+      isActive: user.isActive,
+      lastLoginAt: user.lastLoginAt,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
 
     return {
-      user: userWithoutPassword,
+      user: userResponse,
       tokens,
     };
   }

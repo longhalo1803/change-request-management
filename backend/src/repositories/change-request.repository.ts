@@ -49,7 +49,6 @@ export class ChangeRequestRepository {
         "priority",
         "worktype",
         "creator",
-        "assignee",
         "comments",
         "comments.commenter",
         "attachments",
@@ -74,7 +73,6 @@ export class ChangeRequestRepository {
         "priority",
         "worktype",
         "creator",
-        "assignee",
       ],
     });
   }
@@ -95,7 +93,6 @@ export class ChangeRequestRepository {
         "priority",
         "worktype",
         "creator",
-        "assignee",
       ],
       skip: options?.skip || 0,
       take: options?.take || 20,
@@ -104,29 +101,7 @@ export class ChangeRequestRepository {
     return { data, total };
   }
 
-  /**
-   * Get all CRs assigned to a user
-   */
-  async findByAssigneeId(
-    assigneeId: string,
-    options?: { skip?: number; take?: number }
-  ): Promise<{ data: ChangeRequest[]; total: number }> {
-    const [data, total] = await this.crRepository.findAndCount({
-      where: { assignedTo: assigneeId },
-      relations: [
-        "space",
-        "sprint",
-        "status",
-        "priority",
-        "worktype",
-        "creator",
-      ],
-      skip: options?.skip || 0,
-      take: options?.take || 20,
-      order: { createdAt: "DESC" },
-    });
-    return { data, total };
-  }
+
 
   /**
    * Get all CRs created by a user
@@ -143,7 +118,6 @@ export class ChangeRequestRepository {
         "status",
         "priority",
         "worktype",
-        "assignee",
       ],
       skip: options?.skip || 0,
       take: options?.take || 20,
@@ -271,9 +245,9 @@ export class ChangeRequestRepository {
     status?: string;
     priority?: string;
     spaceId?: string;
-    assignedTo?: string;
     createdBy?: string;
     excludeStatus?: string; // For excluding DRAFT status
+    draftStatusId?: string; // Explicitly pass draft status ID
     onlyUserDrafts?: string; // userId: If set, only return DRAFTs if createdBy matches this user
     sortBy?: "created_at" | "priority" | "status";
     sortOrder?: "ASC" | "DESC";
@@ -289,13 +263,12 @@ export class ChangeRequestRepository {
       .leftJoinAndSelect("cr.status", "status")
       .leftJoinAndSelect("cr.priority", "priority")
       .leftJoinAndSelect("cr.worktype", "worktype")
-      .leftJoinAndSelect("cr.creator", "creator")
-      .leftJoinAndSelect("cr.assignee", "assignee");
+      .leftJoinAndSelect("cr.creator", "creator");
 
     // Search by crKey, title, or creator name
     if (filters.search) {
       query.andWhere(
-        `(cr.crKey LIKE :search OR cr.title LIKE :search OR creator.fullName LIKE :search)`,
+        `(cr.crKey LIKE :search OR cr.title LIKE :search OR creator.firstName LIKE :search OR creator.lastName LIKE :search)`,
         { search: `%${filters.search}%` }
       );
     }
@@ -308,14 +281,14 @@ export class ChangeRequestRepository {
     }
 
     // Role-based visibility
-    if (filters.onlyUserDrafts) {
+    if (filters.onlyUserDrafts && filters.draftStatusId) {
       // Customer: Only see DRAFTs if they created them. For non-DRAFTs, anyone can see them.
       query.andWhere(
-        `(status.name != 'DRAFT' OR (status.name = 'DRAFT' AND cr.createdBy = :userId))`,
-        { userId: filters.onlyUserDrafts }
+        `(cr.statusId != :draftStatusId OR (cr.statusId = :draftStatusId AND cr.createdBy = :userId))`,
+        { draftStatusId: filters.draftStatusId, userId: filters.onlyUserDrafts }
       );
     } else if (filters.excludeStatus) {
-      query.andWhere("status.id != :excludeStatusId", {
+      query.andWhere("cr.statusId != :excludeStatusId", {
         excludeStatusId: filters.excludeStatus,
       });
     }
@@ -332,12 +305,7 @@ export class ChangeRequestRepository {
       query.andWhere("cr.spaceId = :spaceId", { spaceId: filters.spaceId });
     }
 
-    // Filter by assignee
-    if (filters.assignedTo) {
-      query.andWhere("cr.assignedTo = :assignedTo", {
-        assignedTo: filters.assignedTo,
-      });
-    }
+
 
     // Filter by creator
     if (filters.createdBy) {
@@ -397,8 +365,7 @@ export class ChangeRequestRepository {
       .leftJoinAndSelect("cr.status", "status")
       .leftJoinAndSelect("cr.priority", "priority")
       .leftJoinAndSelect("cr.worktype", "worktype")
-      .leftJoinAndSelect("cr.creator", "creator")
-      .leftJoinAndSelect("cr.assignee", "assignee");
+      .leftJoinAndSelect("cr.creator", "creator");
 
     // Apply visibility rules based on role
     if (userRole === "CUSTOMER") {
@@ -486,8 +453,7 @@ export class ChangeRequestRepository {
       .leftJoinAndSelect("cr.status", "status")
       .leftJoinAndSelect("cr.priority", "priority")
       .leftJoinAndSelect("cr.worktype", "worktype")
-      .leftJoinAndSelect("cr.creator", "creator")
-      .leftJoinAndSelect("cr.assignee", "assignee");
+      .leftJoinAndSelect("cr.creator", "creator");
 
     if (filters?.spaceId) {
       query.andWhere("cr.spaceId = :spaceId", { spaceId: filters.spaceId });

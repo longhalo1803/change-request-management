@@ -18,8 +18,8 @@ export const createCrSchema = (messages: Record<string, string>) =>
           "Description must be at least 10 characters",
       ),
     priority: z.enum(["low", "medium", "high", "critical"]),
+    startDate: z.string().optional(),
     dueDate: z.string().optional(),
-    estimatedHours: z.number().positive().optional(),
   });
 
 // Default schema for backwards compatibility

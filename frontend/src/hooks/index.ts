@@ -16,8 +16,9 @@ export {
   useSubmitChangeRequest,
   useTransitionStatus,
   useChangeRequestsBySpace,
-  useChangeRequestsAssignedToMe,
   useStatusHistory,
+  useChangeRequestLookups,
+  useUploadAttachments,
 } from "./changeRequest";
 
 // Comment Hooks

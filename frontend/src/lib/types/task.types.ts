@@ -13,8 +13,6 @@ export interface CrSubTask {
   status: SubTaskStatus;
   assigneeId?: string;
   assignee?: any;
-  estimatedHours?: number;
-  actualHours?: number;
   role: string;
   createdAt: string;
   updatedAt: string;

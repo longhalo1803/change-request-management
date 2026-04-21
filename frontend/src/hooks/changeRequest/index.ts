@@ -7,6 +7,7 @@ export {
   useSubmitChangeRequest,
   useTransitionStatus,
   useChangeRequestsBySpace,
-  useChangeRequestsAssignedToMe,
   useStatusHistory,
+  useChangeRequestLookups,
+  useUploadAttachments,
 } from "./useChangeRequest";

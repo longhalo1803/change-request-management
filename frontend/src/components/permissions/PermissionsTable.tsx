@@ -21,7 +21,6 @@ interface PermissionsTableProps {
   data: AdminUser[];
   loading: boolean;
   onEdit: (user: AdminUser) => void;
-  onDelete: (id: string) => void;
   onStatusChange: (id: string, status: UserStatus) => void;
 }
 
@@ -71,7 +70,6 @@ export const PermissionsTable = ({
   data,
   loading,
   onEdit,
-  onDelete,
   onStatusChange,
 }: PermissionsTableProps) => {
   const columns: ColumnsType<AdminUser> = [
@@ -157,20 +155,6 @@ export const PermissionsTable = ({
                   onClick: () => onStatusChange(record.id, UserStatus.ACTIVE),
                 },
               ]),
-          {
-            key: "delete",
-            label: "Delete",
-            danger: true,
-            onClick: () => {
-              if (
-                window.confirm(
-                  `Are you sure you want to delete ${record.firstName} ${record.lastName}?`
-                )
-              ) {
-                onDelete(record.id);
-              }
-            },
-          },
         ];
 
         return (

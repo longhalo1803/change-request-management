@@ -78,21 +78,11 @@ export class ChangeRequest {
   @JoinColumn({ name: "created_by" })
   creator: User;
 
-  @Column({ name: "assigned_to", type: "varchar", nullable: true })
-  assignedTo: string | null;
-
-  @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: "assigned_to" })
-  assignee: User | null;
+  @Column({ name: "start_date", type: "date", nullable: true })
+  startDate: Date | null;
 
   @Column({ name: "due_date", type: "date", nullable: true })
   dueDate: Date | null;
-
-  @Column({ name: "estimated_hours", type: "int", nullable: true })
-  estimatedHours: number | null;
-
-  @Column({ name: "actual_hours", type: "int", nullable: true })
-  actualHours: number | null;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;

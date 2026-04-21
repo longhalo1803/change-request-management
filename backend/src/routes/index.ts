@@ -6,6 +6,7 @@ import userRoutes from "./user.routes";
 import adminRoutes from "./admin.routes";
 import notificationRoutes from "./notification.route";
 import dashboardRoutes from "./dashboard.routes";
+import permissionsRoutes from "./permissions.routes";
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use("/users", userRoutes);
 router.use("/admin", adminRoutes);
 router.use("/notifications", notificationRoutes);
 router.use("/dashboard", dashboardRoutes);
+router.use("/permissions", permissionsRoutes);
 
 export default router;
