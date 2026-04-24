@@ -15,6 +15,9 @@ const controller = new UserController();
 // Apply auth middleware to all routes
 router.use(requireAuth);
 
+// Self-update endpoint
+router.put("/me", (req, res) => controller.updateMyProfile(req, res));
+
 // Public user endpoints (authenticated users)
 router.get("/:id", (req, res) => controller.getUserById(req, res));
 router.post("/:id/change-password", (req, res) =>

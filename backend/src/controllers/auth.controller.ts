@@ -67,6 +67,41 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
 });
 
 /**
+ * POST /api/auth/forgot-password
+ */
+export const forgotPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email } = req.body;
+    if (!email) {
+      throw new AppError("auth.email_required", 400);
+    }
+
+    await authService.forgotPassword(email);
+    sendSuccess(
+      res,
+      null,
+      t(req.language, "auth.forgot_password_success"),
+      200
+    );
+  }
+);
+
+/**
+ * POST /api/auth/reset-password
+ */
+export const resetPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email, token, newPassword } = req.body;
+    if (!email || !token || !newPassword) {
+      throw new AppError("auth.reset_password_invalid_data", 400);
+    }
+
+    await authService.resetPassword(email, token, newPassword);
+    sendSuccess(res, null, t(req.language, "auth.reset_password_success"), 200);
+  }
+);
+
+/**
  * GET /api/auth/me
  * Get current user info
  */
@@ -87,5 +122,5 @@ export const getCurrentUser = asyncHandler(
 
     const message = t(req.language, "auth.user_retrieved");
     sendSuccess(res, userWithoutPassword, message, 200);
-  },
+  }
 );

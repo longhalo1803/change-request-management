@@ -22,21 +22,12 @@ export const AdminHeader = () => {
   const navigate = useNavigate();
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
-    if (key === "profile") {
-      navigate("/admin/profile");
-    } else if (key === "logout") {
+    if (key === "logout") {
       logout();
     }
   };
 
   const userMenuItems: MenuProps["items"] = [
-    {
-      key: "profile",
-      label: t("nav.profile"),
-    },
-    {
-      type: "divider",
-    },
     {
       key: "logout",
       label: t("auth.logout"),

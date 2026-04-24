@@ -3,6 +3,10 @@ import { TokenService, TokenPair } from "./token.service";
 import { PasswordUtil } from "@/utils/password";
 import { AppError } from "@/utils/app-error";
 import { User, UserRole } from "@/entities/user.entity";
+import crypto from "crypto";
+import { PasswordResetTokenRepository } from "@/repositories/password-reset-token.repository";
+import { DevToolsService } from "./dev-tools.service";
+import { RateLimiterService } from "./rate-limiter.service";
 
 /**
  * Auth Service
@@ -40,10 +44,92 @@ export interface LoginResponse {
 export class AuthService {
   private userRepo: UserRepository;
   private tokenService: TokenService;
+  private passwordResetTokenRepo: PasswordResetTokenRepository;
 
   constructor() {
     this.userRepo = new UserRepository();
     this.tokenService = new TokenService();
+    this.passwordResetTokenRepo = new PasswordResetTokenRepository();
+  }
+
+  /**
+   * Request password reset token
+   */
+  async forgotPassword(email: string): Promise<void> {
+    const rateLimiter = RateLimiterService.getInstance();
+    const limitStatus = rateLimiter.checkLimit(email, "forgot_password");
+    
+    if (!limitStatus.allowed) {
+      // Silently discard request if within 1 minute
+      return;
+    }
+
+    const user = await this.userRepo.findByEmail(email);
+    if (!user || !user.isActive) {
+      // Don't reveal if user exists
+      return;
+    }
+
+    // Generate token
+    const token = crypto.randomBytes(32).toString("hex");
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+    // Save token hash to db
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 15);
+    await this.passwordResetTokenRepo.createToken(user.id, tokenHash, 15);
+
+    const resetLink = `http://localhost:3000/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+
+    // Mock sending email
+    console.log(`Password reset link: ${resetLink}`);
+
+    if (process.env.NODE_ENV === "development") {
+      DevToolsService.getInstance().storeMockEmail(
+        email,
+        "Password Reset Request",
+        `Click here to reset your password: ${resetLink}`,
+        token,
+        tokenHash,
+        expiresAt
+      );
+    }
+  }
+
+  /**
+   * Reset password using token
+   */
+  async resetPassword(
+    email: string,
+    token: string,
+    newPassword: string
+  ): Promise<void> {
+    const user = await this.userRepo.findByEmail(email);
+    if (!user || !user.isActive) {
+      throw new AppError("auth.invalid_reset_token", 400);
+    }
+
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    const validToken = await this.passwordResetTokenRepo.findValidToken(
+      user.id,
+      tokenHash
+    );
+
+    if (!validToken || validToken.expiresAt < new Date()) {
+      throw new AppError("auth.invalid_reset_token", 400);
+    }
+
+    // Hash new password
+    const hashedPassword = await PasswordUtil.hash(newPassword);
+
+    // Update user password
+    await this.userRepo.update(user.id, { password: hashedPassword });
+
+    // Mark token as used
+    await this.passwordResetTokenRepo.markAsUsed(validToken.id);
+
+    // Logout all existing sessions
+    await this.tokenService.revokeAllUserTokens(user.id);
   }
 
   /**

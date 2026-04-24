@@ -43,6 +43,7 @@ export const LoginForm = () => {
               prefix={<MailOutlined style={{ color: "#bfbfbf" }} />}
               placeholder={t("email_placeholder")}
               autoComplete="email"
+              autoFocus
             />
           )}
         />

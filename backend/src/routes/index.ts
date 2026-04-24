@@ -8,6 +8,8 @@ import notificationRoutes from "./notification.route";
 import dashboardRoutes from "./dashboard.routes";
 import permissionsRoutes from "./permissions.routes";
 
+import devRoutes from "./dev.routes";
+
 const router = Router();
 
 // Register routes
@@ -19,5 +21,9 @@ router.use("/admin", adminRoutes);
 router.use("/notifications", notificationRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/permissions", permissionsRoutes);
+
+if (process.env.NODE_ENV === "development") {
+  router.use("/dev", devRoutes);
+}
 
 export default router;

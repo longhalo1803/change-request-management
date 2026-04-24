@@ -62,6 +62,27 @@ export class UserController {
   }
 
   /**
+   * PUT /users/me
+   * Update own profile (self-update)
+   */
+  async updateMyProfile(req: Request, res: Response): Promise<void> {
+    try {
+      const currentUserId = req.user!.id;
+      const { firstName, lastName, phone } = req.body;
+
+      const user = await this.userService.updateMyProfile(currentUserId, {
+        firstName,
+        lastName,
+        phone,
+      });
+
+      this.sendSuccess(res, user, "Profile updated successfully");
+    } catch (error) {
+      this.sendError(res, error as Error);
+    }
+  }
+
+  /**
    * GET /users/:id
    */
   async getUserById(req: Request, res: Response): Promise<void> {

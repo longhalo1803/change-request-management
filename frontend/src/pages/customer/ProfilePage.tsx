@@ -1,34 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Input, Select, Button, Avatar, message, DatePicker } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useAuthStore } from "@/store/auth.store";
 import { useTranslation } from "@/hooks/useTranslation";
 import { UserRole } from "@/lib/types";
 import dayjs from "dayjs";
+import { userService } from "@/services/user.service";
 
 const ProfilePage = () => {
   const { t } = useTranslation("profile");
   const [form] = Form.useForm();
+  const [passwordForm] = Form.useForm();
   const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
   const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      form.setFieldsValue({
+        firstName: user.firstName || user.fullName?.split(" ")[0],
+        lastName: user.lastName || user.fullName?.split(" ").slice(1).join(" "),
+        email: user.email,
+        phoneNumber: user.phone || "",
+      });
+    }
+  }, [user, form]);
 
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
-      // Combine firstName and lastName
-      const fullName = `${values.firstName} ${values.lastName}`.trim();
-      console.log("Profile updated:", { ...values, fullName });
-      message.success(t("messages.success"));
+      setLoading(true);
+      const updatedUser = await userService.updateMyProfile({
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone: values.phoneNumber,
+      });
+      setUser(updatedUser);
+      message.success(t("messages.success") || "Profile updated successfully");
       setIsEditing(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Validation failed:", error);
-      message.error(t("messages.error"));
+      message.error(
+        error.response?.data?.message ||
+          t("messages.error") ||
+          "Failed to update profile"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCancel = () => {
     form.resetFields();
     setIsEditing(false);
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      const values = await passwordForm.validateFields();
+      setLoading(true);
+      await userService.changePassword(user!.id, {
+        oldPassword: values.oldPassword,
+        newPassword: values.newPassword,
+      });
+      message.success("Password changed successfully");
+      setIsChangingPassword(false);
+      passwordForm.resetFields();
+    } catch (error: any) {
+      message.error(
+        error.response?.data?.message || "Failed to change password"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEditPhoto = () => {
@@ -105,13 +151,16 @@ const ProfilePage = () => {
               form={form}
               layout="vertical"
               initialValues={{
-                firstName: user?.fullName?.split(" ")[0] || "Alex",
+                firstName:
+                  user?.firstName || user?.fullName?.split(" ")[0] || "Alex",
                 lastName:
-                  user?.fullName?.split(" ").slice(1).join(" ") || "Nguyen",
+                  user?.lastName ||
+                  user?.fullName?.split(" ").slice(1).join(" ") ||
+                  "Nguyen",
                 email: user?.email || "alex.n@solashi.com",
                 gender: "Male",
                 dateOfBirth: dayjs("1997-04-01"),
-                phoneNumber: "+84 901 234 567",
+                phoneNumber: user?.phone || "+84 901 234 567",
                 officeAddress:
                   "123 Tech Park, Cau Giay District, Hanoi, Vietnam",
               }}
@@ -218,20 +267,111 @@ const ProfilePage = () => {
               <div className="flex justify-end gap-3">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleCancel}>
-                      {t("buttons.cancel")}
+                    <Button onClick={handleCancel} disabled={loading}>
+                      {t("buttons.cancel") || "Cancel"}
                     </Button>
-                    <Button type="primary" onClick={handleSave}>
-                      {t("buttons.save")}
+                    <Button
+                      type="primary"
+                      onClick={handleSave}
+                      loading={loading}
+                    >
+                      {t("buttons.save") || "Save"}
                     </Button>
                   </>
                 ) : (
                   <Button type="primary" onClick={() => setIsEditing(true)}>
-                    {t("personal_info.edit_button")}
+                    {t("personal_info.edit_button") || "Edit Profile"}
                   </Button>
                 )}
               </div>
             </Form>
+
+            <div className="mt-8 border-t pt-6">
+              <div className="flex items-center gap-2 mb-6">
+                <LockOutlined className="text-blue-600 text-lg" />
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Change Password
+                </h3>
+              </div>
+
+              {isChangingPassword ? (
+                <Form form={passwordForm} layout="vertical">
+                  <Form.Item
+                    label="Current Password"
+                    name="oldPassword"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input current password",
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="Enter current password" />
+                  </Form.Item>
+                  <Form.Item
+                    label="New Password"
+                    name="newPassword"
+                    rules={[
+                      { required: true, message: "Please input new password" },
+                      {
+                        min: 8,
+                        message: "Password must be at least 8 characters",
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="Enter new password" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Confirm New Password"
+                    name="confirmPassword"
+                    dependencies={["newPassword"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please confirm new password",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (
+                            !value ||
+                            getFieldValue("newPassword") === value
+                          ) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error("The two passwords do not match!")
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password placeholder="Confirm new password" />
+                  </Form.Item>
+                  <div className="flex justify-end gap-3">
+                    <Button
+                      onClick={() => {
+                        setIsChangingPassword(false);
+                        passwordForm.resetFields();
+                      }}
+                      disabled={loading}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={handleChangePassword}
+                      loading={loading}
+                    >
+                      Update Password
+                    </Button>
+                  </div>
+                </Form>
+              ) : (
+                <Button onClick={() => setIsChangingPassword(true)}>
+                  Change Password
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>

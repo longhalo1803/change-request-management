@@ -679,7 +679,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
   return (
     <Modal
       title={
-        <div className="flex items-center justify-between pr-16">
+        <div className="flex items-center justify-between pr-8">
           <div>
             <div className="text-sm text-gray-500">{cr.crKey}</div>
             <div className="text-lg font-semibold">
@@ -687,28 +687,26 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
             </div>
           </div>
           {/* Action Buttons in Header */}
-          {renderActionButtons()}
+          <div className="flex items-center gap-2">
+            {renderActionButtons()}
+            <Tooltip title="Copy CR Key">
+              <Button
+                type="text"
+                icon={<ShareAltOutlined />}
+                className="text-gray-500 hover:text-gray-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(cr.crKey);
+                  message.success("CR key copied!");
+                }}
+              />
+            </Tooltip>
+          </div>
         </div>
       }
       open={open}
       onCancel={onCancel}
       width={900}
-      closeIcon={
-        <div className="flex items-center gap-3 pr-2">
-          <Button
-            type="text"
-            icon={<ShareAltOutlined />}
-            className="text-gray-500 hover:text-gray-700"
-            size="middle"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigator.clipboard.writeText(cr.crKey);
-              message.success("CR key copied!");
-            }}
-          />
-          <CloseOutlined className="text-gray-500 hover:text-gray-700" />
-        </div>
-      }
       footer={null}
       bodyStyle={{ padding: 0 }}
     >

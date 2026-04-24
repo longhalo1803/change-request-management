@@ -11,6 +11,10 @@ import { useAuthStore } from "@/store/auth.store";
 import { authService } from "@/services/auth.service";
 
 const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
+const ForgotPasswordPage = lazy(
+  () => import("@/pages/auth/ForgotPasswordPage")
+);
+const ResetPasswordPage = lazy(() => import("@/pages/auth/ResetPasswordPage"));
 
 const CustomerDashboardPage = lazy(
   () => import("@/pages/customer/CustomerDashboardPage")
@@ -93,6 +97,8 @@ const AppRouter = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* Customer Routes */}
         <Route element={<ProtectedRoute />}>

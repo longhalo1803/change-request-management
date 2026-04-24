@@ -8,9 +8,15 @@ const { Title, Text, Paragraph } = Typography;
 
 interface LoginLayoutProps {
   children: ReactNode;
+  title?: string;
+  subtitle?: string;
 }
 
-export const LoginLayout = ({ children }: LoginLayoutProps) => {
+export const LoginLayout = ({
+  children,
+  title,
+  subtitle,
+}: LoginLayoutProps) => {
   const { t } = useTranslation("auth");
 
   return (
@@ -113,9 +119,9 @@ export const LoginLayout = ({ children }: LoginLayoutProps) => {
 
           <div style={{ marginBottom: 32 }}>
             <Title level={2} style={{ marginBottom: 8 }}>
-              {t("welcome_back")}
+              {title || t("welcome_back")}
             </Title>
-            <Text type="secondary">{t("sign_in_message")}</Text>
+            <Text type="secondary">{subtitle || t("sign_in_message")}</Text>
           </div>
 
           {children}

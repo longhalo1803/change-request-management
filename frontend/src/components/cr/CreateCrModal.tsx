@@ -244,6 +244,15 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
             />
           </Form.Item>
 
+const ISSUE_TYPE_LABELS: Record<string, string> = {
+  BUG: "Bug",
+  CHANGE_REQUEST: "Change Request",
+  DOCUMENTATION: "Documentation",
+  FEATURE: "Feature",
+  IMPROVEMENT: "Improvement",
+  TESTING: "Testing",
+};
+
           <Form.Item
             label={t("create_modal.issue_type_label")}
             name="issueType"
@@ -255,7 +264,7 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
               placeholder="Select issue type"
               suffixIcon={<span className="text-gray-400">▼</span>}
               options={lookups?.worktypes?.map((w) => ({
-                label: w.name,
+                label: ISSUE_TYPE_LABELS[w.name] || w.name,
                 value: w.id,
               }))}
               loading={isLoadingLookups}
