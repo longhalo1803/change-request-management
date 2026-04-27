@@ -1,7 +1,7 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { useLogin } from "@/hooks/useLogin";
-import { useValidationSchemas } from "@/hooks/useValidationMessages";
+import { useValidationSchemas } from "@/hooks/useValidationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import type { LoginFormData } from "@/lib/validators";

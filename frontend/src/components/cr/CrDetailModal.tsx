@@ -13,8 +13,7 @@ import {
   message,
 } from "antd";
 import {
-  ShareAltOutlined,
-  CloseOutlined,
+  CopyOutlined,
   UserOutlined,
   PaperClipOutlined,
   DownloadOutlined,
@@ -137,6 +136,14 @@ const getAvatarColor = (name?: string) => {
   return colors[idx];
 };
 
+const getCreatorName = (creator?: any) => {
+  if (!creator) return "Unknown";
+  if (creator.firstName || creator.lastName) {
+    return `${creator.firstName || ""} ${creator.lastName || ""}`.trim();
+  }
+  return creator.fullName || creator.email || "Unknown";
+};
+
 // ===== Main Component =====
 
 export const CrDetailModal: React.FC<CrDetailModalProps> = ({
@@ -199,9 +206,8 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       message.success("CR submitted successfully");
       onStatusChange?.();
     } catch (err: any) {
-      message.error(
-        err?.response?.data?.message || "Failed to submit CR"
-      );
+      const msg = err?.response?.data?.message;
+      message.error(msg ? t(msg) : "Failed to submit CR");
     }
   };
 
@@ -212,16 +218,12 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       onCancel();
       onStatusChange?.();
     } catch (err: any) {
-      message.error(
-        err?.response?.data?.message || "Failed to delete CR"
-      );
+      const msg = err?.response?.data?.message;
+      message.error(msg ? t(msg) : "Failed to delete CR");
     }
   };
 
-  const handleTransition = async (
-    toStatusName: string,
-    successMsg: string
-  ) => {
+  const handleTransition = async (toStatusName: string, successMsg: string) => {
     const toStatusId = getStatusId(toStatusName);
     if (!toStatusId) {
       message.error(`Status "${toStatusName}" not found`);
@@ -232,9 +234,8 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       message.success(successMsg);
       onStatusChange?.();
     } catch (err: any) {
-      message.error(
-        err?.response?.data?.message || "Failed to update status"
-      );
+      const msg = err?.response?.data?.message;
+      message.error(msg ? t(msg) : "Failed to update status");
     }
   };
 
@@ -256,9 +257,8 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       setCommentFiles([]);
       message.success("Comment added");
     } catch (err: any) {
-      message.error(
-        err?.response?.data?.message || "Failed to add comment"
-      );
+      const msg = err?.response?.data?.message;
+      message.error(msg ? t(msg) : "Failed to add comment");
     }
   };
 
@@ -267,9 +267,8 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       await deleteComment(commentId);
       message.success("Comment deleted");
     } catch (err: any) {
-      message.error(
-        err?.response?.data?.message || "Failed to delete comment"
-      );
+      const msg = err?.response?.data?.message;
+      message.error(msg ? t(msg) : "Failed to delete comment");
     }
   };
 
@@ -405,9 +404,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
           type="primary"
           size="small"
           icon={<RocketOutlined />}
-          onClick={() =>
-            handleTransition("ON_GOING", "Deployment started")
-          }
+          onClick={() => handleTransition("ON_GOING", "Deployment started")}
           loading={isTransitioning}
           disabled={isActionLoading}
         >
@@ -436,11 +433,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
 
     if (buttons.length === 0) return null;
 
-    return (
-      <div className="flex items-center gap-2">
-        {buttons}
-      </div>
-    );
+    return <div className="flex items-center gap-2">{buttons}</div>;
   };
 
   // ===== Tab Content Builders =====
@@ -458,8 +451,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
         />
       ) : (
         comments.map((c) => {
-          const name =
-            c.commenter?.fullName || c.commenterName || "Unknown";
+          const name = c.commenter?.fullName || c.commenterName || "Unknown";
           const isOwn = c.commentedBy === user?.id;
           return (
             <div key={c.id} className="flex gap-3 group">
@@ -477,9 +469,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
                   <span className="font-semibold text-sm">{name}</span>
                   {c.commenter?.role && (
                     <Tag
-                      color={
-                        c.commenter.role === "pm" ? "blue" : "green"
-                      }
+                      color={c.commenter.role === "pm" ? "blue" : "green"}
                       style={{ fontSize: 10 }}
                     >
                       {c.commenter.role.toUpperCase()}
@@ -537,11 +527,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
           />
           <div className="flex justify-between items-center">
             <Upload {...commentUploadProps} showUploadList={true}>
-              <Button
-                icon={<PaperClipOutlined />}
-                size="small"
-                type="text"
-              >
+              <Button icon={<PaperClipOutlined />} size="small" type="text">
                 Attach file
               </Button>
             </Upload>
@@ -582,12 +568,9 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
             >
               <div className="text-xl">{getFileIcon(a.mimeType)}</div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium truncate">
-                  {a.fileName}
-                </div>
+                <div className="text-sm font-medium truncate">{a.fileName}</div>
                 <div className="text-xs text-gray-400">
-                  {formatFileSize(a.fileSize)} •{" "}
-                  {formatDateTime(a.createdAt)}
+                  {formatFileSize(a.fileSize)} • {formatDateTime(a.createdAt)}
                 </div>
               </div>
               <Tooltip title="Download">
@@ -613,10 +596,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
           <Spin />
         </div>
       ) : !statusHistory || statusHistory.length === 0 ? (
-        <Empty
-          description="No history"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        />
+        <Empty description="No history" image={Empty.PRESENTED_IMAGE_SIMPLE} />
       ) : (
         <div className="space-y-3">
           {statusHistory.map((h: any, idx: number) => {
@@ -642,9 +622,7 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
                     </Tag>
                   </div>
                   {h.notes && (
-                    <div className="text-xs text-gray-500 mt-1">
-                      {h.notes}
-                    </div>
+                    <div className="text-xs text-gray-500 mt-1">{h.notes}</div>
                   )}
                   <div className="text-xs text-gray-400 mt-1">
                     {formatDateTime(h.createdAt)}
@@ -681,27 +659,35 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
       title={
         <div className="flex items-center justify-between pr-8">
           <div>
-            <div className="text-sm text-gray-500">{cr.crKey}</div>
-            <div className="text-lg font-semibold">
+            <div className="text-sm text-gray-500 mb-1">
               {t("modal.details_title")}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-semibold">{cr.crKey}</span>
+              <Tooltip title="Copy CR Key">
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<CopyOutlined />}
+                  className="text-gray-400 hover:text-gray-700"
+                  style={{
+                    width: 24,
+                    height: 24,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(cr.crKey);
+                    message.success("CR key copied!");
+                  }}
+                />
+              </Tooltip>
             </div>
           </div>
           {/* Action Buttons in Header */}
-          <div className="flex items-center gap-2">
-            {renderActionButtons()}
-            <Tooltip title="Copy CR Key">
-              <Button
-                type="text"
-                icon={<ShareAltOutlined />}
-                className="text-gray-500 hover:text-gray-700"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigator.clipboard.writeText(cr.crKey);
-                  message.success("CR key copied!");
-                }}
-              />
-            </Tooltip>
-          </div>
+          <div className="flex items-center gap-2">{renderActionButtons()}</div>
         </div>
       }
       open={open}
@@ -768,12 +754,8 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
             {/* Worktype */}
             {cr.worktype && (
               <div>
-                <div className="text-xs text-gray-500 mb-1">
-                  Issue Type
-                </div>
-                <div className="text-sm font-medium">
-                  {cr.worktype.name}
-                </div>
+                <div className="text-xs text-gray-500 mb-1">Issue Type</div>
+                <div className="text-sm font-medium">{cr.worktype.name}</div>
               </div>
             )}
 
@@ -802,15 +784,13 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
                 <Avatar
                   size={24}
                   style={{
-                    backgroundColor: getAvatarColor(
-                      cr.creator?.fullName
-                    ),
+                    backgroundColor: getAvatarColor(getCreatorName(cr.creator)),
                   }}
                 >
-                  {getInitials(cr.creator?.fullName)}
+                  {getInitials(getCreatorName(cr.creator))}
                 </Avatar>
-                <span className="text-sm font-medium">
-                  {cr.creator?.fullName || "Unknown"}
+                <span className="text-sm font-medium" title={cr.creator?.email}>
+                  {getCreatorName(cr.creator)}
                 </span>
               </div>
             </div>

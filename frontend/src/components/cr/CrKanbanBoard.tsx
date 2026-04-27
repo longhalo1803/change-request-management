@@ -61,7 +61,6 @@ export const CrKanbanBoard: React.FC<CrKanbanBoardProps> = ({
             title={column.title}
             crs={column.crs}
             onCardClick={onCardClick}
-            actorType={actorType}
           />
         ))}
       </div>

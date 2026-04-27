@@ -9,12 +9,9 @@ import {
 } from "@/lib/helpers/cr.helpers";
 import { getPriorityHex } from "@/lib/constants";
 
-type ActorType = "customer" | "pm" | "admin";
-
 interface CrCardProps {
   cr: ChangeRequest;
   onClick?: (cr: ChangeRequest) => void;
-  actorType?: ActorType;
 }
 
 export const CrCard: React.FC<CrCardProps> = ({ cr, onClick }) => {

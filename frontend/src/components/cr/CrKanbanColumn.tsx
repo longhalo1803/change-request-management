@@ -2,14 +2,11 @@ import { ChangeRequest, ChangeRequestStatus } from "@/lib/types";
 import { CrCard } from "./CrCard";
 import { getStatusHex, getStatusHexLight } from "@/lib/constants";
 
-type ActorType = "customer" | "pm" | "admin";
-
 interface CrKanbanColumnProps {
   status: ChangeRequestStatus;
   title: string;
   crs: ChangeRequest[];
   onCardClick?: (cr: ChangeRequest) => void;
-  actorType?: ActorType;
 }
 
 /**
@@ -21,7 +18,6 @@ export const CrKanbanColumn: React.FC<CrKanbanColumnProps> = ({
   title,
   crs,
   onCardClick,
-  actorType = "customer",
 }) => {
   const statusColor = getStatusHex(status);
   const bgColor = getStatusHexLight(status);
@@ -58,7 +54,6 @@ export const CrKanbanColumn: React.FC<CrKanbanColumnProps> = ({
                 key={cr.id}
                 cr={cr}
                 onClick={onCardClick}
-                actorType={actorType}
               />
             ))}
           </div>

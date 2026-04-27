@@ -3,8 +3,6 @@ import { CloseOutlined, FilterOutlined } from "@ant-design/icons";
 import { useState, useMemo } from "react";
 import { ChangeRequest } from "@/lib/types";
 
-type ActorType = "customer" | "pm" | "admin";
-
 export interface FilterOptions {
   actors?: string[];
   priorities?: string[];
@@ -18,7 +16,6 @@ interface CrFilterBarProps {
   activeFilters?: FilterOptions;
   onSearchChange?: (searchText: string) => void;
   searchText?: string;
-  actorType?: ActorType;
 }
 
 const PRIORITIES = ["Low", "Medium", "High", "Critical"];
