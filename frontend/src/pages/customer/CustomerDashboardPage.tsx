@@ -87,13 +87,13 @@ export const CustomerDashboardPage: React.FC = () => {
         onAction={handleCreateCr}
       />
 
-      {error ? (
-        <Alert
-          message="Error loading dashboard data"
-          type="error"
-          showIcon
-          className="mb-6"
-        />
+       {error ? (
+         <Alert
+           message={t("errors.loading_failed")}
+           type="error"
+           showIcon
+           className="mb-6"
+         />
       ) : isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />

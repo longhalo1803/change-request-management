@@ -43,14 +43,14 @@ export const PMDashboardPage = () => {
   const isLoading = isStatsLoading || isStatusLoading || isActivitiesLoading;
   const error = statsError || statusError || activitiesError;
 
-  const stats = statsData || {
-    total: 0,
-    active: 0,
-    completed: 0,
-    dueSoon: 0,
-  };
+   const stats = statsData || {
+     total: 0,
+     active: 0,
+     completed: 0,
+     dueSoon: 0,
+   };
 
-  const statusData = (statusDataOverview || []).map((item: any) => ({
+   const statusData = (statusDataOverview || []).map((item: any) => ({
     ...item,
     label: t(`status_overview.statuses.${item.status.toLowerCase()}` as any, {
       defaultValue: item.status,
@@ -73,13 +73,13 @@ export const PMDashboardPage = () => {
         <p className="text-gray-600 mt-2">{tPm("subtitle")}</p>
       </div>
 
-      {error ? (
-        <Alert
-          message="Error loading dashboard data"
-          type="error"
-          showIcon
-          className="mb-6"
-        />
+       {error ? (
+         <Alert
+           message={t("errors.loading_failed")}
+           type="error"
+           showIcon
+           className="mb-6"
+         />
       ) : isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />

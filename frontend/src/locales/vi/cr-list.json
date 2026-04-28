@@ -75,5 +75,47 @@
     "showing": "Đang hiển thị",
     "change_request": "Yêu cầu thay đổi",
     "change_requests": "Yêu cầu thay đổi"
-  }
-}
+  },
+   "cr": {
+     "cannot_comment_draft": "Bạn không thể bình luận trong CR ở trạng thái Draft."
+   },
+   "detail_modal": {
+     "description": "MÔ TẢ",
+     "activity_comments": "PHẦN HOẠT ĐỘNG / BÌNH LUẬN",
+     "attributes": "CÁC THUỘC TÍNH",
+     "priority": "Ưu tiên",
+     "worktype": "Loại công việc",
+     "issue_type": "Loại vấn đề",
+     "start_date": "Ngày bắt đầu",
+     "due_date": "Ngày đến hạn",
+     "created": "Ngày tạo",
+     "reporter": "Người báo cáo",
+     "delete": "Xóa",
+     "submit": "Gửi",
+     "go_to_discussion": "Đi đến Thảo luận",
+     "reject": "Từ chối",
+     "approve": "Chấp nhận",
+     "deployment": "Triển khai",
+     "complete": "Hoàn thành",
+     "comments": "Bình luận",
+     "attachments": "Tệp đính kèm",
+     "history": "Lịch sử",
+     "no_comments": "Chưa có bình luận",
+     "no_attachments": "Không có tệp đính kèm",
+     "no_history": "Không có lịch sử",
+     "add_comment": "Thêm bình luận...",
+     "attach_file": "Đính kèm tệp",
+     "copy_cr_key": "Sao chép khóa CR",
+     "ctrl_enter_to_send": "Ctrl+Enter để gửi",
+     "download": "Tải xuống",
+     "comment_added": "Bình luận đã được thêm",
+     "comment_deleted": "Bình luận đã được xóa",
+     "failed_to_add_comment": "Lỗi khi thêm bình luận",
+     "failed_to_delete_comment": "Lỗi khi xóa bình luận",
+     "moved_to_discussion": "Chuyển đến Thảo luận",
+     "cr_rejected": "CR bị từ chối",
+     "cr_approved": "CR được chấp nhận",
+     "deployment_started": "Triển khai bắt đầu",
+     "cr_completed": "CR đã hoàn thành"
+   }
+ }

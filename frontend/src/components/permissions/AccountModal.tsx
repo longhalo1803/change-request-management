@@ -5,6 +5,7 @@
 
 import { Modal, Form, Input, Select, Button, Space } from "antd";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useEffect } from "react";
 import {
   AdminUser,
   UserFormData,
@@ -46,6 +47,21 @@ export const AccountModal = ({
   const [form] = Form.useForm();
   const isEditMode = !!user;
 
+  // Set form values when user changes to prevent stale data
+  useEffect(() => {
+    if (user) {
+      form.setFieldsValue({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [user, form]);
+
   const roleOptions = permissionGroups.map((group) => ({
     label: getRoleLabel(group.roleType),
     value: group.roleType,
@@ -62,7 +78,6 @@ export const AccountModal = ({
     };
 
     await onSubmit(formData);
-    form.resetFields();
   };
 
   const handleCancel = () => {
@@ -132,6 +147,7 @@ export const AccountModal = ({
             placeholder="Enter email"
             type="email"
             autoComplete="new-email"
+            disabled={isEditMode}
           />
         </Form.Item>
 

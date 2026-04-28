@@ -20,6 +20,7 @@ import {
   useSpaces,
 } from "@/hooks";
 import type { CreateChangeRequestInput } from "@/services";
+import { ISSUE_TYPE_LABELS } from "@/lib/constants";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -50,15 +51,20 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
   const [summaryLength, setSummaryLength] = useState(0);
   const [description, setDescription] = useState("");
 
-  const { mutateAsync: createCr, isPending: isCreating } = useCreateChangeRequest();
-  const { mutateAsync: uploadAttachments, isPending: isUploading } = useUploadAttachments();
-  
-  const { data: lookups, isLoading: isLoadingLookups } = useChangeRequestLookups();
-  
+  const { mutateAsync: createCr, isPending: isCreating } =
+    useCreateChangeRequest();
+  const { mutateAsync: uploadAttachments, isPending: isUploading } =
+    useUploadAttachments();
+
+  const { data: lookups, isLoading: isLoadingLookups } =
+    useChangeRequestLookups();
+
   // We need to fetch projects to select a project, then spaces for that project
   const { data: projects, isLoading: isLoadingProjects } = useProjects();
   const selectedProjectId = Form.useWatch("projectId", form);
-  const { data: spaces, isLoading: isLoadingSpaces } = useSpaces(selectedProjectId || "");
+  const { data: spaces, isLoading: isLoadingSpaces } = useSpaces(
+    selectedProjectId || ""
+  );
 
   const isLoading = isCreating || isUploading;
 
@@ -95,7 +101,7 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      
+
       const jsonPayload: CreateChangeRequestInput = {
         spaceId: values.spaceId,
         worktypeId: values.issueType,
@@ -140,7 +146,11 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
         return;
       }
       console.error("Submission failed:", error);
-      message.error(error?.response?.data?.message || error.message || "Failed to create Change Request");
+      message.error(
+        error?.response?.data?.message ||
+          error.message ||
+          "Failed to create Change Request"
+      );
     }
   };
 
@@ -201,17 +211,12 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
       ]}
       closeIcon={<CloseOutlined />}
     >
-      <Form
-        form={form}
-        layout="vertical"
-      >
+      <Form form={form} layout="vertical">
         <div className="grid grid-cols-4 gap-4 mb-4">
           <Form.Item
             label="Project"
             name="projectId"
-            rules={[
-              { required: true, message: "Please select project" },
-            ]}
+            rules={[{ required: true, message: "Please select project" }]}
           >
             <Select
               placeholder="Select project"
@@ -243,15 +248,6 @@ export const CreateCrModal: React.FC<CreateCrModalProps> = ({
               disabled={!selectedProjectId}
             />
           </Form.Item>
-
-const ISSUE_TYPE_LABELS: Record<string, string> = {
-  BUG: "Bug",
-  CHANGE_REQUEST: "Change Request",
-  DOCUMENTATION: "Documentation",
-  FEATURE: "Feature",
-  IMPROVEMENT: "Improvement",
-  TESTING: "Testing",
-};
 
           <Form.Item
             label={t("create_modal.issue_type_label")}

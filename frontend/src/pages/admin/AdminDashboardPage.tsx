@@ -100,18 +100,18 @@ const AdminDashboardPage = () => {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="p-6">
-        <Alert
-          message="Error"
-          description="Failed to load dashboard data. Please try again later."
-          type="error"
-          showIcon
-        />
-      </div>
-    );
-  }
+   if (isError) {
+     return (
+       <div className="p-6">
+         <Alert
+           message="Error"
+           description={t("errors.failed_to_load")}
+           type="error"
+           showIcon
+         />
+       </div>
+     );
+   }
 
   if (!dashboardData) return null;
 
@@ -144,22 +144,22 @@ const AdminDashboardPage = () => {
           <div className="grid grid-cols-3 gap-6">
             <div className="col-span-2">
               <StatusOverview
-                data={dashboardData.statusBreakdown
-                  .filter((item) => item.status !== "draft") // Hide DRAFT for admin
-                  .map((item) => ({
-                    status: item.status,
-                    count: item.count,
-                    color: item.color,
-                    label:
-                      item.status.charAt(0).toUpperCase() +
-                      item.status.slice(1).replace(/_/g, " "),
-                  }))}
+               data={dashboardData.statusBreakdown
+                   .filter((item) => item.status !== "draft") // Hide DRAFT for admin
+                   .map((item) => ({
+                     status: item.status,
+                     count: item.count,
+                     color: item.color,
+                     label: t(`dashboard.status_overview.statuses.${item.status.toLowerCase().replace(/_/g, "_")}` as any, {
+                       defaultValue: item.status.charAt(0).toUpperCase() + item.status.slice(1).replace(/_/g, " "),
+                     }),
+                   }))}
                 totalCrs={dashboardData.totalCRs}
-                onViewDetails={() =>
-                  message.info(
-                    `View details - ${tCommon("messages.coming_soon")}`
-                  )
-                }
+               onViewDetails={() =>
+                   message.info(
+                     `${t("dashboard.status_overview")} - ${tCommon("messages.coming_soon")}`
+                   )
+                 }
               />
             </div>
             <ProcessEfficiencyCard data={dashboardData.processEfficiency} />
@@ -174,15 +174,15 @@ const AdminDashboardPage = () => {
           <Top5CustomersChart data={topCustomers || []} />
 
           {/* CR Volume Trends */}
-          <CRVolumeChart
-            data={volumeTrends || []}
-            onAnnualProjection={() =>
-              message.info(
-                `Annual Projection - ${tCommon("messages.coming_soon")}`
-              )
-            }
-            growthPercentage={dashboardData.growthMetrics.percentage}
-          />
+           <CRVolumeChart
+             data={volumeTrends || []}
+             onAnnualProjection={() =>
+               message.info(
+                 `${t("dashboard.annual_projection")} - ${tCommon("messages.coming_soon")}`
+               )
+             }
+             growthPercentage={dashboardData.growthMetrics.percentage}
+           />
 
           {/* Metrics Footer */}
           <MetricsFooter

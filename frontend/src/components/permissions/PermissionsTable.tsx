@@ -16,6 +16,7 @@ import {
 import { EllipsisOutlined } from "@ant-design/icons";
 import { AdminUser, UserRole, UserStatus } from "@/lib/types";
 import type { ColumnsType } from "antd/es/table";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface PermissionsTableProps {
   data: AdminUser[];
@@ -37,25 +38,8 @@ const getRoleBadgeColor = (role: UserRole): string => {
   }
 };
 
-const getRoleLabel = (role: UserRole): string => {
-  switch (role) {
-    case UserRole.ADMIN:
-      return "Administrator";
-    case UserRole.PM:
-      return "Project Manager";
-    case UserRole.CUSTOMER:
-      return "Customer";
-    default:
-      return role;
-  }
-};
-
 const getStatusBadgeColor = (status: UserStatus): "success" | "warning" => {
   return status === UserStatus.ACTIVE ? "success" : "warning";
-};
-
-const getStatusLabel = (status: UserStatus): string => {
-  return status === UserStatus.ACTIVE ? "Active" : "Inactive";
 };
 
 const formatDate = (date: Date): string => {
@@ -72,9 +56,11 @@ export const PermissionsTable = ({
   onEdit,
   onStatusChange,
 }: PermissionsTableProps) => {
+  const { t } = useTranslation("admin");
+  
   const columns: ColumnsType<AdminUser> = [
     {
-      title: "Name",
+      title: t("permissions.columns.name"),
       key: "name",
       width: "20%",
       render: (_, record) => (
@@ -94,41 +80,54 @@ export const PermissionsTable = ({
       ),
     },
     {
-      title: "Email",
+      title: t("permissions.columns.email"),
       dataIndex: "email",
       key: "email",
       width: "25%",
     },
     {
-      title: "Role",
+      title: t("permissions.columns.role"),
       dataIndex: "role",
       key: "role",
       width: "15%",
       render: (role: UserRole) => (
-        <Badge color={getRoleBadgeColor(role)} text={getRoleLabel(role)} />
+        <Badge
+          color={getRoleBadgeColor(role)}
+          text={
+            role === UserRole.ADMIN
+              ? t("permissions.roles.admin")
+              : role === UserRole.PM
+              ? t("permissions.roles.pm")
+              : t("permissions.roles.customer")
+          }
+        />
       ),
     },
     {
-      title: "Created Date",
+      title: t("permissions.columns.created_date"),
       dataIndex: "createdDate",
       key: "createdDate",
       width: "15%",
       render: (date: Date) => formatDate(date),
     },
     {
-      title: "Status",
+      title: t("permissions.columns.status"),
       dataIndex: "status",
       key: "status",
       width: "10%",
       render: (status: UserStatus) => (
         <Badge
           status={getStatusBadgeColor(status)}
-          text={getStatusLabel(status)}
+          text={
+            status === UserStatus.ACTIVE
+              ? t("permissions.status.active")
+              : t("permissions.status.inactive")
+          }
         />
       ),
     },
     {
-      title: "Actions",
+      title: t("permissions.columns.actions"),
       key: "actions",
       width: "10%",
       align: "center" as const,
@@ -136,14 +135,14 @@ export const PermissionsTable = ({
         const menuItems = [
           {
             key: "edit",
-            label: "Edit",
+            label: t("permissions.actions.edit"),
             onClick: () => onEdit(record),
           },
           ...(record.status === UserStatus.ACTIVE
             ? [
                 {
                   key: "deactivate",
-                  label: "Deactivate",
+                  label: t("permissions.actions.deactivate"),
                   onClick: () => onStatusChange(record.id, UserStatus.INACTIVE),
                   danger: true,
                 },
@@ -151,7 +150,7 @@ export const PermissionsTable = ({
             : [
                 {
                   key: "activate",
-                  label: "Activate",
+                  label: t("permissions.actions.activate"),
                   onClick: () => onStatusChange(record.id, UserStatus.ACTIVE),
                 },
               ]),
@@ -175,7 +174,7 @@ export const PermissionsTable = ({
   }
 
   if (!data || !Array.isArray(data) || data.length === 0) {
-    return <Empty description="No users found" />;
+    return <Empty description={t("permissions.no_users")} />;
   }
 
   return (
@@ -185,7 +184,7 @@ export const PermissionsTable = ({
       rowKey="id"
       pagination={{
         pageSize: 10,
-        showTotal: (total) => `Total ${total} users`,
+        showTotal: (total) => t("permissions.total_users", { total }),
       }}
       className="bg-white"
       style={{ borderRadius: "8px" }}

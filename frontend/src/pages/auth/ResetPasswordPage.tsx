@@ -5,8 +5,10 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { LoginLayout } from "@/modules/auth/LoginLayout";
 import { authService } from "@/services/auth.service";
 import { PasswordStrengthIndicator } from "@/components/shared/PasswordStrengthIndicator";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const ResetPasswordPage = () => {
+  const { t } = useTranslation("auth");
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
@@ -19,7 +21,7 @@ const ResetPasswordPage = () => {
 
   useEffect(() => {
     if (!token || !email) {
-      message.error("Invalid reset link. Please request a new one.");
+      message.error(t("reset_password_invalid_link"));
       navigate("/forgot-password");
     }
   }, [token, email, navigate]);
@@ -32,12 +34,12 @@ const ResetPasswordPage = () => {
         token as string,
         values.newPassword
       );
-      message.success("Password has been successfully reset!");
+      message.success(t("reset_password_success_message"));
       navigate("/login");
     } catch (error: any) {
       const errorMsg =
         error.response?.data?.message ||
-        "Failed to reset password. Token may be invalid or expired.";
+        t("reset_password_failed");
       message.error(errorMsg);
     } finally {
       setLoading(false);
@@ -46,8 +48,8 @@ const ResetPasswordPage = () => {
 
   return (
     <LoginLayout
-      title="Reset Password"
-      subtitle="Choose a new password for your account"
+      title={t("reset_password_title")}
+      subtitle={t("reset_password_subtitle")}
     >
       <Form
         form={form}
@@ -58,20 +60,20 @@ const ResetPasswordPage = () => {
       >
         <Form.Item
           name="newPassword"
-          label="New Password"
+          label={t("reset_password_new_password")}
           rules={[
-            { required: true, message: "Please input your new password!" },
-            { min: 8, message: "Password must be at least 8 characters long." },
-            { pattern: /[A-Z]/, message: "Must contain at least 1 uppercase letter." },
-            { pattern: /[a-z]/, message: "Must contain at least 1 lowercase letter." },
-            { pattern: /[0-9]/, message: "Must contain at least 1 number." },
-            { pattern: /[^A-Za-z0-9]/, message: "Must contain at least 1 special character." }
+            { required: true, message: t("reset_password_validation_required") },
+            { min: 8, message: t("reset_password_validation_min_length") },
+            { pattern: /[A-Z]/, message: t("reset_password_validation_uppercase") },
+            { pattern: /[a-z]/, message: t("reset_password_validation_lowercase") },
+            { pattern: /[0-9]/, message: t("reset_password_validation_number") },
+            { pattern: /[^A-Za-z0-9]/, message: t("reset_password_validation_special") }
           ]}
           hasFeedback
         >
           <Input.Password
             prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-            placeholder="New Password"
+            placeholder={t("reset_password_placeholder_new_password")}
           />
         </Form.Item>
 
@@ -79,18 +81,18 @@ const ResetPasswordPage = () => {
 
         <Form.Item
           name="confirmPassword"
-          label="Confirm Password"
+          label={t("reset_password_confirm_password")}
           dependencies={["newPassword"]}
           hasFeedback
           rules={[
-            { required: true, message: "Please confirm your password!" },
+            { required: true, message: t("reset_password_validation_confirm_required") },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || getFieldValue("newPassword") === value) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error("The two passwords do not match!")
+                  new Error(t("reset_password_validation_confirm_match"))
                 );
               },
             }),
@@ -98,7 +100,7 @@ const ResetPasswordPage = () => {
         >
           <Input.Password
             prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-            placeholder="Confirm Password"
+            placeholder={t("reset_password_placeholder_confirm_password")}
           />
         </Form.Item>
 
@@ -110,18 +112,19 @@ const ResetPasswordPage = () => {
             loading={loading}
             className="mt-4"
           >
-            Reset Password
+            {t("reset_password_button")}
           </Button>
         </Form.Item>
 
         <div className="text-center mt-4">
           <Link to="/login" className="text-blue-600 hover:text-blue-800">
-            Back to login
+            {t("reset_password_back_to_login")}
           </Link>
         </div>
       </Form>
     </LoginLayout>
   );
 };
+
 
 export default ResetPasswordPage;

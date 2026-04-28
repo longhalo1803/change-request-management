@@ -19,7 +19,7 @@ export const config = {
     username: process.env.DB_USERNAME || "root",
     password: process.env.DB_PASSWORD || "",
     database: process.env.DB_DATABASE || "cr_management",
-    poolSize: parseInt(process.env.DB_POOL_SIZE || "10", 10),
+    poolSize: parseInt(process.env.DB_POOL_SIZE || "25", 10),
   },
 
   jwt: {

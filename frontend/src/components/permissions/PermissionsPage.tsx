@@ -40,18 +40,18 @@ export const PermissionsPage = () => {
       label: t("permissions.accounts_tab"),
       children: <AccountsTab permissionGroups={permissionGroups} />,
     },
-    {
-      key: "groups",
-      label: t("permissions.groups_tab"),
-      children: (
-        <div className="text-center py-12">
-          <p className="text-gray-500">
-            Permission Groups management coming soon
-          </p>
-        </div>
-      ),
-      disabled: true,
-    },
+     {
+       key: "groups",
+       label: t("permissions.groups_tab"),
+       children: (
+         <div className="text-center py-12">
+           <p className="text-gray-500">
+             {t("permissions.groups_coming_soon")}
+           </p>
+         </div>
+       ),
+       disabled: true,
+     },
   ];
 
   if (loading) {

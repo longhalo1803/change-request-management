@@ -6,6 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { UserRole } from "@/lib/types";
 import dayjs from "dayjs";
 import { userService } from "@/services/user.service";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const { t } = useTranslation("profile");
@@ -16,6 +17,7 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -68,6 +70,9 @@ const ProfilePage = () => {
       message.success("Password changed successfully");
       setIsChangingPassword(false);
       passwordForm.resetFields();
+      // Clear auth store and redirect to login
+      useAuthStore.getState().logout();
+      navigate("/login");
     } catch (error: any) {
       message.error(
         error.response?.data?.message || "Failed to change password"

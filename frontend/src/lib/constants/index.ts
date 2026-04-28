@@ -49,3 +49,6 @@ export {
   CUSTOMER_OPTIONS,
   PM_OPTIONS,
 } from "./adminFilterOptions";
+
+// Issue Type Exports
+export { ISSUE_TYPE_LABELS } from "./issue-type.labels";

@@ -91,50 +91,54 @@
     "showing": "Đang hiển thị {{count}} Yêu cầu thay đổi",
     "showing_plural": "Đang hiển thị {{count}} Yêu cầu thay đổi"
   },
-  "permissions": {
-    "title": "Quản lý quyền",
-    "subtitle": "Quản lý tài khoản người dùng và nhóm quyền",
-    "accounts_tab": "Tài khoản",
-    "groups_tab": "Nhóm quyền",
-    "search_placeholder": "Tìm kiếm theo tên hoặc email",
-    "create_user": "Tạo người dùng mới",
-    "delete_confirm": "Bạn có chắc chắn muốn xóa {{name}} không?",
-    "user_deleted": "Xóa người dùng thành công",
-    "user_deleted_fail": "Lỗi khi xóa người dùng",
-    "user_updated": "Cập nhật người dùng thành công",
-    "user_created": "Tạo người dùng thành công",
-    "user_status_active": "Kích hoạt người dùng thành công",
-    "user_status_inactive": "Vô hiệu hóa người dùng thành công",
-    "status_update_fail": "Lỗi khi cập nhật trạng thái người dùng",
-    "failed_to_load": "Lỗi tải người dùng, đang dùng dữ liệu mẫu",
-    "columns": {
-      "name": "Tên",
-      "first_name": "Tên",
-      "last_name": "Họ",
-      "phone": "Số điện thoại",
-      "password": "Mật khẩu",
-      "email": "Email",
-      "role": "Vai trò",
-      "created_date": "Ngày tạo",
-      "status": "Trạng thái",
-      "actions": "Thao tác"
-    },
-    "roles": {
-      "admin": "Quản trị viên",
-      "pm": "Quản lý dự án",
-      "customer": "Khách hàng"
-    },
-    "status": {
-      "active": "Hoạt động",
-      "inactive": "Vô hiệu"
-    },
-    "actions": {
-      "edit": "Sửa",
-      "deactivate": "Vô hiệu hóa",
-      "activate": "Kích hoạt",
-      "delete": "Xóa"
-    },
-    "total_users": "Tổng cộng {{total}} người dùng",
-    "no_users": "Không tìm thấy người dùng nào"
-  }
+   "permissions": {
+     "title": "Quản lý quyền",
+     "subtitle": "Quản lý tài khoản người dùng và nhóm quyền",
+     "accounts_tab": "Tài khoản",
+     "groups_tab": "Nhóm quyền",
+     "groups_coming_soon": "Quản lý nhóm quyền sẽ sớm có",
+     "search_placeholder": "Tìm kiếm theo tên hoặc email",
+     "create_user": "Tạo người dùng mới",
+     "delete_confirm": "Bạn có chắc chắn muốn xóa {{name}} không?",
+     "user_deleted": "Xóa người dùng thành công",
+     "user_deleted_fail": "Lỗi khi xóa người dùng",
+     "user_updated": "Cập nhật người dùng thành công",
+     "user_created": "Tạo người dùng thành công",
+     "user_status_active": "Kích hoạt người dùng thành công",
+     "user_status_inactive": "Vô hiệu hóa người dùng thành công",
+     "status_update_fail": "Lỗi khi cập nhật trạng thái người dùng",
+     "failed_to_load": "Lỗi tải người dùng, đang dùng dữ liệu mẫu",
+     "columns": {
+       "name": "Tên",
+       "first_name": "Tên",
+       "last_name": "Họ",
+       "phone": "Số điện thoại",
+       "password": "Mật khẩu",
+       "email": "Email",
+       "role": "Vai trò",
+       "created_date": "Ngày tạo",
+       "status": "Trạng thái",
+       "actions": "Thao tác"
+     },
+     "roles": {
+       "admin": "Quản trị viên",
+       "pm": "Quản lý dự án",
+       "customer": "Khách hàng"
+     },
+     "status": {
+       "active": "Hoạt động",
+       "inactive": "Vô hiệu"
+     },
+     "actions": {
+       "edit": "Sửa",
+       "deactivate": "Vô hiệu hóa",
+       "activate": "Kích hoạt",
+       "delete": "Xóa"
+     },
+     "total_users": "Tổng cộng {{total}} người dùng",
+     "no_users": "Không tìm thấy người dùng nào"
+   },
+   "errors": {
+     "failed_to_load": "Lỗi khi tải dữ liệu bảng điều khiển. Vui lòng thử lại sau."
+   }
 }

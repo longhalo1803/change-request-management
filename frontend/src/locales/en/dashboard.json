@@ -44,13 +44,16 @@
       "days_ago": "{{count}}d ago"
     }
   },
-  "sidebar": {
-    "app_name": "Solashi Connect",
-    "app_subtitle": "ENTERPRISE PORTAL",
-    "dashboard": "Dashboard",
-    "cr_list": "CR List",
-    "quotation": "Quotation",
-    "settings": "Settings",
-    "help": "Help"
-  }
-}
+   "sidebar": {
+     "app_name": "Solashi Connect",
+     "app_subtitle": "ENTERPRISE PORTAL",
+     "dashboard": "Dashboard",
+     "cr_list": "CR List",
+     "quotation": "Quotation",
+     "settings": "Settings",
+     "help": "Help"
+   },
+   "errors": {
+     "loading_failed": "Error loading dashboard data"
+   }
+ }

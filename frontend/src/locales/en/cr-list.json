@@ -75,5 +75,47 @@
     "showing": "Showing",
     "change_request": "Change Request",
     "change_requests": "Change Requests"
-  }
-}
+  },
+   "cr": {
+     "cannot_comment_draft": "You cannot comment on a Draft CR."
+   },
+   "detail_modal": {
+     "description": "DESCRIPTION",
+     "activity_comments": "ACTIVITY / COMMENTS SECTION",
+     "attributes": "ATTRIBUTES",
+     "priority": "Priority",
+     "worktype": "Worktype",
+     "issue_type": "Issue Type",
+     "start_date": "Start Date",
+     "due_date": "Due Date",
+     "created": "Created",
+     "reporter": "Reporter",
+     "delete": "Delete",
+     "submit": "Submit",
+     "go_to_discussion": "Go to Discussion",
+     "reject": "Reject",
+     "approve": "Approve",
+     "deployment": "Deployment",
+     "complete": "Complete",
+     "comments": "Comments",
+     "attachments": "Attachments",
+     "history": "History",
+     "no_comments": "No comments yet",
+     "no_attachments": "No attachments",
+     "no_history": "No history",
+     "add_comment": "Add a comment...",
+     "attach_file": "Attach file",
+     "copy_cr_key": "Copy CR Key",
+     "ctrl_enter_to_send": "Ctrl+Enter to send",
+     "download": "Download",
+     "comment_added": "Comment added",
+     "comment_deleted": "Comment deleted",
+     "failed_to_add_comment": "Failed to add comment",
+     "failed_to_delete_comment": "Failed to delete comment",
+     "moved_to_discussion": "Moved to Discussion",
+     "cr_rejected": "CR rejected",
+     "cr_approved": "CR approved",
+     "deployment_started": "Deployment started",
+     "cr_completed": "CR completed"
+   }
+ }

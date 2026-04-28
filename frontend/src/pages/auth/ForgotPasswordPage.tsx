@@ -5,11 +5,13 @@ import { Link } from "react-router-dom";
 import { LoginLayout } from "@/modules/auth/LoginLayout";
 import { authService } from "@/services/auth.service";
 import { DevToolsPanel } from "@/components/dev/DevToolsPanel";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const COOLDOWN_SECONDS = 60;
 const STORAGE_KEY = 'forgot_password_cooldown';
 
 const ForgotPasswordPage = () => {
+  const { t } = useTranslation("auth");
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -51,22 +53,22 @@ const ForgotPasswordPage = () => {
     }));
   };
 
-  const handleRequestReset = async (email: string) => {
-    try {
-      setLoading(true);
-      await authService.forgotPassword(email);
-      setIsSuccess(true);
-      setSubmittedEmail(email);
-      startCooldown(email);
-      message.success("Password reset email sent. Please check your inbox.");
-    } catch (error: any) {
-      const errorMsg =
-        error.response?.data?.message || "Failed to send reset email";
-      message.error(errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
+   const handleRequestReset = async (email: string) => {
+     try {
+       setLoading(true);
+       await authService.forgotPassword(email);
+       setIsSuccess(true);
+       setSubmittedEmail(email);
+       startCooldown(email);
+       message.success(t("forgot_password_success_message"));
+     } catch (error: any) {
+       const errorMsg =
+         error.response?.data?.message || "Failed to send reset email";
+       message.error(errorMsg);
+     } finally {
+       setLoading(false);
+     }
+   };
 
   const onFinish = (values: { email: string }) => {
     handleRequestReset(values.email);
@@ -80,72 +82,71 @@ const ForgotPasswordPage = () => {
 
   return (
     <LoginLayout
-      title="Forgot Password"
-      subtitle="Enter your email to receive a password reset link"
+      title={t("forgot_password_title")}
+      subtitle={t("forgot_password_subtitle")}
     >
-      {isSuccess ? (
-        <div className="text-center">
-          <p className="mb-6 text-gray-600">
-            If an account exists for that email, we have sent a password reset
-            link. The link will expire in 15 minutes. Please check your inbox and spam folder.
-          </p>
-          <Space direction="vertical" style={{ width: '100%' }} size="middle">
-            <Button 
-              type="primary" 
-              block 
-              onClick={handleResend}
-              disabled={cooldown > 0}
-              loading={loading}
-            >
-              {cooldown > 0 ? `Resend email (${cooldown}s)` : "Resend email"}
-            </Button>
-            <Link to="/login" style={{ display: 'block', width: '100%' }}>
-              <Button block>
-                Return to Login
-              </Button>
-            </Link>
-          </Space>
-          
-          <DevToolsPanel email={submittedEmail} />
-        </div>
-      ) : (
+       {isSuccess ? (
+         <div className="text-center">
+           <p className="mb-6 text-gray-600">
+             {t("forgot_password_success_message")}
+           </p>
+           <Space direction="vertical" style={{ width: '100%' }} size="middle">
+             <Button 
+               type="primary" 
+               block 
+               onClick={handleResend}
+               disabled={cooldown > 0}
+               loading={loading}
+             >
+               {cooldown > 0 ? t("forgot_password_cooldown", { count: cooldown }) : t("forgot_password_resend_button")}
+             </Button>
+             <Link to="/login" style={{ display: 'block', width: '100%' }}>
+               <Button block>
+                 {t("forgot_password_return_to_login")}
+               </Button>
+             </Link>
+           </Space>
+           
+           <DevToolsPanel email={submittedEmail} />
+         </div>
+       ) : (
         <Form
           name="forgot_password"
           layout="vertical"
           onFinish={onFinish}
           size="large"
         >
-          <Form.Item
-            name="email"
-            rules={[
-              { required: true, message: "Please enter your email" },
-              { type: "email", message: "Please enter a valid email" },
-            ]}
-          >
-            <Input
-              prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder="Email address"
-              autoFocus
-            />
-          </Form.Item>
+           <Form.Item
+             name="email"
+             rules={[
+               { required: true, message: t("validation.email_required") },
+               { type: "email", message: t("validation.email_invalid") },
+             ]}
+           >
+             <Input
+               prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+               placeholder={t("forgot_password_email_placeholder")}
+               autoFocus
+             />
+           </Form.Item>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              block
-              loading={loading}
-              className="mt-4"
-            >
-              Send Reset Link
-            </Button>
-          </Form.Item>
+           <Form.Item>
+             <Button
+               type="primary"
+               htmlType="submit"
+               block
+               loading={loading}
+               className="mt-4"
+             >
+               {t("forgot_password_send_reset_link")}
+             </Button>
+           </Form.Item>
 
-          <div className="text-center mt-4">
-            <Link to="/login" className="text-blue-600 hover:text-blue-800">
-              Back to login
-            </Link>
-          </div>
+           <div className="text-center mt-4">
+             <Link to="/login" className="text-blue-600 hover:text-blue-800">
+               {t("forgot_password_back_to_login")}
+             </Link>
+           </div>
         </Form>
       )}
       

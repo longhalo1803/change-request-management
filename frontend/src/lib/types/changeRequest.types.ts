@@ -25,6 +25,8 @@ export interface UserInfo {
   fullName: string;
   email: string;
   avatar?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface ChangeRequest {

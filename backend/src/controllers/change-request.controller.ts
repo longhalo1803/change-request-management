@@ -254,6 +254,7 @@ export class ChangeRequestController {
         priorityId,
         worktypeId,
         sprintId,
+        startDate,
         dueDate,
       } = req.body;
 
@@ -265,6 +266,7 @@ export class ChangeRequestController {
           priorityId,
           worktypeId,
           sprintId,
+          startDate,
           dueDate,
         },
         user.id,

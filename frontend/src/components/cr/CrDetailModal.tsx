@@ -34,7 +34,7 @@ import {
 import { useState } from "react";
 import type { UploadFile } from "antd/es/upload/interface";
 import { ChangeRequest } from "@/lib/types";
-import { getCrStatus, getCrPriority } from "@/lib/helpers/cr.helpers";
+import { getCrStatus, getCrPriority, getCreatorInfo, getUserDisplayName } from "@/lib/helpers/cr.helpers";
 import { getStatusConfig, getPriorityConfig } from "@/lib/constants";
 import { useTranslation } from "@/hooks/useTranslation";
 import {
@@ -51,7 +51,6 @@ import {
 } from "@/hooks";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import "./CrDetailModal.css";
 
 type ActorType = "customer" | "pm" | "admin";
 
@@ -136,13 +135,7 @@ const getAvatarColor = (name?: string) => {
   return colors[idx];
 };
 
-const getCreatorName = (creator?: any) => {
-  if (!creator) return "Unknown";
-  if (creator.firstName || creator.lastName) {
-    return `${creator.firstName || ""} ${creator.lastName || ""}`.trim();
-  }
-  return creator.fullName || creator.email || "Unknown";
-};
+
 
 // ===== Main Component =====
 
@@ -241,36 +234,36 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
 
   // ===== Comment Handlers =====
 
-  const handleSendComment = async () => {
-    const trimmed = commentText.trim();
-    if (!trimmed) return;
+   const handleSendComment = async () => {
+     const trimmed = commentText.trim();
+     if (!trimmed) return;
 
-    try {
-      const files = commentFiles
-        .map((f) => f.originFileObj as File)
-        .filter(Boolean);
-      await addComment({
-        input: { content: trimmed },
-        files: files.length > 0 ? files : undefined,
-      });
-      setCommentText("");
-      setCommentFiles([]);
-      message.success("Comment added");
-    } catch (err: any) {
-      const msg = err?.response?.data?.message;
-      message.error(msg ? t(msg) : "Failed to add comment");
-    }
-  };
+     try {
+       const files = commentFiles
+         .map((f) => f.originFileObj as File)
+         .filter(Boolean);
+       await addComment({
+         input: { content: trimmed },
+         files: files.length > 0 ? files : undefined,
+       });
+       setCommentText("");
+       setCommentFiles([]);
+       message.success(t("detail_modal.comment_added"));
+     } catch (err: any) {
+       const msg = err?.response?.data?.message;
+       message.error(msg ? t(msg) : t("detail_modal.failed_to_add_comment"));
+     }
+   };
 
-  const handleDeleteComment = async (commentId: string) => {
-    try {
-      await deleteComment(commentId);
-      message.success("Comment deleted");
-    } catch (err: any) {
-      const msg = err?.response?.data?.message;
-      message.error(msg ? t(msg) : "Failed to delete comment");
-    }
-  };
+   const handleDeleteComment = async (commentId: string) => {
+     try {
+       await deleteComment(commentId);
+       message.success(t("detail_modal.comment_deleted"));
+     } catch (err: any) {
+       const msg = err?.response?.data?.message;
+       message.error(msg ? t(msg) : t("detail_modal.failed_to_delete_comment"));
+     }
+   };
 
   const commentUploadProps = {
     fileList: commentFiles,
@@ -297,138 +290,138 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
 
     // DRAFT → Customer: Delete + Submit
     if (currentStatus === "DRAFT" && actorType === "customer") {
-      buttons.push(
-        <Popconfirm
-          key="delete"
-          title="Delete this CR?"
-          description="This action cannot be undone."
-          onConfirm={handleDelete}
-          okText="Delete"
-          okButtonProps={{ danger: true }}
-          cancelText="Cancel"
-        >
-          <Button
-            danger
-            size="small"
-            icon={<DeleteOutlined />}
-            loading={isDeleting}
-            disabled={isActionLoading}
-          >
-            Delete
-          </Button>
-        </Popconfirm>,
-        <Button
-          key="submit"
-          type="primary"
-          size="small"
-          icon={<SendOutlined />}
-          onClick={handleSubmit}
-          loading={isSubmitting}
-          disabled={isActionLoading}
-        >
-          Submit
-        </Button>
-      );
+       buttons.push(
+         <Popconfirm
+           key="delete"
+           title="Delete this CR?"
+           description="This action cannot be undone."
+           onConfirm={handleDelete}
+           okText={t("detail_modal.delete")}
+           okButtonProps={{ danger: true }}
+           cancelText="Cancel"
+         >
+           <Button
+             danger
+             size="small"
+             icon={<DeleteOutlined />}
+             loading={isDeleting}
+             disabled={isActionLoading}
+           >
+             {t("detail_modal.delete")}
+           </Button>
+         </Popconfirm>,
+         <Button
+           key="submit"
+           type="primary"
+           size="small"
+           icon={<SendOutlined />}
+           onClick={handleSubmit}
+           loading={isSubmitting}
+           disabled={isActionLoading}
+         >
+           {t("detail_modal.submit")}
+         </Button>
+       );
     }
 
     // SUBMITTED → PM: Go to Discussion
     if (currentStatus === "SUBMITTED" && actorType === "pm") {
-      buttons.push(
-        <Button
-          key="discuss"
-          type="primary"
-          size="small"
-          icon={<MessageOutlined />}
-          onClick={() =>
-            handleTransition("IN_DISCUSSION", "Moved to Discussion")
-          }
-          loading={isTransitioning}
-          disabled={isActionLoading}
-        >
-          Go to Discussion
-        </Button>
-      );
+       buttons.push(
+         <Button
+           key="discuss"
+           type="primary"
+           size="small"
+           icon={<MessageOutlined />}
+           onClick={() =>
+             handleTransition("IN_DISCUSSION", t("detail_modal.moved_to_discussion"))
+           }
+           loading={isTransitioning}
+           disabled={isActionLoading}
+         >
+           {t("detail_modal.go_to_discussion")}
+         </Button>
+       );
     }
 
     // IN_DISCUSSION → Customer: Reject + Approve
     if (currentStatus === "IN_DISCUSSION" && actorType === "customer") {
-      buttons.push(
-        <Button
-          key="reject"
-          danger
-          size="small"
-          icon={<CloseCircleOutlined />}
-          onClick={() => handleTransition("REJECTED", "CR rejected")}
-          loading={isTransitioning}
-          disabled={isActionLoading}
-        >
-          Reject
-        </Button>,
-        <Button
-          key="approve"
-          type="primary"
-          size="small"
-          icon={<CheckCircleOutlined />}
-          onClick={() => handleTransition("APPROVED", "CR approved")}
-          loading={isTransitioning}
-          disabled={isActionLoading}
-          style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
-        >
-          Approve
-        </Button>
-      );
+       buttons.push(
+         <Button
+           key="reject"
+           danger
+           size="small"
+           icon={<CloseCircleOutlined />}
+           onClick={() => handleTransition("REJECTED", t("detail_modal.cr_rejected"))}
+           loading={isTransitioning}
+           disabled={isActionLoading}
+         >
+           {t("detail_modal.reject")}
+         </Button>,
+         <Button
+           key="approve"
+           type="primary"
+           size="small"
+           icon={<CheckCircleOutlined />}
+           onClick={() => handleTransition("APPROVED", t("detail_modal.cr_approved"))}
+           loading={isTransitioning}
+           disabled={isActionLoading}
+           style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
+         >
+           {t("detail_modal.approve")}
+         </Button>
+       );
     }
 
     // IN_DISCUSSION → PM: Reject
     if (currentStatus === "IN_DISCUSSION" && actorType === "pm") {
-      buttons.push(
-        <Button
-          key="reject"
-          danger
-          size="small"
-          icon={<CloseCircleOutlined />}
-          onClick={() => handleTransition("REJECTED", "CR rejected")}
-          loading={isTransitioning}
-          disabled={isActionLoading}
-        >
-          Reject
-        </Button>
-      );
+       buttons.push(
+         <Button
+           key="reject"
+           danger
+           size="small"
+           icon={<CloseCircleOutlined />}
+           onClick={() => handleTransition("REJECTED", t("detail_modal.cr_rejected"))}
+           loading={isTransitioning}
+           disabled={isActionLoading}
+         >
+           {t("detail_modal.reject")}
+         </Button>
+       );
     }
 
     // APPROVED → PM: Deployment
     if (currentStatus === "APPROVED" && actorType === "pm") {
-      buttons.push(
-        <Button
-          key="deploy"
-          type="primary"
-          size="small"
-          icon={<RocketOutlined />}
-          onClick={() => handleTransition("ON_GOING", "Deployment started")}
-          loading={isTransitioning}
-          disabled={isActionLoading}
-        >
-          Deployment
-        </Button>
-      );
+       buttons.push(
+         <Button
+           key="deploy"
+           type="primary"
+           size="small"
+           icon={<RocketOutlined />}
+           onClick={() => handleTransition("ON_GOING", t("detail_modal.deployment_started"))}
+           loading={isTransitioning}
+           disabled={isActionLoading}
+         >
+           {t("detail_modal.deployment")}
+         </Button>
+       );
     }
 
     // ON_GOING → PM: Complete
     if (currentStatus === "ON_GOING" && actorType === "pm") {
-      buttons.push(
-        <Button
-          key="complete"
-          type="primary"
-          size="small"
-          icon={<FlagOutlined />}
-          onClick={() => handleTransition("CLOSED", "CR completed")}
-          loading={isTransitioning}
-          disabled={isActionLoading}
-          style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
-        >
-          Complete
-        </Button>
-      );
+       buttons.push(
+         <Button
+           key="complete"
+           type="primary"
+           size="small"
+           icon={<FlagOutlined />}
+           onClick={() => handleTransition("CLOSED", t("detail_modal.cr_completed"))}
+           loading={isTransitioning}
+           disabled={isActionLoading}
+           style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
+         >
+           {t("detail_modal.complete")}
+         </Button>
+       );
     }
 
     if (buttons.length === 0) return null;
@@ -444,14 +437,16 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
         <div className="flex justify-center py-8">
           <Spin />
         </div>
-      ) : !comments || comments.length === 0 ? (
-        <Empty
-          description="No comments yet"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        />
+       ) : !comments || comments.length === 0 ? (
+         <Empty
+           description={t("detail_modal.no_comments")}
+           image={Empty.PRESENTED_IMAGE_SIMPLE}
+         />
       ) : (
         comments.map((c) => {
-          const name = c.commenter?.fullName || c.commenterName || "Unknown";
+          const commenterObj = typeof c.commentedBy === 'object' ? c.commentedBy : c.commenter;
+          const displayName = getUserDisplayName(commenterObj);
+          const name = displayName !== "Unknown" ? displayName : (c.commenterName || "Unknown");
           const isOwn = c.commentedBy === user?.id;
           return (
             <div key={c.id} className="flex gap-3 group">
@@ -512,37 +507,37 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
           style={{ backgroundColor: "#1890ff", flexShrink: 0 }}
         />
         <div className="flex-1">
-          <TextArea
-            placeholder="Add a comment..."
-            rows={3}
-            className="mb-2"
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            onPressEnter={(e) => {
-              if (e.ctrlKey || e.metaKey) {
-                e.preventDefault();
-                handleSendComment();
-              }
-            }}
-          />
-          <div className="flex justify-between items-center">
-            <Upload {...commentUploadProps} showUploadList={true}>
-              <Button icon={<PaperClipOutlined />} size="small" type="text">
-                Attach file
-              </Button>
-            </Upload>
-            <Tooltip title="Ctrl+Enter to send">
-              <Button
-                type="primary"
-                icon={<SendOutlined />}
-                onClick={handleSendComment}
-                loading={isAddingComment}
-                disabled={!commentText.trim()}
-              >
-                Send
-              </Button>
-            </Tooltip>
-          </div>
+           <TextArea
+             placeholder={t("detail_modal.add_comment")}
+             rows={3}
+             className="mb-2"
+             value={commentText}
+             onChange={(e) => setCommentText(e.target.value)}
+             onPressEnter={(e) => {
+               if (e.ctrlKey || e.metaKey) {
+                 e.preventDefault();
+                 handleSendComment();
+               }
+             }}
+           />
+           <div className="flex justify-between items-center">
+             <Upload {...commentUploadProps} showUploadList={true}>
+               <Button icon={<PaperClipOutlined />} size="small" type="text">
+                 {t("detail_modal.attach_file")}
+               </Button>
+             </Upload>
+             <Tooltip title={t("detail_modal.ctrl_enter_to_send")}>
+               <Button
+                 type="primary"
+                 icon={<SendOutlined />}
+                 onClick={handleSendComment}
+                 loading={isAddingComment}
+                 disabled={!commentText.trim()}
+               >
+                 Send
+               </Button>
+             </Tooltip>
+           </div>
         </div>
       </div>
     </div>
@@ -554,11 +549,11 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
         <div className="flex justify-center py-8">
           <Spin />
         </div>
-      ) : !attachments || attachments.length === 0 ? (
-        <Empty
-          description="No attachments"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        />
+       ) : !attachments || attachments.length === 0 ? (
+         <Empty
+           description={t("detail_modal.no_attachments")}
+           image={Empty.PRESENTED_IMAGE_SIMPLE}
+         />
       ) : (
         <div className="space-y-2">
           {attachments.map((a) => (
@@ -573,15 +568,15 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
                   {formatFileSize(a.fileSize)} • {formatDateTime(a.createdAt)}
                 </div>
               </div>
-              <Tooltip title="Download">
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<DownloadOutlined />}
-                  href={a.fileUrl}
-                  target="_blank"
-                />
-              </Tooltip>
+               <Tooltip title={t("detail_modal.download")}>
+                 <Button
+                   type="text"
+                   size="small"
+                   icon={<DownloadOutlined />}
+                   href={a.fileUrl}
+                   target="_blank"
+                 />
+               </Tooltip>
             </div>
           ))}
         </div>
@@ -595,8 +590,8 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
         <div className="flex justify-center py-8">
           <Spin />
         </div>
-      ) : !statusHistory || statusHistory.length === 0 ? (
-        <Empty description="No history" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+       ) : !statusHistory || statusHistory.length === 0 ? (
+         <Empty description={t("detail_modal.no_history")} image={Empty.PRESENTED_IMAGE_SIMPLE} />
       ) : (
         <div className="space-y-3">
           {statusHistory.map((h: any, idx: number) => {
@@ -636,23 +631,23 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
     </div>
   );
 
-  const tabItems = [
-    {
-      key: "comments",
-      label: `Comments${comments?.length ? ` (${comments.length})` : ""}`,
-      children: renderCommentsTab(),
-    },
-    {
-      key: "attachments",
-      label: `Attachments${attachments?.length ? ` (${attachments.length})` : ""}`,
-      children: renderAttachmentsTab(),
-    },
-    {
-      key: "history",
-      label: "History",
-      children: renderHistoryTab(),
-    },
-  ];
+   const tabItems = [
+     {
+       key: "comments",
+       label: `${t("detail_modal.comments")}${comments?.length ? ` (${comments.length})` : ""}`,
+       children: renderCommentsTab(),
+     },
+     {
+       key: "attachments",
+       label: `${t("detail_modal.attachments")}${attachments?.length ? ` (${attachments.length})` : ""}`,
+       children: renderAttachmentsTab(),
+     },
+     {
+       key: "history",
+       label: t("detail_modal.history"),
+       children: renderHistoryTab(),
+     },
+   ];
 
   return (
     <Modal
@@ -664,26 +659,26 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <span className="text-lg font-semibold">{cr.crKey}</span>
-              <Tooltip title="Copy CR Key">
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<CopyOutlined />}
-                  className="text-gray-400 hover:text-gray-700"
-                  style={{
-                    width: 24,
-                    height: 24,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigator.clipboard.writeText(cr.crKey);
-                    message.success("CR key copied!");
-                  }}
-                />
-              </Tooltip>
+               <Tooltip title={t("detail_modal.copy_cr_key")}>
+                 <Button
+                   type="text"
+                   size="small"
+                   icon={<CopyOutlined />}
+                   className="text-gray-400 hover:text-gray-700"
+                   style={{
+                     width: 24,
+                     height: 24,
+                     display: "flex",
+                     alignItems: "center",
+                     justifyContent: "center",
+                   }}
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     navigator.clipboard.writeText(cr.crKey);
+                     message.success("CR key copied!");
+                   }}
+                 />
+               </Tooltip>
             </div>
           </div>
           {/* Action Buttons in Header */}
@@ -707,22 +702,24 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
           {/* Title */}
           <h2 className="text-xl font-semibold mb-4">{cr.title}</h2>
 
-          {/* Description Section */}
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
-              DESCRIPTION
-            </h3>
+           {/* Description Section */}
+           <div className="mb-6">
+             <h3 className="text-sm font-semibold text-gray-700 mb-2">
+               {t("detail_modal.description")}
+             </h3>
             {cr.description ? (
-              <ReactQuill
-                value={cr.description}
-                readOnly={true}
-                theme="snow"
-                modules={{ toolbar: false }}
-                style={{
-                  border: "none",
-                  backgroundColor: "transparent",
-                }}
-              />
+              <div className="[&_.ql-container.ql-snow]:!border-none [&_.ql-editor]:!p-0 [&_.ql-editor]:text-[14px] [&_.ql-editor]:leading-[1.6] [&_.ql-editor]:text-gray-700 [&_.ql-editor_p]:mb-2 [&_.ql-editor_ul]:ml-4 [&_.ql-editor_ul]:mb-2 [&_.ql-editor_ol]:ml-4 [&_.ql-editor_ol]:mb-2 [&_.ql-editor_li]:mb-1 [&_.ql-editor_strong]:font-semibold [&_.ql-editor_a]:text-blue-500 [&_.ql-editor_a]:underline [&_.ql-editor_code]:bg-gray-100 [&_.ql-editor_code]:px-1 [&_.ql-editor_code]:py-0.5 [&_.ql-editor_code]:rounded [&_.ql-editor_code]:font-mono [&_.ql-editor_pre]:bg-gray-800 [&_.ql-editor_pre]:text-gray-50 [&_.ql-editor_pre]:p-4 [&_.ql-editor_pre]:rounded-lg [&_.ql-editor_pre]:overflow-x-auto [&_.ql-editor_pre]:mb-2 [&_.ql-editor_img]:max-w-full [&_.ql-editor_img]:h-auto [&_.ql-editor_img]:rounded-lg [&_.ql-editor_img]:my-2">
+                <ReactQuill
+                  value={cr.description}
+                  readOnly={true}
+                  theme="snow"
+                  modules={{ toolbar: false }}
+                  style={{
+                    border: "none",
+                    backgroundColor: "transparent",
+                  }}
+                />
+              </div>
             ) : (
               <div className="text-gray-500 italic">
                 No description provided
@@ -736,66 +733,66 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
           </div>
         </div>
 
-        {/* Right Sidebar - Attributes */}
-        <div className="w-64 bg-gray-50 p-6 border-l">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4">
-            ATTRIBUTES
-          </h3>
+         {/* Right Sidebar - Attributes */}
+         <div className="w-64 bg-gray-50 p-6 border-l">
+           <h3 className="text-sm font-semibold text-gray-700 mb-4">
+             {t("detail_modal.attributes")}
+           </h3>
 
-          <div className="space-y-4">
-            {/* Priority */}
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Priority</div>
-              <Tag color={priorityConfig.color} className="px-2 py-1">
-                {priorityConfig.label}
-              </Tag>
-            </div>
+           <div className="space-y-4">
+             {/* Priority */}
+             <div>
+               <div className="text-xs text-gray-500 mb-1">{t("detail_modal.priority")}</div>
+               <Tag color={priorityConfig.color} className="px-2 py-1">
+                 {priorityConfig.label}
+               </Tag>
+             </div>
 
-            {/* Worktype */}
-            {cr.worktype && (
-              <div>
-                <div className="text-xs text-gray-500 mb-1">Issue Type</div>
-                <div className="text-sm font-medium">{cr.worktype.name}</div>
-              </div>
-            )}
+             {/* Worktype */}
+             {cr.worktype && (
+               <div>
+                 <div className="text-xs text-gray-500 mb-1">{t("detail_modal.issue_type")}</div>
+                 <div className="text-sm font-medium">{cr.worktype.name}</div>
+               </div>
+             )}
 
-            {/* Start Date */}
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Start Date</div>
-              <div className="text-sm">{formatDate(cr.startDate)}</div>
-            </div>
+             {/* Start Date */}
+             <div>
+               <div className="text-xs text-gray-500 mb-1">{t("detail_modal.start_date")}</div>
+               <div className="text-sm">{formatDate(cr.startDate)}</div>
+             </div>
 
-            {/* Due Date */}
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Due Date</div>
-              <div className="text-sm">{formatDate(cr.dueDate)}</div>
-            </div>
+             {/* Due Date */}
+             <div>
+               <div className="text-xs text-gray-500 mb-1">{t("detail_modal.due_date")}</div>
+               <div className="text-sm">{formatDate(cr.dueDate)}</div>
+             </div>
 
-            {/* Created */}
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Created</div>
-              <div className="text-sm">{formatDate(cr.createdAt)}</div>
-            </div>
+             {/* Created */}
+             <div>
+               <div className="text-xs text-gray-500 mb-1">{t("detail_modal.created")}</div>
+               <div className="text-sm">{formatDate(cr.createdAt)}</div>
+             </div>
 
-            {/* Reporter */}
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Reporter</div>
-              <div className="flex items-center gap-2">
-                <Avatar
-                  size={24}
-                  style={{
-                    backgroundColor: getAvatarColor(getCreatorName(cr.creator)),
-                  }}
-                >
-                  {getInitials(getCreatorName(cr.creator))}
-                </Avatar>
-                <span className="text-sm font-medium" title={cr.creator?.email}>
-                  {getCreatorName(cr.creator)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+             {/* Reporter */}
+             <div>
+               <div className="text-xs text-gray-500 mb-1">{t("detail_modal.reporter")}</div>
+               <div className="flex items-center gap-2">
+                 <Avatar
+                   size={24}
+                   style={{
+                     backgroundColor: getAvatarColor(getUserDisplayName(getCreatorInfo(cr))),
+                   }}
+                 >
+                   {getInitials(getUserDisplayName(getCreatorInfo(cr)))}
+                 </Avatar>
+                 <span className="text-sm font-medium" title={getCreatorInfo(cr)?.email}>
+                   {getUserDisplayName(getCreatorInfo(cr))}
+                 </span>
+               </div>
+             </div>
+           </div>
+         </div>
       </div>
     </Modal>
   );

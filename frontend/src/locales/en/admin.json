@@ -91,50 +91,54 @@
     "showing": "Showing {{count}} Change Request",
     "showing_plural": "Showing {{count}} Change Requests"
   },
-  "permissions": {
-    "title": "Permissions Management",
-    "subtitle": "Manage user accounts and permission groups",
-    "accounts_tab": "Accounts",
-    "groups_tab": "Permission Groups",
-    "search_placeholder": "Search by name or email",
-    "create_user": "Create New User",
-    "delete_confirm": "Are you sure you want to delete {{name}}?",
-    "user_deleted": "User deleted successfully",
-    "user_deleted_fail": "Failed to delete user",
-    "user_updated": "User updated successfully",
-    "user_created": "User created successfully",
-    "user_status_active": "User activated successfully",
-    "user_status_inactive": "User deactivated successfully",
-    "status_update_fail": "Failed to update user status",
-    "failed_to_load": "Failed to load users, using fallback data",
-    "columns": {
-      "name": "Name",
-      "first_name": "First Name",
-      "last_name": "Last Name",
-      "phone": "Phone",
-      "password": "Password",
-      "email": "Email",
-      "role": "Role",
-      "created_date": "Created Date",
-      "status": "Status",
-      "actions": "Actions"
-    },
-    "roles": {
-      "admin": "Administrator",
-      "pm": "Project Manager",
-      "customer": "Customer"
-    },
-    "status": {
-      "active": "Active",
-      "inactive": "Inactive"
-    },
-    "actions": {
-      "edit": "Edit",
-      "deactivate": "Deactivate",
-      "activate": "Activate",
-      "delete": "Delete"
-    },
-    "total_users": "Total {{total}} users",
-    "no_users": "No users found"
-  }
-}
+   "permissions": {
+     "title": "Permissions Management",
+     "subtitle": "Manage user accounts and permission groups",
+     "accounts_tab": "Accounts",
+     "groups_tab": "Permission Groups",
+     "groups_coming_soon": "Permission Groups management coming soon",
+     "search_placeholder": "Search by name or email",
+     "create_user": "Create New User",
+     "delete_confirm": "Are you sure you want to delete {{name}}?",
+     "user_deleted": "User deleted successfully",
+     "user_deleted_fail": "Failed to delete user",
+     "user_updated": "User updated successfully",
+     "user_created": "User created successfully",
+     "user_status_active": "User activated successfully",
+     "user_status_inactive": "User deactivated successfully",
+     "status_update_fail": "Failed to update user status",
+     "failed_to_load": "Failed to load users, using fallback data",
+     "columns": {
+       "name": "Name",
+       "first_name": "First Name",
+       "last_name": "Last Name",
+       "phone": "Phone",
+       "password": "Password",
+       "email": "Email",
+       "role": "Role",
+       "created_date": "Created Date",
+       "status": "Status",
+       "actions": "Actions"
+     },
+     "roles": {
+       "admin": "Administrator",
+       "pm": "Project Manager",
+       "customer": "Customer"
+     },
+     "status": {
+       "active": "Active",
+       "inactive": "Inactive"
+     },
+     "actions": {
+       "edit": "Edit",
+       "deactivate": "Deactivate",
+       "activate": "Activate",
+       "delete": "Delete"
+     },
+     "total_users": "Total {{total}} users",
+     "no_users": "No users found"
+   },
+   "errors": {
+     "failed_to_load": "Failed to load dashboard data. Please try again later."
+   }
+ }

@@ -7,7 +7,7 @@ import { CustomerLayout } from "@/layouts";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { PMLayout } from "@/layouts/PMLayout";
 import { UserRole } from "@/lib/types";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuthStore, useAuthSyncListener } from "@/store/auth.store";
 import { authService } from "@/services/auth.service";
 
 const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
@@ -51,28 +51,37 @@ const AppRouter = () => {
   const logout = useAuthStore((state) => state.logout);
   const setUser = useAuthStore((state) => state.setUser);
 
+  // Sync auth state across tabs
+  useAuthSyncListener();
+
   useEffect(() => {
     let isMounted = true;
 
     const validateSession = async () => {
-      // Check for token in sessionStorage directly instead of reading state
-      // This prevents the infinite render loop caused by reading state during render
-      const token = sessionStorage.getItem("cr_auth_token");
+      const state = useAuthStore.getState();
+      const token = state.accessToken;
+      const user = state.user;
 
+      // Already have both token and user, no need to validate
+      if (token && user) {
+        if (isMounted) setIsCheckingSession(false);
+        return;
+      }
+
+      // No token, not authenticated
       if (!token) {
         if (isMounted) setIsCheckingSession(false);
         return;
       }
 
+      // Have token but no user - fetch from backend
       try {
-        // Attempt to fetch current user to validate token
         const currentUser = await authService.getCurrentUser();
         if (isMounted) {
           setUser(currentUser);
           setIsCheckingSession(false);
         }
       } catch (_error) {
-        // Token is invalid, expired, or backend was reset
         console.warn("Session validation failed, logging out...");
         if (isMounted) {
           logout();
@@ -86,7 +95,7 @@ const AppRouter = () => {
     return () => {
       isMounted = false;
     };
-  }, [logout, setUser]); // Only run once on mount, no longer depends on accessToken or isAuthenticated
+  }, [logout, setUser]);
 
   if (isCheckingSession) {
     return <PageLoader />;

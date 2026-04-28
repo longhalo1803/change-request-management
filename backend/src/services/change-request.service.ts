@@ -36,6 +36,7 @@ export interface CreateCrInput {
   worktypeId: string;
   createdBy: string;
   sprintId?: string;
+  startDate?: string;
   dueDate?: string;
 }
 
@@ -45,6 +46,7 @@ export interface UpdateCrInput {
   priorityId?: string;
   worktypeId?: string;
   sprintId?: string;
+  startDate?: string;
   dueDate?: string;
 }
 
@@ -355,6 +357,7 @@ export class ChangeRequestService {
       worktypeId: input.worktypeId,
       createdBy: input.createdBy,
       sprintId: input.sprintId,
+      startDate: input.startDate ? (input.startDate as any) : undefined,
       dueDate: input.dueDate ? (input.dueDate as any) : undefined,
     };
 
@@ -515,6 +518,9 @@ export class ChangeRequestService {
       if (input.worktypeId !== undefined) {
         updateData.worktypeId = input.worktypeId;
       }
+      if (input.startDate !== undefined) {
+        updateData.startDate = input.startDate ? (input.startDate as any) : null;
+      }
     } else if (userRole === "pm") {
       // PM cannot edit DRAFT CRs
       if (cr.status?.name === "DRAFT") {
@@ -524,6 +530,10 @@ export class ChangeRequestService {
       // PM specific fields
       if (input.sprintId !== undefined) {
         updateData.sprintId = input.sprintId || null;
+      }
+
+      if (input.startDate !== undefined) {
+        updateData.startDate = input.startDate ? (input.startDate as any) : null;
       }
 
       if (input.dueDate !== undefined) {

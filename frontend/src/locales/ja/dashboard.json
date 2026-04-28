@@ -20,10 +20,11 @@
     "status_colors": "ステータスカラー:",
     "statuses": {
       "draft": "下書き",
+      "submitted": "提出済み",
       "in_discussion": "議論中",
       "approved": "承認済み",
-      "rejected": "却下 / ブロック",
-      "ongoing": "進行中",
+      "rejected": "却下",
+      "on_going": "進行中",
       "closed": "完了"
     }
   },
@@ -51,5 +52,8 @@
     "quotation": "見積もり",
     "settings": "設定",
     "help": "ヘルプ"
+  },
+  "errors": {
+    "loading_failed": "ダッシュボードデータの読み込みに失敗しました"
   }
 }

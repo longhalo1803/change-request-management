@@ -45,17 +45,15 @@ export const getCrStatus = (cr: ChangeRequest): string => {
  * Get user info from ChangeRequest field
  * Handles both string IDs and UserInfo objects
  */
-export const getCreatorInfo = (cr: ChangeRequest): UserInfo | null => {
-  // If creator object exists with fullName, return it
-  if (
-    cr.creator &&
-    typeof cr.creator === "object" &&
-    "fullName" in cr.creator
-  ) {
+export const getCreatorInfo = (cr: any): UserInfo | null => {
+  // Check if createdBy is a populated object
+  if (cr.createdBy && typeof cr.createdBy === "object") {
+    return cr.createdBy as UserInfo;
+  }
+  // Check if creator object exists
+  if (cr.creator && typeof cr.creator === "object") {
     return cr.creator as UserInfo;
   }
-
-  // If createdBy is a string and creator doesn't exist, return null (no user info available)
   return null;
 };
 
@@ -63,9 +61,12 @@ export const getCreatorInfo = (cr: ChangeRequest): UserInfo | null => {
  * Get user display name
  */
 export const getUserDisplayName = (
-  user: UserInfo | null | undefined
+  user: any
 ): string => {
   if (!user) return "Unknown";
+  if (user.firstName || user.lastName) {
+    return `${user.firstName || ""} ${user.lastName || ""}`.trim();
+  }
   return user.fullName || user.email || "Unknown";
 };
 

@@ -44,13 +44,16 @@
       "days_ago": "{{count}} ngày trước"
     }
   },
-  "sidebar": {
-    "app_name": "Solashi Connect",
-    "app_subtitle": "CỔNG DOANH NGHIỆP",
-    "dashboard": "Tổng quan",
-    "cr_list": "Danh sách CR",
-    "quotation": "Báo giá",
-    "settings": "Cài đặt",
-    "help": "Trợ giúp"
-  }
-}
+   "sidebar": {
+     "app_name": "Solashi Connect",
+     "app_subtitle": "CỔNG DOANH NGHIỆP",
+     "dashboard": "Tổng quan",
+     "cr_list": "Danh sách CR",
+     "quotation": "Báo giá",
+     "settings": "Cài đặt",
+     "help": "Trợ giúp"
+   },
+   "errors": {
+     "loading_failed": "Lỗi khi tải dữ liệu bảng điều khiển"
+   }
+ }

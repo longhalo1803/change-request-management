@@ -75,5 +75,47 @@
     "showing": "表示中",
     "change_request": "変更リクエスト",
     "change_requests": "変更リクエスト"
-  }
-}
+  },
+   "cr": {
+     "cannot_comment_draft": "ドラフト状態のCRにはコメントできません。"
+   },
+   "detail_modal": {
+     "description": "説明",
+     "activity_comments": "アクティビティ / コメントセクション",
+     "attributes": "属性",
+     "priority": "優先度",
+     "worktype": "作業タイプ",
+     "issue_type": "問題のタイプ",
+     "start_date": "開始日",
+     "due_date": "期限",
+     "created": "作成日",
+     "reporter": "報告者",
+     "delete": "削除",
+     "submit": "送信",
+     "go_to_discussion": "ディスカッションに移動",
+     "reject": "拒否",
+     "approve": "承認",
+     "deployment": "デプロイ",
+     "complete": "完了",
+     "comments": "コメント",
+     "attachments": "添付ファイル",
+     "history": "履歴",
+     "no_comments": "コメントはまだありません",
+     "no_attachments": "添付ファイルなし",
+     "no_history": "履歴なし",
+     "add_comment": "コメントを追加...",
+     "attach_file": "ファイルを添付",
+     "copy_cr_key": "CRキーをコピー",
+     "ctrl_enter_to_send": "Ctrl+Enterで送信",
+     "download": "ダウンロード",
+     "comment_added": "コメントが追加されました",
+     "comment_deleted": "コメントが削除されました",
+     "failed_to_add_comment": "コメントの追加に失敗しました",
+     "failed_to_delete_comment": "コメントの削除に失敗しました",
+     "moved_to_discussion": "ディスカッションに移動しました",
+     "cr_rejected": "CR が拒否されました",
+     "cr_approved": "CR が承認されました",
+     "deployment_started": "デプロイが開始されました",
+     "cr_completed": "CR が完了しました"
+   }
+ }
