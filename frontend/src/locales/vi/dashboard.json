@@ -22,9 +22,10 @@
       "draft": "BẢN NHÁP",
       "in_discussion": "ĐANG THẢO LUẬN",
       "approved": "ĐÃ PHÊ DUYỆT",
-      "rejected": "BỊ TỪ CHỐI / CHẶN",
-      "ongoing": "ĐANG THỰC HIỆN",
-      "closed": "ĐÃ ĐÓNG"
+      "rejected": "BỊ TỪ CHỐI",
+      "on_going": "ĐANG THỰC HIỆN",
+      "closed": "ĐÃ ĐÓNG",
+      "submitted": "ĐÃ GỬI"
     }
   },
   "recent_activity": {
@@ -32,6 +33,7 @@
     "mark_all_read": "Đánh dấu đã đọc tất cả",
     "today": "HÔM NAY",
     "yesterday": "HÔM QUA",
+    "older": "CŨ HƠN",
     "load_more": "Tải thêm hoạt động",
     "created": "đã tạo",
     "commented_on": "đã bình luận về",
@@ -43,13 +45,16 @@
       "days_ago": "{{count}} ngày trước"
     }
   },
-  "sidebar": {
-    "app_name": "Solashi Connect",
-    "app_subtitle": "CỔNG DOANH NGHIỆP",
-    "dashboard": "Tổng quan",
-    "cr_management": "Quản lý CR",
-    "quotation": "Báo giá",
-    "settings": "Cài đặt",
-    "help": "Trợ giúp"
-  }
-}
+   "sidebar": {
+     "app_name": "Solashi Connect",
+     "app_subtitle": "CỔNG DOANH NGHIỆP",
+     "dashboard": "Tổng quan",
+     "cr_list": "Danh sách CR",
+     "quotation": "Báo giá",
+     "settings": "Cài đặt",
+     "help": "Trợ giúp"
+   },
+   "errors": {
+     "loading_failed": "Lỗi khi tải dữ liệu bảng điều khiển"
+   }
+ }

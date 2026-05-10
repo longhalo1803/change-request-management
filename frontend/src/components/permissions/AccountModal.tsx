@@ -1,0 +1,206 @@
+/**
+ * AccountModal Component
+ * Form for creating/editing users with validation
+ */
+
+import { Modal, Form, Input, Select, Button, Space } from "antd";
+import { useTranslation } from "@/hooks/useTranslation";
+import { useEffect } from "react";
+import {
+  AdminUser,
+  UserFormData,
+  UserRole,
+  PermissionGroup,
+} from "@/lib/types";
+
+interface AccountModalProps {
+  visible: boolean;
+  user?: AdminUser;
+  permissionGroups: PermissionGroup[];
+  onSubmit: (data: UserFormData) => Promise<void>;
+  onCancel: () => void;
+  loading: boolean;
+}
+
+const getRoleLabel = (role: UserRole): string => {
+  switch (role) {
+    case UserRole.ADMIN:
+      return "Administrator";
+    case UserRole.PM:
+      return "Project Manager";
+    case UserRole.CUSTOMER:
+      return "Customer";
+    default:
+      return role;
+  }
+};
+
+export const AccountModal = ({
+  visible,
+  user,
+  permissionGroups,
+  onSubmit,
+  onCancel,
+  loading,
+}: AccountModalProps) => {
+  const { t } = useTranslation("admin");
+  const [form] = Form.useForm();
+  const isEditMode = !!user;
+
+  // Set form values when user changes to prevent stale data
+  useEffect(() => {
+    if (user) {
+      form.setFieldsValue({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [user, form]);
+
+  const roleOptions = permissionGroups.map((group) => ({
+    label: getRoleLabel(group.roleType),
+    value: group.roleType,
+  }));
+
+  const handleSubmit = async (values: any) => {
+    const formData: UserFormData = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      phone: values.phone,
+      role: values.role,
+      password: values.password,
+    };
+
+    await onSubmit(formData);
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    onCancel();
+  };
+
+  return (
+    <Modal
+      title={isEditMode ? "Edit User" : "Create New User"}
+      open={visible}
+      onCancel={handleCancel}
+      footer={null}
+      width={500}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        autoComplete="off"
+        initialValues={
+          user
+            ? {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
+              }
+            : {}
+        }
+      >
+        {/* Last Name */}
+        <Form.Item
+          name="lastName"
+          label={t("permissions.columns.last_name")}
+          rules={[
+            { required: true, message: "Please enter last name" },
+            { min: 2, message: "Last name must be at least 2 characters" },
+          ]}
+        >
+          <Input placeholder="Enter last name" />
+        </Form.Item>
+
+        {/* First Name */}
+        <Form.Item
+          name="firstName"
+          label={t("permissions.columns.first_name")}
+          rules={[
+            { required: true, message: "Please enter first name" },
+            { min: 2, message: "First name must be at least 2 characters" },
+          ]}
+        >
+          <Input placeholder="Enter first name" />
+        </Form.Item>
+
+        {/* Email */}
+        <Form.Item
+          name="email"
+          label={t("permissions.columns.email")}
+          rules={[
+            { required: true, message: "Please enter email" },
+            { type: "email", message: "Please enter valid email" },
+          ]}
+        >
+          <Input
+            placeholder="Enter email"
+            type="email"
+            autoComplete="new-email"
+            disabled={isEditMode}
+          />
+        </Form.Item>
+
+        {/* Phone */}
+        <Form.Item
+          name="phone"
+          label={t("permissions.columns.phone")}
+          rules={[
+            {
+              pattern: /^[0-9\s\-+()]*$/,
+              message: "Please enter valid phone number",
+            },
+          ]}
+        >
+          <Input placeholder="Enter phone number" />
+        </Form.Item>
+
+        {/* Role */}
+        <Form.Item
+          name="role"
+          label={t("permissions.columns.role")}
+          rules={[{ required: true, message: "Please select role" }]}
+        >
+          <Select placeholder="Select role" options={roleOptions} />
+        </Form.Item>
+
+        {/* Password - only on create */}
+        {!isEditMode && (
+          <Form.Item
+            name="password"
+            label={t("permissions.columns.password")}
+            rules={[
+              { required: true, message: "Please enter password" },
+              { min: 8, message: "Password must be at least 8 characters" },
+            ]}
+          >
+            <Input.Password
+              placeholder="Enter password (min 8 characters)"
+              autoComplete="new-password"
+            />
+          </Form.Item>
+        )}
+
+        {/* Form Actions */}
+        <Form.Item style={{ marginBottom: 0 }}>
+          <Space style={{ width: "100%", justifyContent: "flex-end" }}>
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              {isEditMode ? "Update" : "Create"}
+            </Button>
+          </Space>
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+};

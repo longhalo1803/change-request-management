@@ -1,0 +1,30 @@
+{
+  "page_title": "Quotations",
+  "page_subtitle": "View and manage quotations for your change requests",
+  "empty_state": "No quotations available",
+  "table": {
+    "cr_id": "CR ID",
+    "cr_title": "CR Title",
+    "vendor": "Vendor",
+    "amount": "Amount",
+    "validity_date": "Valid Until",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "status": {
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "expired": "Expired"
+  },
+  "buttons": {
+    "download": "Download",
+    "view": "View",
+    "accept": "Accept",
+    "reject": "Reject"
+  },
+  "messages": {
+    "loading": "Loading quotations...",
+    "no_quotations": "No quotations available"
+  }
+}

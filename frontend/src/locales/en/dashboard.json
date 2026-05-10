@@ -22,9 +22,10 @@
       "draft": "DRAFT",
       "in_discussion": "IN DISCUSSION",
       "approved": "APPROVED",
-      "rejected": "REJECTED / BLOCKED",
-      "ongoing": "ONGOING",
-      "closed": "CLOSED"
+      "rejected": "REJECTED",
+      "on_going": "ON GOING",
+      "closed": "CLOSED",
+      "submitted": "SUBMITTED"
     }
   },
   "recent_activity": {
@@ -32,6 +33,7 @@
     "mark_all_read": "Mark all read",
     "today": "TODAY",
     "yesterday": "YESTERDAY",
+    "older": "OLDER",
     "load_more": "Load more activity",
     "created": "created",
     "commented_on": "commented on",
@@ -43,13 +45,16 @@
       "days_ago": "{{count}}d ago"
     }
   },
-  "sidebar": {
-    "app_name": "Solashi Connect",
-    "app_subtitle": "ENTERPRISE PORTAL",
-    "dashboard": "Dashboard",
-    "cr_management": "CR Management",
-    "quotation": "Quotation",
-    "settings": "Settings",
-    "help": "Help"
-  }
-}
+   "sidebar": {
+     "app_name": "Solashi Connect",
+     "app_subtitle": "ENTERPRISE PORTAL",
+     "dashboard": "Dashboard",
+     "cr_list": "CR List",
+     "quotation": "Quotation",
+     "settings": "Settings",
+     "help": "Help"
+   },
+   "errors": {
+     "loading_failed": "Error loading dashboard data"
+   }
+ }

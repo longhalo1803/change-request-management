@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "email_required": "Email là bắt buộc",
+    "email_invalid": "Email không hợp lệ",
+    "password_required": "Mật khẩu là bắt buộc"
+  },
+  "comment": {
+    "content_required": "Nội dung bình luận là bắt buộc",
+    "content_min_length": "Nội dung phải có ít nhất 2 ký tự"
+  },
+  "cr": {
+    "title_required": "Tiêu đề là bắt buộc",
+    "title_min_length": "Tiêu đề phải có ít nhất 5 ký tự",
+    "description_required": "Mô tả là bắt buộc",
+    "description_min_length": "Mô tả phải có ít nhất 10 ký tự",
+    "status_required": "Trạng thái là bắt buộc"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "required": "{{field}} is required",
+  "invalid_email": "Invalid email format",
+  "invalid_url": "Invalid URL format",
+  "min_length": "{{field}} must be at least {{min}} characters",
+  "max_length": "{{field}} must not exceed {{max}} characters",
+  "min_value": "{{field}} must be at least {{min}}",
+  "max_value": "{{field}} must not exceed {{max}}",
+  "invalid_format": "{{field}} has invalid format",
+  "string_expected": "{{field}} must be a string",
+  "number_expected": "{{field}} must be a number",
+  "boolean_expected": "{{field}} must be a boolean",
+  "array_expected": "{{field}} must be an array",
+  "object_expected": "{{field}} must be an object",
+  "date_expected": "{{field}} must be a valid date",
+  "password_weak": "Password must contain at least 8 characters with uppercase, lowercase, and numbers",
+  "enum_invalid": "{{field}} must be one of: {{values}}",
+  "duplicate_value": "{{field}} already exists",
+  "invalid_uuid": "{{field}} must be a valid UUID",
+  "past_date_expected": "{{field}} must be a date in the past",
+  "future_date_expected": "{{field}} must be a date in the future"
+}

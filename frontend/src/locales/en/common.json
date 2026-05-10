@@ -8,7 +8,9 @@
     "change_requests": "Change Requests",
     "users": "Users",
     "sprints": "Sprints",
-    "settings": "Settings"
+    "settings": "Settings",
+    "profile": "Profile",
+    "permissions": "Permissions"
   },
   "auth": {
     "login": "Login",
@@ -44,7 +46,8 @@
     "ongoing": "Ongoing",
     "blocked": "Blocked",
     "rejected": "Rejected",
-    "closed": "Closed"
+    "closed": "Closed",
+    "in_discussion": "In Discussion"
   },
   "priority": {
     "low": "Low",
@@ -67,6 +70,7 @@
     "export": "Export"
   },
   "messages": {
+    "coming_soon": "Coming soon",
     "loading": "Loading...",
     "no_data": "No data available",
     "confirm_delete": "Are you sure you want to delete this item?",

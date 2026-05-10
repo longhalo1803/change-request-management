@@ -1,0 +1,31 @@
+{
+  "title": "Bảng điều khiển PM",
+  "subtitle": "Tổng quan dự án và các hoạt động gần đây",
+  "stats": {
+    "total_crs": "Tổng số CR",
+    "active_crs": "CR đang hoạt động",
+    "completed": "Đã hoàn thành",
+    "ongoing": "Đang tiến hành",
+    "subtitle_total": "Tất cả các CR đã nhận",
+    "subtitle_active": "Đang xử lý",
+    "subtitle_completed": "Các CR đã đóng",
+    "subtitle_ongoing": "Hiện đang triển khai"
+  },
+  "cr_list": {
+    "title": "Yêu cầu thay đổi",
+    "subtitle": "Quản lý và giải quyết các yêu cầu thay đổi của khách hàng",
+    "no_data": "Không tìm thấy yêu cầu thay đổi nào",
+    "showing_count_zero": "Đang hiển thị 0 yêu cầu thay đổi",
+    "showing_count_one": "Đang hiển thị 1 yêu cầu thay đổi",
+    "showing_count_other": "Đang hiển thị {{count}} yêu cầu thay đổi"
+  },
+  "header": {
+    "profile": "Hồ sơ"
+  },
+  "sidebar": {
+    "dashboard": "Bảng điều khiển",
+    "cr_list": "Danh sách CR",
+    "pm_user": "Người dùng PM",
+    "project_manager": "Quản lý dự án"
+  }
+}

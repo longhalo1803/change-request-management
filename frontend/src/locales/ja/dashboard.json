@@ -20,10 +20,11 @@
     "status_colors": "ステータスカラー:",
     "statuses": {
       "draft": "下書き",
+      "submitted": "提出済み",
       "in_discussion": "議論中",
       "approved": "承認済み",
-      "rejected": "却下 / ブロック",
-      "ongoing": "進行中",
+      "rejected": "却下",
+      "on_going": "進行中",
       "closed": "完了"
     }
   },
@@ -32,6 +33,7 @@
     "mark_all_read": "すべて既読にする",
     "today": "今日",
     "yesterday": "昨日",
+    "older": "以前",
     "load_more": "もっと読み込む",
     "created": "作成しました",
     "commented_on": "コメントしました",
@@ -47,9 +49,12 @@
     "app_name": "Solashiコネクト",
     "app_subtitle": "エンタープライズポータル",
     "dashboard": "ダッシュボード",
-    "cr_management": "CR管理",
+    "cr_list": "CRリスト",
     "quotation": "見積もり",
     "settings": "設定",
     "help": "ヘルプ"
+  },
+  "errors": {
+    "loading_failed": "ダッシュボードデータの読み込みに失敗しました"
   }
 }

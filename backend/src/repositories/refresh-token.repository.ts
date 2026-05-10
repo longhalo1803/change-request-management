@@ -1,12 +1,12 @@
-import { Repository } from 'typeorm';
-import { AppDataSource } from '@/config/database';
-import { RefreshToken } from '@/entities/refresh-token.entity';
+import { Repository } from "typeorm";
+import { AppDataSource } from "@/config/database";
+import { RefreshToken } from "@/entities/refresh-token.entity";
 
 /**
  * RefreshToken Repository
- * 
+ *
  * Data access layer for RefreshToken entity
- * 
+ *
  * SOLID Principles:
  * - Single Responsibility: Only handles RefreshToken data access
  * - Interface Segregation: Provides specific methods for token operations
@@ -37,7 +37,7 @@ export class RefreshTokenRepository {
   async findByToken(token: string): Promise<RefreshToken | null> {
     return this.repository.findOne({
       where: { token, isRevoked: false },
-      relations: ['user']
+      relations: ["user"],
     });
   }
 
@@ -54,7 +54,7 @@ export class RefreshTokenRepository {
   async revokeAllForUser(userId: string): Promise<void> {
     await this.repository.update(
       { userId, isRevoked: false },
-      { isRevoked: true }
+      { isRevoked: true },
     );
   }
 
@@ -65,7 +65,7 @@ export class RefreshTokenRepository {
     await this.repository
       .createQueryBuilder()
       .delete()
-      .where('expires_at < :now', { now: new Date() })
+      .where("expires_at < :now", { now: new Date() })
       .execute();
   }
 }

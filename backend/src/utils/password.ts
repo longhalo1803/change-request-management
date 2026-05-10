@@ -1,10 +1,10 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 /**
  * Password Utility
- * 
+ *
  * Handles password hashing and verification using bcrypt
- * 
+ *
  * SOLID Principles:
  * - Single Responsibility: Only handles password operations
  * - Dependency Inversion: Can be replaced with different hashing algorithm
@@ -23,7 +23,10 @@ export class PasswordUtil {
   /**
    * Compare plain text password with hashed password
    */
-  static async compare(password: string, hashedPassword: string): Promise<boolean> {
+  static async compare(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
   }
 
@@ -35,7 +38,7 @@ export class PasswordUtil {
     const minLength = 8;
     const hasLetter = /[a-zA-Z]/.test(password);
     const hasNumber = /\d/.test(password);
-    
+
     return password.length >= minLength && hasLetter && hasNumber;
   }
 }

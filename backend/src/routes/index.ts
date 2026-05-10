@@ -1,16 +1,27 @@
-import { Router } from 'express';
-import authRoutes from './auth.routes';
-// Import other route modules here when created
-// import changeRequestRoutes from './change-request.routes';
-// import userRoutes from './user.routes';
-// import sprintRoutes from './sprint.routes';
+import { Router } from "express";
+import authRoutes from "./auth.routes";
+import changeRequestRoutes from "./change-request.routes";
+import projectRoutes from "./project.routes";
+import userRoutes from "./user.routes";
+import adminRoutes from "./admin.routes";
+import dashboardRoutes from "./dashboard.routes";
+import permissionsRoutes from "./permissions.routes";
+
+import devRoutes from "./dev.routes";
 
 const router = Router();
 
 // Register routes
-router.use('/auth', authRoutes);
-// router.use('/change-requests', changeRequestRoutes);
-// router.use('/users', userRoutes);
-// router.use('/sprints', sprintRoutes);
+router.use("/auth", authRoutes);
+router.use("/change-requests", changeRequestRoutes);
+router.use("/projects", projectRoutes);
+router.use("/users", userRoutes);
+router.use("/admin", adminRoutes);
+router.use("/dashboard", dashboardRoutes);
+router.use("/permissions", permissionsRoutes);
+
+if (process.env.NODE_ENV === "development") {
+  router.use("/dev", devRoutes);
+}
 
 export default router;

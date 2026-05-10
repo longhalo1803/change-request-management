@@ -1,277 +1,304 @@
-# 🚀 CR Management System
+# CR Management System
 
-Enterprise Change Request Management System for SOLASHI Vietnam - Japanese Client collaboration.
+Enterprise Change Request Management System for SOLASHI Vietnam - Japanese Client Collaboration
 
-## 📋 Overview
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-v20.x+-green.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-18+-blue.svg)](https://react.dev/)
 
-A full-stack web application for managing Change Requests (CR) between Japanese clients and SOLASHI Vietnam development team. Built with modern technologies and enterprise-grade architecture.
+## About
+
+A full-stack web application for managing Change Requests (CR) between Japanese clients and SOLASHI Vietnam development team. Built with modern technologies for enterprise-grade reliability and scalability.
 
 ## ✨ Features
 
-- 🔐 **JWT Authentication** - Secure login with access & refresh tokens
-- 🌍 **Multi-language Support** - English, Japanese (日本語), Vietnamese (Tiếng Việt)
-- 👥 **Role-Based Access Control** - Admin, BrSE, Developer, QA, Customer roles
-- 📊 **CR State Machine** - 10-state workflow management
-- 💬 **Comment System** - Public, Internal, BrSE-only visibility levels
-- 📎 **File Attachments** - Secure file upload with validation
-- 💰 **Quotation Management** - BrSE-only quotation features
-- 🔄 **Real-time Updates** - TanStack Query for optimistic updates
+- **JWT Authentication** - Secure login with refresh tokens (15min access / 7d refresh)
+- **Role-Based Access Control** - 3 user roles: Admin, Project Manager (PM), Customer
+- **Change Request Workflow** - 10-state lifecycle management (Created → Quoted → Approved → Development → Testing → Deployed → Closed, etc.)
+- **Comment System** - Support for adding comments and file attachments
+- **File Attachments** - Secure file uploads with validation (5MB max: JPEG, PNG, PDF, DOCX)
+- **Quotation Management** - Cost estimation and tracking
+- **Multi-language Support** - English, Japanese (日本語), Vietnamese (Tiếng Việt)
+- **Real-time Updates** - Automatic data synchronization with TanStack Query
 
 ## 🛠️ Tech Stack
 
-### Backend
-- **Runtime**: Node.js + TypeScript
-- **Framework**: Express.js
-- **ORM**: TypeORM
-- **Database**: MySQL
-- **Authentication**: JWT (jsonwebtoken + bcryptjs)
-- **Validation**: Zod
-- **File Upload**: Multer
-- **i18n**: i18next
-- **Logging**: Winston + Morgan
+**Backend**
 
-### Frontend
-- **Framework**: React 18 + TypeScript
-- **Build Tool**: Vite
-- **Routing**: React Router v6
-- **Server State**: TanStack Query (React Query v5)
-- **Client State**: Zustand
-- **HTTP Client**: Axios
-- **UI Library**: Ant Design
-- **Form**: React Hook Form + Zod
-- **Styling**: Tailwind CSS
-- **i18n**: react-i18next
+- Node.js v20+ with TypeScript
+- Express.js (Web framework)
+- TypeORM (Database ORM)
+- MySQL 8.0+ (Database)
+- JWT, bcryptjs, Zod, Multer, i18next, Winston
+
+**Frontend**
+
+- React 18 + TypeScript
+- Vite (Build tool with HMR)
+- TanStack Query v5 (Server state management)
+- Zustand (Client state management)
+- Ant Design, React Hook Form, Tailwind CSS
+- Axios, i18next, Recharts
+
+**Infrastructure**
+
+- Docker & Docker Compose
+- Prettier (Code formatting)
+- ESLint (Linting)
 
 ## 📁 Project Structure
 
 ```
 change-request-management/
-├── backend/                 # Backend API
+├── backend/              # Node.js + Express API
 │   ├── src/
-│   │   ├── config/         # Configuration files
-│   │   ├── controllers/    # Request handlers
-│   │   ├── services/       # Business logic
-│   │   ├── repositories/   # Data access layer
-│   │   ├── entities/       # TypeORM entities
-│   │   ├── middlewares/    # Express middlewares
-│   │   ├── routes/         # API routes
-│   │   ├── utils/          # Utility functions
-│   │   ├── validators/     # Zod schemas
-│   │   ├── locales/        # i18n translations (en/ja/vi)
-│   │   └── migrations/     # Database migrations
-│   └── package.json
+│   │   ├── controllers/  # HTTP request handlers
+│   │   ├── services/     # Business logic
+│   │   ├── repositories/ # Data access layer
+│   │   ├── entities/     # Database models
+│   │   ├── routes/       # API endpoints
+│   │   ├── middlewares/  # Auth, validation, etc.
+│   │   ├── validators/   # Zod schemas
+│   │   └── locales/      # Translations (en, ja, vi)
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── Dockerfile
+│   └── .env.example
 │
-├── frontend/               # Frontend application
+├── frontend/             # React + Vite app
 │   ├── src/
-│   │   ├── providers/      # React providers
-│   │   ├── layouts/        # Layout components
-│   │   ├── routers/        # Route configuration
-│   │   ├── pages/          # Page components
-│   │   ├── modules/        # Feature modules
-│   │   ├── components/     # Shared components
-│   │   ├── store/          # Zustand stores
-│   │   ├── services/       # API services
-│   │   ├── hooks/          # Custom hooks
-│   │   ├── lib/            # Core utilities
-│   │   └── locales/        # i18n translations (en/ja/vi)
-│   └── package.json
+│   │   ├── pages/        # Page components
+│   │   ├── modules/      # Feature modules
+│   │   ├── components/   # Reusable components
+│   │   ├── hooks/        # Custom React hooks
+│   │   ├── services/     # API service layer
+│   │   ├── store/        # Zustand stores
+│   │   └── locales/      # Translations (en, ja, vi)
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   ├── Dockerfile
+│   └── .env.example
 │
-└── README.md
+├── docker-compose.yml    # Multi-container setup
+├── package.json          # Root scripts (Prettier)
+├── .prettierrc            # Code formatting config
+└── README.md             # This file
 ```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js v20.x or higher
-- MySQL 8.0 or higher
-- npm or yarn
+- **Node.js** v20.x or higher
+- **npm** v10.x or higher
+- **MySQL** 8.0 or higher
+- **Git** v2.0 or higher
+- **Docker & Docker Compose** (optional)
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone Repository**
+
    ```bash
-   git clone https://github.com/YOUR_USERNAME/cr-management-system.git
-   cd cr-management-system
+   git clone https://github.com/SOLASHI/change-request-management.git
+   cd change-request-management
    ```
 
-2. **Install dependencies**
+2. **Install Dependencies**
+
    ```bash
-   # Automatic installation (Windows)
+   # Windows
    .\install-all.bat
-   
-   # Or manual installation
+
+   # macOS/Linux
    cd backend && npm install
    cd ../frontend && npm install
    ```
 
-3. **Setup environment variables**
+3. **Configure Environment Variables**
+
+   Backend (`backend/.env`):
+
+   ```env
+   NODE_ENV=development
+   PORT=8080
+   API_PREFIX=/api
+
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USERNAME=cr_user
+   DB_PASSWORD=your_password
+   DB_DATABASE=cr_management
+
+   JWT_ACCESS_SECRET=your_secret_key_here
+   JWT_REFRESH_SECRET=your_refresh_secret_here
+   JWT_ACCESS_EXPIRES_IN=15m
+   JWT_REFRESH_EXPIRES_IN=7d
+
+   CORS_ORIGIN=http://localhost:3000
+   ```
+
+   Frontend (`frontend/.env`):
+
+   ```env
+   VITE_API_BASE_URL=http://localhost:8080/api
+   ```
+
+4. **Setup Database**
+
    ```bash
-   # Backend
-   cd backend
-   cp .env.example .env
-   # Edit .env with your MySQL credentials
-   
-   # Frontend
-   cd frontend
-   cp .env.example .env
-   ```
-
-4. **Create database**
-   ```sql
+   # Option A: Manual MySQL
+   mysql -u root -p
    CREATE DATABASE cr_management CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+   # Option B: Docker Compose
+   docker-compose up -d mysql
    ```
 
-5. **Run migrations**
+5. **Run Migrations**
+
    ```bash
    cd backend
    npm run migration:run
    ```
 
-6. **Seed default users**
+6. **Seed Default Users**
+
    ```bash
    cd backend
    npx ts-node -r tsconfig-paths/register src/utils/seed-users.ts
    ```
 
-7. **Start development servers**
+   Default Accounts:
+   - Admin: `admin@solashi.com` / `Admin@123`
+   - PM: `pm@solashi.com` / `Pm@123`
+   - Customer: `customer@example.com` / `Customer@123`
+
+7. **Start Development Servers**
+
+   Terminal 1 - Backend:
+
    ```bash
-   # Automatic (Windows)
-   .\start-dev.bat
-   
-   # Or manual
-   # Terminal 1 - Backend
-   cd backend && npm run dev
-   
-   # Terminal 2 - Frontend
-   cd frontend && npm run dev
+   cd backend
+   npm run dev
+   # Server: http://localhost:8080
    ```
 
-8. **Access the application**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:3000
+   Terminal 2 - Frontend:
 
-### Default Accounts
+   ```bash
+   cd frontend
+   npm run dev
+   # App: http://localhost:3000
+   ```
 
-| Role     | Email                | Password     |
-| -------- | -------------------- | ------------ |
-| Admin    | admin@solashi.com    | Admin@123    |
-| BrSE     | brse@solashi.com     | Brse@123     |
-| Customer | customer@example.com | Customer@123 |
+   Or use Docker Compose for the database:
 
-## 📚 Documentation
+   ```bash
+   docker-compose up -d mysql
+   ```
 
-All documentation is consolidated in this README file for easy reference.
+## 📚 Available Scripts
 
-## 🏗️ Architecture
+**Root Commands**
 
-### Backend - Layered Architecture (5 layers)
+```bash
+npm run format           # Format all code with Prettier
+npm run format:check    # Check formatting
+npm run format:backend  # Format backend only
+npm run format:frontend # Format frontend only
+```
+
+**Backend Commands** (from `backend/`)
+
+```bash
+npm run dev             # Development with hot-reload
+npm run build           # Build TypeScript
+npm start               # Run compiled server
+npm run lint            # ESLint check
+npm test                # Run tests
+npm run migration:run   # Run database migrations
+```
+
+**Frontend Commands** (from `frontend/`)
+
+```bash
+npm run dev             # Development server (Vite)
+npm run build           # Build for production
+npm run preview         # Preview production build
+npm run lint            # ESLint check
+```
+
+## Architecture
+
+**Backend** - 5-Layer Architecture
 
 ```
 Request → Router → Middleware → Controller → Service → Repository → Database
 ```
 
-- **Router**: Define API endpoints
-- **Middleware**: Authentication, validation, language detection
-- **Controller**: Handle HTTP requests/responses
-- **Service**: Business logic
-- **Repository**: Database operations
-
-### Frontend - Component-Based Architecture
+**Frontend** - Component-Based Architecture
 
 ```
 Page → Module → Component → Hook → Service → API
 ```
 
-- **Pages**: Thin components that compose modules
-- **Modules**: Domain-specific feature components
-- **Components**: Reusable UI components
-- **Hooks**: Custom React hooks for business logic
-- **Services**: API call functions
-- **Store**: State management (Zustand + TanStack Query)
-
 ## 🔒 Security Features
 
-- ✅ JWT authentication with refresh tokens
-- ✅ Password hashing with bcrypt (10 rounds)
-- ✅ Role-based access control (RBAC)
-- ✅ Token revocation support
-- ✅ Secure file upload validation
-- ✅ CORS configuration
-- ✅ Helmet security headers
-- ✅ SQL injection prevention (TypeORM)
-- ✅ XSS protection
+- JWT authentication with refresh token rotation
+- Password hashing with bcryptjs
+- Role-Based Access Control (RBAC)
+- CORS configuration
+- Helmet security headers
+- SQL injection prevention (TypeORM)
+- Input validation (Zod)
+- File upload validation
 
-## 🌍 Internationalization (i18n)
+## 🌍 Internationalization
 
-The application supports 3 languages:
+Supports 3 languages:
 
 - **English (en)** - Default
-- **Japanese (ja)** - 日本語
-- **Vietnamese (vi)** - Tiếng Việt
+- **Japanese (日本語, ja)** - For Japanese clients
+- **Vietnamese (Tiếng Việt, vi)** - For SOLASHI Vietnam team
 
-Language detection:
-1. User selection (stored in localStorage)
-2. Browser language
-3. Falls back to English
-
-## 🧪 Testing
-
-```bash
-# Backend tests
-cd backend
-npm test
-
-# Frontend tests
-cd frontend
-npm test
-```
-
-## 📦 Build for Production
-
-```bash
-# Backend
-cd backend
-npm run build
-npm start
-
-# Frontend
-cd frontend
-npm run build
-npm run preview
-```
+Language detection: User preference → Browser language → English (default)
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Format code: `npm run format`
+4. Commit changes: `git commit -m "feat: add amazing feature"`
+5. Push to branch: `git push origin feature/amazing-feature`
+6. Open a Pull Request
+
+**Commit Convention:**
+
+```
+feat:     New feature
+fix:      Bug fix
+docs:     Documentation
+style:    Code formatting
+refactor: Code refactoring
+perf:     Performance improvement
+test:     Test changes
+chore:    Build/deps
+```
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👥 Team
-
-**SOLASHI Vietnam**
-- Senior Full-Stack Architect
-- Development Team
+This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📞 Support
 
-For support, email support@solashi.com or create an issue in this repository.
-
-## 🙏 Acknowledgments
-
-- React Team for React 18
-- Vercel for Vite
-- TanStack for React Query
-- Ant Design Team
-- TypeORM Team
-- All open-source contributors
+- **Email:** support@solashi.com
+- **Issues:** Create an issue on GitHub
+- **Team:** Contact your project manager
 
 ---
 
 **Built with ❤️ by SOLASHI Vietnam for Japanese Clients**
+
+**Version:** 1.0.0 | **Last Updated:** April 13, 2026

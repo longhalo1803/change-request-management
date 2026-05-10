@@ -1,0 +1,22 @@
+{
+  "required": "{{field}} là bắt buộc",
+  "invalid_email": "Định dạng email không hợp lệ",
+  "invalid_url": "Định dạng URL không hợp lệ",
+  "min_length": "{{field}} phải có ít nhất {{min}} ký tự",
+  "max_length": "{{field}} không được vượt quá {{max}} ký tự",
+  "min_value": "{{field}} phải ít nhất {{min}}",
+  "max_value": "{{field}} không được vượt quá {{max}}",
+  "invalid_format": "{{field}} có định dạng không hợp lệ",
+  "string_expected": "{{field}} phải là một chuỗi",
+  "number_expected": "{{field}} phải là một số",
+  "boolean_expected": "{{field}} phải là một giá trị boolean",
+  "array_expected": "{{field}} phải là một mảng",
+  "object_expected": "{{field}} phải là một đối tượng",
+  "date_expected": "{{field}} phải là một ngày hợp lệ",
+  "password_weak": "Mật khẩu phải có ít nhất 8 ký tự với chữ hoa, chữ thường và số",
+  "enum_invalid": "{{field}} phải là một trong: {{values}}",
+  "duplicate_value": "{{field}} đã tồn tại",
+  "invalid_uuid": "{{field}} phải là một UUID hợp lệ",
+  "past_date_expected": "{{field}} phải là một ngày trong quá khứ",
+  "future_date_expected": "{{field}} phải là một ngày trong tương lai"
+}
