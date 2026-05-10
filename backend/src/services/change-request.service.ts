@@ -669,35 +669,35 @@ export class ChangeRequestService {
     });
   }
 
-  /**
-   * Delete comment (only owner can delete)
-   */
-  async deleteComment(
-    crId: string,
-    commentId: string,
-    userId: string,
-    userRole: string
-  ): Promise<void> {
-    // Verify CR exists
-    await this.getCrById(crId);
+   /**
+    * Delete comment (only owner can delete)
+    */
+   async deleteComment(
+     crId: string,
+     commentId: string,
+     userId: string,
+     userRole: string
+   ): Promise<void> {
+     // Verify CR exists
+     await this.getCrById(crId);
 
-    // Get the comment
-    const commentRepo = AppDataSource.getRepository(ChangeRequestComment);
-    const comment = await commentRepo.findOne({
-      where: { id: commentId, changeRequestId: crId },
-    });
+     // Get the comment
+     const commentRepo = AppDataSource.getRepository(ChangeRequestComment);
+     const comment = await commentRepo.findOne({
+       where: { id: commentId, changeRequestId: crId },
+     });
 
-    if (!comment) {
-      throw new AppError("cr.comment_not_found", 404);
-    }
+     if (!comment) {
+       throw new AppError("cr.comment_not_found", 404);
+     }
 
-    // Only owner or admin can delete
-    if (comment.commentedBy !== userId && userRole !== "admin") {
-      throw new AppError("cr.can_only_delete_own_comment", 403);
-    }
+     // Only owner can delete
+     if (comment.commentedBy !== userId) {
+       throw new AppError("cr.can_only_delete_own_comment", 403);
+     }
 
-    await this.crRepo.deleteComment(commentId);
-  }
+     await this.crRepo.deleteComment(commentId);
+   }
 
   /**
    * Get CR comments

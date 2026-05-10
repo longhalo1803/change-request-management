@@ -9,7 +9,6 @@ export const createCommentSchema = (messages: Record<string, string>) =>
         2,
         messages.content_min_length || "Content must be at least 2 characters",
       ),
-    visibility: z.enum(["public", "internal", "pm_only"]),
   });
 
 // Default schema for backwards compatibility

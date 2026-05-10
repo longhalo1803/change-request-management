@@ -15,7 +15,7 @@ A full-stack web application for managing Change Requests (CR) between Japanese 
 - **JWT Authentication** - Secure login with refresh tokens (15min access / 7d refresh)
 - **Role-Based Access Control** - 3 user roles: Admin, Project Manager (PM), Customer
 - **Change Request Workflow** - 10-state lifecycle management (Created → Quoted → Approved → Development → Testing → Deployed → Closed, etc.)
-- **Comment System** - Public, Internal, and PM-only comment visibility levels
+- **Comment System** - Support for adding comments and file attachments
 - **File Attachments** - Secure file uploads with validation (5MB max: JPEG, PNG, PDF, DOCX)
 - **Quotation Management** - Cost estimation and tracking
 - **Multi-language Support** - English, Japanese (日本語), Vietnamese (Tiếng Việt)

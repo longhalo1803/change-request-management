@@ -39,7 +39,7 @@ router.get("/lookups", (req, res, next) => controller.getLookups(req, res, next)
 /**
  * GET /api/change-requests
  * Get all CRs with search/filter/pagination
- * Query: search, status, priority, spaceId, assignedTo, page, limit, sortBy, sortOrder
+ * Query: search, status, priority, spaceId, page, limit, sortBy, sortOrder
  */
 router.get("/", (req, res) => controller.getChangeRequests(req, res));
 

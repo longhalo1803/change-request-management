@@ -59,7 +59,9 @@ export const PMDashboardPage = () => {
 
   const recentActivities = (recentActivitiesData || []).map((group: any) => ({
     ...group,
-    label: t(`recent_activity.${group.date}` as any),
+    label: t(`recent_activity.${group.date}` as any, {
+      defaultValue: group.label,
+    }),
   }));
 
   const handleViewBreakdown = () => {

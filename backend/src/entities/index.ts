@@ -10,4 +10,4 @@ export {
   ChangeRequestAttachment,
   ChangeRequestComment,
 } from "./change-request.entity";
-export { Quotation, Notification } from "./quotation.entity";
+export { Quotation } from "./quotation.entity";

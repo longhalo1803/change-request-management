@@ -499,47 +499,49 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
         })
       )}
 
-      {/* Comment Input */}
-      <div className="flex gap-3 mt-4 pt-4 border-t">
-        <Avatar
-          size={32}
-          icon={<UserOutlined />}
-          style={{ backgroundColor: "#1890ff", flexShrink: 0 }}
-        />
-        <div className="flex-1">
-           <TextArea
-             placeholder={t("detail_modal.add_comment")}
-             rows={3}
-             className="mb-2"
-             value={commentText}
-             onChange={(e) => setCommentText(e.target.value)}
-             onPressEnter={(e) => {
-               if (e.ctrlKey || e.metaKey) {
-                 e.preventDefault();
-                 handleSendComment();
-               }
-             }}
+       {/* Comment Input */}
+       {actorType !== "admin" && (
+         <div className="flex gap-3 mt-4 pt-4 border-t">
+           <Avatar
+             size={32}
+             icon={<UserOutlined />}
+             style={{ backgroundColor: "#1890ff", flexShrink: 0 }}
            />
-           <div className="flex justify-between items-center">
-             <Upload {...commentUploadProps} showUploadList={true}>
-               <Button icon={<PaperClipOutlined />} size="small" type="text">
-                 {t("detail_modal.attach_file")}
-               </Button>
-             </Upload>
-             <Tooltip title={t("detail_modal.ctrl_enter_to_send")}>
-               <Button
-                 type="primary"
-                 icon={<SendOutlined />}
-                 onClick={handleSendComment}
-                 loading={isAddingComment}
-                 disabled={!commentText.trim()}
-               >
-                 Send
-               </Button>
-             </Tooltip>
+           <div className="flex-1">
+              <TextArea
+                placeholder={t("detail_modal.add_comment")}
+                rows={3}
+                className="mb-2"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onPressEnter={(e) => {
+                  if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    handleSendComment();
+                  }
+                }}
+              />
+              <div className="flex justify-between items-center">
+                <Upload {...commentUploadProps} showUploadList={true}>
+                  <Button icon={<PaperClipOutlined />} size="small" type="text">
+                    {t("detail_modal.attach_file")}
+                  </Button>
+                </Upload>
+                <Tooltip title={t("detail_modal.ctrl_enter_to_send")}>
+                  <Button
+                    type="primary"
+                    icon={<SendOutlined />}
+                    onClick={handleSendComment}
+                    loading={isAddingComment}
+                    disabled={!commentText.trim()}
+                  >
+                    Send
+                  </Button>
+                </Tooltip>
+              </div>
            </div>
-        </div>
-      </div>
+         </div>
+       )}
     </div>
   );
 
@@ -631,23 +633,27 @@ export const CrDetailModal: React.FC<CrDetailModalProps> = ({
     </div>
   );
 
-   const tabItems = [
-     {
-       key: "comments",
-       label: `${t("detail_modal.comments")}${comments?.length ? ` (${comments.length})` : ""}`,
-       children: renderCommentsTab(),
-     },
-     {
-       key: "attachments",
-       label: `${t("detail_modal.attachments")}${attachments?.length ? ` (${attachments.length})` : ""}`,
-       children: renderAttachmentsTab(),
-     },
-     {
-       key: "history",
-       label: t("detail_modal.history"),
-       children: renderHistoryTab(),
-     },
-   ];
+    const tabItems = [
+      {
+        key: "attachments",
+        label: `${t("detail_modal.attachments")}${attachments?.length ? ` (${attachments.length})` : ""}`,
+        children: renderAttachmentsTab(),
+      },
+      {
+        key: "history",
+        label: t("detail_modal.history"),
+        children: renderHistoryTab(),
+      },
+    ];
+
+    // Only show comments tab for non-admin users
+    if (actorType !== "admin") {
+      tabItems.unshift({
+        key: "comments",
+        label: `${t("detail_modal.comments")}${comments?.length ? ` (${comments.length})` : ""}`,
+        children: renderCommentsTab(),
+      });
+    }
 
   return (
     <Modal
