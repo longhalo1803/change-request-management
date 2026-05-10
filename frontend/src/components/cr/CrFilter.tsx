@@ -17,10 +17,6 @@ interface CrFilterProps {
   actorType?: ActorType;
 }
 
-/**
- * Shared CR Filter Component
- * Used by Customer, PM, and Admin actors with role-specific button display
- */
 export const CrFilter: React.FC<CrFilterProps> = ({
   searchText,
   status,
